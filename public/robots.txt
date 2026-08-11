@@ -1,0 +1,14 @@
+# robots.txt for TimeCounterPro
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+Sitemap: https://timecounterpro.com/sitemap.xml
+Sitemap: https://timecounterpro.com/sitemap-index.xml
+
+# Crawl delay for bots
+Crawl-delay: 1
+
+# Host
+Host: https://timecounterpro.com

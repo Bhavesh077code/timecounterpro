@@ -1,0 +1,4 @@
+Contact: mailto:security@timecounterpro.com
+Expires: 2027-08-11
+Preferred-Languages: en
+Canonical: https://timecounterpro.com

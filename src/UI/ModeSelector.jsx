@@ -26,4 +26,4 @@ function ModeSelector({ mode, setMode }) {
   );
 }
 
-export default ModeSelector;
+export default ModeSelector; 

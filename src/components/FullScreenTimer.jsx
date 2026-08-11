@@ -12,6 +12,11 @@ function FullScreenTimer({ timer, onClose }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   
+  // ✅ Sound State - Fast Response
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [volume, setVolume] = useState(50);
+  const [showVolume, setShowVolume] = useState(false);
+  
   // ✅ Refs - Safe initialization
   const intervalRef = useRef(null);
   const confettiTimerRef = useRef(null);
@@ -20,7 +25,100 @@ function FullScreenTimer({ timer, onClose }) {
   const durationRef = useRef(timer?.duration || 0);
   const timerIdRef = useRef(timer?.id || null);
   const isCompletedRef = useRef(false);
-  const isMountedRef = useRef(true); // ✅ Prevent state update after unmount
+  const isMountedRef = useRef(true);
+  const tickAudioRef = useRef(null);
+  const completeAudioRef = useRef(null);
+
+  // ✅ Load sounds
+  useEffect(() => {
+    try {
+      tickAudioRef.current = new Audio('/sounds/tick.mp3');
+      completeAudioRef.current = new Audio('/sounds/complete.mp3');
+      tickAudioRef.current?.load();
+      completeAudioRef.current?.load();
+    } catch (error) {
+      console.warn('Sound loading error:', error);
+    }
+    
+    return () => {
+      if (tickAudioRef.current) {
+        tickAudioRef.current.pause();
+        tickAudioRef.current = null;
+      }
+      if (completeAudioRef.current) {
+        completeAudioRef.current.pause();
+        completeAudioRef.current = null;
+      }
+    };
+  }, []);
+
+  // ✅ Play Tick Sound - Fast Response
+  const playTickSound = () => {
+    if (!soundEnabled) return;
+    if (!tickAudioRef.current) return;
+    try {
+      const audio = tickAudioRef.current;
+      audio.currentTime = 0;
+      audio.volume = volume / 100;
+      // ✅ Fast play with catch
+      audio.play().catch(() => {});
+    } catch (error) {
+      // Silent fail
+    }
+  };
+
+  // ✅ Play Completion Sound - Fast Response
+  const playCompletionSound = () => {
+    if (!soundEnabled) return;
+    if (!completeAudioRef.current) return;
+    try {
+      const audio = completeAudioRef.current;
+      audio.currentTime = 0;
+      audio.volume = volume / 100;
+      audio.play().catch(() => {});
+    } catch (error) {
+      // Silent fail
+    }
+  };
+
+  // ✅ Toggle Sound - Instant Response
+  const toggleSound = () => {
+    const newState = !soundEnabled;
+    setSoundEnabled(newState);
+    
+    // ✅ If turning off, immediately stop all sounds
+    if (!newState) {
+      try {
+        if (tickAudioRef.current) {
+          tickAudioRef.current.pause();
+          tickAudioRef.current.currentTime = 0;
+        }
+        if (completeAudioRef.current) {
+          completeAudioRef.current.pause();
+          completeAudioRef.current.currentTime = 0;
+        }
+      } catch (error) {
+        // Silent fail
+      }
+    }
+  };
+
+  // ✅ Volume Change - Instant
+  const handleVolumeChange = (e) => {
+    setVolume(parseInt(e.target.value));
+    // ✅ Test sound on volume change
+    if (soundEnabled) {
+      playTickSound();
+    }
+  };
+
+  // ✅ Get Volume Icon - Instant Update
+  const getVolumeIcon = () => {
+    if (!soundEnabled || volume === 0) return '🔇';
+    if (volume < 30) return '🔈';
+    if (volume < 70) return '🔉';
+    return '🔊';
+  };
 
   // ✅ Format Time - Safe
   const formatTime = (seconds) => {
@@ -54,9 +152,9 @@ function FullScreenTimer({ timer, onClose }) {
     if (!timerIdRef.current) return;
     
     isCompletedRef.current = true;
-
     setIsComplete(true);
     setShowConfetti(true);
+    playCompletionSound();
     
     try {
       completeTimer(timerIdRef.current);
@@ -64,7 +162,6 @@ function FullScreenTimer({ timer, onClose }) {
       console.warn('Timer complete error:', error);
     }
     
-    // ✅ Clear existing timers
     if (confettiTimerRef.current) {
       clearTimeout(confettiTimerRef.current);
       confettiTimerRef.current = null;
@@ -74,7 +171,6 @@ function FullScreenTimer({ timer, onClose }) {
       closeTimerRef.current = null;
     }
     
-    // ✅ Show confetti for 3 seconds
     confettiTimerRef.current = setTimeout(() => {
       if (isMountedRef.current) {
         setShowConfetti(false);
@@ -82,7 +178,6 @@ function FullScreenTimer({ timer, onClose }) {
       confettiTimerRef.current = null;
     }, 3000);
 
-    // ✅ Auto close after 4 seconds
     closeTimerRef.current = setTimeout(() => {
       if (isMountedRef.current) {
         handleClose();
@@ -93,7 +188,6 @@ function FullScreenTimer({ timer, onClose }) {
 
   // ✅ Timer Logic
   useEffect(() => {
-    // ✅ Cleanup function
     const cleanup = () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -106,7 +200,6 @@ function FullScreenTimer({ timer, onClose }) {
       return;
     }
 
-    // ✅ Handle page visibility change
     const handleVisibilityChange = () => {
       if (!isMountedRef.current) return;
       
@@ -149,6 +242,11 @@ function FullScreenTimer({ timer, onClose }) {
         const newRemaining = calculateRemaining();
         setRemaining(newRemaining);
         
+        // ✅ Fast tick sound - every 5 seconds
+        if (!isPaused && !isComplete && newRemaining > 3 && newRemaining % 5 === 0) {
+          playTickSound();
+        }
+        
         if (newRemaining <= 0) {
           cleanup();
           handleTimerComplete();
@@ -169,7 +267,7 @@ function FullScreenTimer({ timer, onClose }) {
       cleanup();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [isPaused, isComplete, timer?.id, updateTimer]);
+  }, [isPaused, isComplete, timer?.id, updateTimer, volume, soundEnabled]);
 
   // ✅ Auto Full Screen on mount
   useEffect(() => {
@@ -187,7 +285,6 @@ function FullScreenTimer({ timer, onClose }) {
       }
     };
 
-    // ✅ Small delay to ensure DOM is ready
     const timer = setTimeout(enterFullScreen, 100);
 
     return () => {
@@ -198,11 +295,8 @@ function FullScreenTimer({ timer, onClose }) {
         if (document.fullscreenElement) {
           document.exitFullscreen();
         }
-      } catch (error) {
-        // Ignore fullscreen exit error
-      }
+      } catch (error) {}
       
-      // Cleanup all timers
       if (confettiTimerRef.current) {
         clearTimeout(confettiTimerRef.current);
         confettiTimerRef.current = null;
@@ -230,6 +324,11 @@ function FullScreenTimer({ timer, onClose }) {
       if (e.key === ' ' || e.key === 'Space') {
         e.preventDefault();
         togglePause();
+      }
+      // ✅ S for Sound toggle
+      if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        toggleSound();
       }
     };
 
@@ -315,11 +414,8 @@ function FullScreenTimer({ timer, onClose }) {
       if (document.fullscreenElement) {
         document.exitFullscreen();
       }
-    } catch (error) {
-      // Ignore
-    }
+    } catch (error) {}
     
-    // Cleanup timers
     if (confettiTimerRef.current) {
       clearTimeout(confettiTimerRef.current);
       confettiTimerRef.current = null;
@@ -345,7 +441,6 @@ function FullScreenTimer({ timer, onClose }) {
   const progress = ((durationRef.current || 1) - safeRemaining) / (durationRef.current || 1) * 100;
   const isRunning = !isPaused && !isComplete && safeRemaining > 0;
 
-  // ✅ If no timer, show nothing
   if (!timer || !timer.id) {
     return null;
   }
@@ -398,9 +493,72 @@ function FullScreenTimer({ timer, onClose }) {
             {timer?.type || 'custom'}
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          
+          {/* ✅ Sound ON/OFF Button - Fast Response */}
+          <div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
+            <button
+              onClick={toggleSound}
+              className={`px-2.5 py-1.5 rounded-lg transition-all duration-150 text-sm font-medium ${
+                soundEnabled 
+                  ? 'bg-purple-500/40 text-purple-300 hover:bg-purple-500/50' 
+                  : 'bg-white/5 text-gray-400 hover:bg-white/10'
+              }`}
+              aria-label="Toggle sound"
+              title={soundEnabled ? 'Sound ON (Press S)' : 'Sound OFF (Press S)'}
+            >
+              {soundEnabled ? '🔊 ON' : '🔇 OFF'}
+            </button>
+            
+            {soundEnabled && (
+              <button
+                onClick={() => setShowVolume(!showVolume)}
+                className="p-1.5 rounded-lg transition-all duration-150 text-gray-400 hover:text-white"
+                aria-label="Volume"
+              >
+                {getVolumeIcon()}
+              </button>
+            )}
+          </div>
+          
+          {/* ✅ Volume Slider Popup - Fast Response */}
+          {showVolume && soundEnabled && (
+            <div className="absolute right-0 top-full mt-2 bg-[#1a0a2e] border border-white/10 rounded-xl p-4 z-20 min-w-[180px] shadow-2xl shadow-purple-500/10 animate-fade-in">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-500">🔈</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="w-full h-1.5 rounded-lg appearance-none cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, #8b5cf6 ${volume}%, rgba(255,255,255,0.15) ${volume}%)`
+                  }}
+                />
+                <span className="text-xs text-gray-500">🔊</span>
+              </div>
+              <div className="flex justify-between mt-2 text-[10px]">
+                <button
+                  onClick={() => { setVolume(0); }}
+                  className="text-gray-500 hover:text-white transition-colors px-2 py-0.5 rounded hover:bg-white/5"
+                >
+                  Mute
+                </button>
+                <span className="text-purple-400 font-medium">{volume}%</span>
+                <button
+                  onClick={() => { setVolume(100); }}
+                  className="text-gray-500 hover:text-white transition-colors px-2 py-0.5 rounded hover:bg-white/5"
+                >
+                  Max
+                </button>
+              </div>
+            </div>
+          )}
+
           <span className="text-white/50 text-xs hidden md:inline">
-            ␣ Pause • Esc Exit
+            S: Sound • Space: Pause
           </span>
           <button
             onClick={toggleFullScreen}
@@ -425,26 +583,26 @@ function FullScreenTimer({ timer, onClose }) {
           </p>
         </div>
 
-        {/* ✅ Large Timer */}
-        <div className="text-center">
+        {/* Large Timer - Mobile Responsive */}
+        <div className="text-center w-full px-2">
           <div className="font-mono font-bold text-white tracking-wider flex flex-wrap justify-center items-center">
-            <span className={`text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] inline-block min-w-[1ch] ${
+            <span className={`text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] inline-block min-w-[1ch] ${
               isComplete ? 'text-green-400' : ''
             }`}>
               {isComplete ? '00' : time.hours}
             </span>
-            <span className={`text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] mx-1 md:mx-2 ${
+            <span className={`text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] mx-0.5 sm:mx-1 md:mx-2 ${
               isComplete ? 'text-green-400/50' : 'text-purple-500/50'
             }`}>:</span>
-            <span className={`text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] inline-block min-w-[1ch] ${
+            <span className={`text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] inline-block min-w-[1ch] ${
               isComplete ? 'text-green-400' : ''
             }`}>
               {isComplete ? '00' : time.minutes}
             </span>
-            <span className={`text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] mx-1 md:mx-2 ${
+            <span className={`text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] mx-0.5 sm:mx-1 md:mx-2 ${
               isComplete ? 'text-green-400/50' : 'text-purple-500/50'
             }`}>:</span>
-            <span className={`text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] inline-block min-w-[1ch] ${
+            <span className={`text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] inline-block min-w-[1ch] ${
               isComplete ? 'text-green-400' : (isRunning ? 'animate-pulse text-purple-400' : '')
             }`}>
               {isComplete ? '00' : time.seconds}
@@ -452,8 +610,8 @@ function FullScreenTimer({ timer, onClose }) {
           </div>
         </div>
 
-        {/* ✅ Progress Bar */}
-        <div className="w-full max-w-2xl mt-6 md:mt-8">
+        {/* Progress Bar */}
+        <div className="w-full max-w-2xl mt-6 md:mt-8 px-2">
           <div className="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-1000 ${
@@ -465,7 +623,7 @@ function FullScreenTimer({ timer, onClose }) {
               style={{ width: `${isComplete ? 100 : Math.min(100, Math.max(0, progress))}%` }}
             ></div>
           </div>
-          <div className="flex justify-between text-gray-500 text-xs md:text-sm mt-2">
+          <div className="flex justify-between text-gray-500 text-[10px] xs:text-xs md:text-sm mt-2">
             <span>{Math.floor((durationRef.current || 0) / 60)}m</span>
             <span className={isComplete ? 'text-green-400' : 'text-purple-400'}>
               {isComplete ? '100% Complete ✅' : `${Math.round(Math.min(100, Math.max(0, progress)))}% Complete`}
@@ -474,24 +632,24 @@ function FullScreenTimer({ timer, onClose }) {
           </div>
         </div>
 
-        {/* ✅ Status */}
+        {/* Status */}
         <div className="mt-4 md:mt-6 text-center">
-          <span className={`text-sm md:text-base font-medium ${
+          <span className={`text-xs sm:text-sm md:text-base font-medium ${
             isComplete ? 'text-green-400' : isPaused ? 'text-yellow-400' : 'text-purple-400'
           }`}>
             {isComplete ? '✅ Timer Complete!' : isPaused ? '⏸️ Paused' : '▶️ Running'}
           </span>
           {isComplete && (
-            <p className="text-gray-400 text-sm mt-1">Closing in 4 seconds... ⏳</p>
+            <p className="text-gray-400 text-[10px] sm:text-sm mt-1">Closing in 4 seconds... ⏳</p>
           )}
         </div>
 
-        {/* ✅ Controls */}
+        {/* Controls - Mobile Responsive */}
         {!isComplete ? (
-          <div className="flex flex-wrap gap-3 md:gap-4 mt-4 md:mt-6 justify-center">
+          <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 mt-4 md:mt-6 justify-center px-2">
             <button
               onClick={togglePause}
-              className={`px-6 md:px-8 py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg transition-all duration-300 ${
+              className={`px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 rounded-2xl font-bold text-sm sm:text-base md:text-lg transition-all duration-300 ${
                 isPaused
                   ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white hover:shadow-2xl hover:shadow-emerald-500/30'
                   : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:shadow-2xl hover:shadow-amber-500/30'
@@ -506,35 +664,37 @@ function FullScreenTimer({ timer, onClose }) {
                   handleTimerComplete();
                 }
               }}
-              className="px-6 md:px-8 py-3 md:py-4 bg-white/10 border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300"
+              className="px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 bg-white/10 border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 text-sm sm:text-base md:text-lg"
             >
               ⏹ Stop
             </button>
             <button
               onClick={handleReset}
-              className="px-6 md:px-8 py-3 md:py-4 bg-white/5 border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300"
+              className="px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 bg-white/5 border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300 text-sm sm:text-base md:text-lg"
             >
               🔄 Reset
             </button>
           </div>
         ) : (
-          <div className="mt-6 md:mt-8 text-center">
-            <div className="text-6xl md:text-8xl mb-4 animate-bounce">🎉</div>
-            <h3 className="text-2xl md:text-4xl font-bold text-white mb-2">Timer Complete!</h3>
-            <p className="text-gray-400 text-base md:text-lg">Great job! 🎯</p>
-            <p className="text-purple-300 text-sm mt-2">⏳ Returning to dashboard...</p>
+          <div className="mt-6 md:mt-8 text-center px-4">
+            <div className="text-5xl sm:text-6xl md:text-8xl mb-4 animate-bounce">🎉</div>
+            <h3 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-2">Timer Complete!</h3>
+            <p className="text-gray-400 text-sm sm:text-base md:text-lg">Great job! 🎯</p>
+            <p className="text-purple-300 text-xs sm:text-sm mt-2">⏳ Returning to dashboard...</p>
           </div>
         )}
       </div>
 
       {/* Bottom Info */}
-      <div className="absolute bottom-4 left-0 right-0 text-center text-gray-600 text-xs">
+      <div className="absolute bottom-4 left-0 right-0 text-center text-gray-600 text-[8px] xs:text-[10px] sm:text-xs">
         <span className="hidden sm:inline">
           Press <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10">Esc</kbd> to exit • 
-          <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10 ml-1">Space</kbd> to pause/resume
+          <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10 ml-1">Space</kbd> to pause • 
+          <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10 ml-1">S</kbd> for Sound
         </span>
         <span className="sm:hidden">
-          <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10">Esc</kbd> to exit
+          <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10">Esc</kbd> Exit • 
+          <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10 ml-1">S</kbd> Sound
         </span>
       </div>
     </div>

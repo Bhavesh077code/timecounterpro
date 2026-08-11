@@ -1,4 +1,4 @@
-// src/components/Timer/CountdownCreator.jsx
+/*/ src/components/Timer/CountdownCreator.jsx
 import React, { useState, useContext, useEffect } from 'react';
 import { TimerContext } from '../../context/TimerContext';
 import { ShareButtons } from '../../Viral/ShareButtons';
@@ -169,6 +169,296 @@ function CountdownCreator() {
           
           <div className="mt-3 text-xs text-gray-500">
             💡 Click <span className="text-purple-400">"Test Link"</span> to preview the countdown
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default CountdownCreator;
+
+*/
+
+
+
+// src/components/Timer/CountdownCreator.jsx
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import { TimerContext } from '../../context/TimerContext';
+import { ShareButtons } from '../../Viral/ShareButtons';
+import { URLGenerator } from '../../Viral/URLGenerator';
+import toast from 'react-hot-toast';
+
+const THEMES = [
+  { id: 'neon', label: 'Neon Dark', bg: 'from-purple-900 to-pink-900', emoji: '🌙' },
+  { id: 'sunset', label: 'Sunset', bg: 'from-orange-600 to-pink-600', emoji: '🌅' },
+  { id: 'cyber', label: 'Cyberpunk', bg: 'from-cyan-900 to-purple-900', emoji: '🤖' },
+  { id: 'ocean', label: 'Ocean Blue', bg: 'from-blue-900 to-teal-900', emoji: '🌊' },
+  { id: 'forest', label: 'Forest Green', bg: 'from-green-900 to-emerald-900', emoji: '🌿' },
+];
+
+function CountdownCreator() {
+  const { addTimer, generateShareURL } = useContext(TimerContext);
+  const [eventName, setEventName] = useState('');
+  const [targetDate, setTargetDate] = useState('');
+  const [targetTime, setTargetTime] = useState('23:59');
+  const [selectedTheme, setSelectedTheme] = useState('neon');
+  const [generatedURL, setGeneratedURL] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const inputRef = useRef(null);
+
+  // ✅ Get base URL
+  const getBaseURL = () => {
+    if (typeof window === 'undefined') return 'https://timecounterpro.com';
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return window.location.origin;
+    }
+    return 'https://timecounterpro.com';
+  };
+
+  // ✅ Generate URL on change
+  useEffect(() => {
+    if (eventName && targetDate) {
+      const dateTime = `${targetDate}T${targetTime}`;
+      const base = getBaseURL();
+      const query = new URLSearchParams({
+        event: eventName,
+        date: dateTime,
+        theme: selectedTheme,
+      }).toString();
+      const url = `${base}?${query}`;
+      setGeneratedURL(url);
+    } else {
+      setGeneratedURL('');
+    }
+  }, [eventName, targetDate, targetTime, selectedTheme]);
+
+  // ✅ Handle Submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!eventName || !targetDate) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const dateTime = `${targetDate}T${targetTime}`;
+      const targetDateTime = new Date(dateTime).getTime();
+      const currentTime = Date.now();
+      const duration = Math.max(0, targetDateTime - currentTime);
+      
+      if (duration === 0) {
+        toast.warning('Event time is in the past!');
+        setIsLoading(false);
+        return;
+      }
+
+      addTimer(
+        eventName,
+        duration,
+        'countdown',
+        dateTime,
+        selectedTheme
+      );
+
+      toast.success('🎉 Countdown created successfully!');
+      
+      const base = getBaseURL();
+      const query = new URLSearchParams({
+        event: eventName,
+        date: dateTime,
+        theme: selectedTheme,
+      }).toString();
+      const url = `${base}?${query}`;
+      setGeneratedURL(url);
+      
+      // ✅ Scroll to URL section
+      setTimeout(() => {
+        document.getElementById('url-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+      
+    } catch (error) {
+      toast.error('Failed to create countdown');
+      console.error('Countdown creation error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ✅ Handle Test Link
+  const handleTestLink = () => {
+    if (generatedURL) {
+      window.open(generatedURL, '_blank');
+    }
+  };
+
+  // ✅ Handle Copy
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedURL);
+      setIsCopied(true);
+      toast.success('Link copied! 📋');
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (error) {
+      toast.error('Failed to copy');
+    }
+  };
+
+  return (
+    <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <span className="text-3xl">📅</span>
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-white">Create Custom Countdown</h2>
+          <p className="text-xs sm:text-sm text-gray-400">Share your countdown with friends and family</p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+        {/* Event Name */}
+        <div>
+          <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">
+            Event Name <span className="text-purple-400">*</span>
+          </label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg">🎯</span>
+            <input
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              placeholder="e.g., New Year 2025 🎆"
+              className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Date & Time */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div>
+            <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">
+              Target Date <span className="text-purple-400">*</span>
+            </label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg">📆</span>
+              <input
+                type="date"
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">
+              Target Time
+            </label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg">⏰</span>
+              <input
+                type="time"
+                value={targetTime}
+                onChange={(e) => setTargetTime(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Theme Selection */}
+        <div>
+          <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">
+            Theme Color
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            {THEMES.map((theme) => (
+              <button
+                key={theme.id}
+                type="button"
+                onClick={() => setSelectedTheme(theme.id)}
+                className={`p-2 sm:p-3 rounded-lg border-2 transition-all duration-300 ${
+                  selectedTheme === theme.id
+                    ? `bg-gradient-to-br ${theme.bg} border-purple-500 shadow-lg shadow-purple-500/25 scale-105`
+                    : 'bg-white/5 border-white/10 hover:border-white/30 hover:bg-white/10'
+                }`}
+              >
+                <div className="text-xl sm:text-2xl">{theme.emoji}</div>
+                <div className="text-[10px] sm:text-xs text-white mt-0.5">{theme.label}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`w-full py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl transition-all duration-300 ${
+            isLoading 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:shadow-2xl hover:shadow-purple-500/25 transform hover:scale-[1.02] active:scale-95'
+          }`}
+        >
+          {isLoading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Creating...
+            </span>
+          ) : (
+            '🚀 Create Countdown'
+          )}
+        </button>
+      </form>
+
+      {/* ✅ URL Section */}
+      {generatedURL && (
+        <div id="url-section" className="mt-6 pt-6 border-t border-white/5 animate-fade-in">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🔗</span>
+            <h3 className="text-sm sm:text-base font-semibold text-white">Shareable Link</h3>
+            <span className="text-xs text-green-400 bg-green-500/20 px-2 py-0.5 rounded-full">Ready</span>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+              ref={inputRef}
+              type="text"
+              value={generatedURL}
+              readOnly
+              className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={handleCopy}
+                className={`px-4 py-2.5 rounded-lg transition-all duration-300 text-sm font-medium flex items-center gap-1.5 ${
+                  isCopied 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-purple-600 hover:bg-purple-700 text-white'
+                }`}
+              >
+                {isCopied ? '✅ Copied!' : '📋 Copy'}
+              </button>
+              <button
+                onClick={handleTestLink}
+                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 text-sm font-medium flex items-center gap-1.5"
+              >
+                🔗 Test
+              </button>
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <ShareButtons url={generatedURL} title={eventName} />
+          </div>
+          
+          <div className="mt-3 text-xs text-gray-500 flex items-center gap-1">
+            <span>💡</span>
+            <span>Click <span className="text-purple-400 font-medium">"Test"</span> to preview the countdown</span>
           </div>
         </div>
       )}
