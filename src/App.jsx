@@ -1,4 +1,4 @@
-// src/App.jsx
+// src/App.jsx/ 
 import React, { useEffect, useContext } from "react";
 import { createBrowserRouter, RouterProvider, useLocation } from "react-router-dom";
 import { TimerProvider, TimerContext } from "./context/TimerContext";
@@ -83,3 +83,4 @@ function App() {
 }
 
 export default App;
+
