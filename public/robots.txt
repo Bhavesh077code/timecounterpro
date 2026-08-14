@@ -1,4 +1,4 @@
-# robots.txt for TimeCounterPro
+/* # robots.txt for TimeCounterPro
 User-agent: *
 Allow: /
 Disallow: /admin/
@@ -12,3 +12,14 @@ Crawl-delay: 1
 
 # Host
 Host: https://timecounterpro.com
+*/
+
+
+
+# TimeCounterPro robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+Sitemap: https://timecounterpro.com/sitemap.xml
