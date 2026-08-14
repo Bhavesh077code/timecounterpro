@@ -3,7 +3,7 @@ import React from 'react';
 const MODES = [
   { id: 'countdown', label: '📅 Countdown' },
   { id: 'stopwatch', label: '⏱️ Stopwatch' },
-  { id: 'pomodoro', label: '🍅 Pomodoro' },
+  { id: 'pomodoro', label: '🍅Pomodoro'  },
 ];
 
 function ModeSelector({ mode, setMode }) {

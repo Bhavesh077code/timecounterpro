@@ -1,4 +1,5 @@
 // src/components/FullScreenTimer.jsx
+/*
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { TimerContext } from '../context/TimerContext';
 
@@ -448,14 +449,14 @@ function FullScreenTimer({ timer, onClose }) {
   return (
     <div className="fixed inset-0 z-[9999] bg-gradient-to-br from-[#0a0a0a] via-[#1a0a2e] to-[#0a0a0a] flex flex-col items-center justify-center">
       
-      {/* Background Glow */}
+     
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-2000"></div>
       </div>
 
-      {/* ✅ Confetti Effect */}
+      
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {[...Array(50)].map((_, i) => (
@@ -477,7 +478,7 @@ function FullScreenTimer({ timer, onClose }) {
         </div>
       )}
 
-      {/* Top Controls Bar */}
+     
       <div className="absolute top-0 left-0 right-0 z-10 flex justify-between items-center p-4 bg-black/30 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <button
@@ -495,7 +496,7 @@ function FullScreenTimer({ timer, onClose }) {
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           
-          {/* ✅ Sound ON/OFF Button - Fast Response */}
+          
           <div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
             <button
               onClick={toggleSound}
@@ -521,7 +522,7 @@ function FullScreenTimer({ timer, onClose }) {
             )}
           </div>
           
-          {/* ✅ Volume Slider Popup - Fast Response */}
+         
           {showVolume && soundEnabled && (
             <div className="absolute right-0 top-full mt-2 bg-[#1a0a2e] border border-white/10 rounded-xl p-4 z-20 min-w-[180px] shadow-2xl shadow-purple-500/10 animate-fade-in">
               <div className="flex items-center gap-3">
@@ -570,10 +571,10 @@ function FullScreenTimer({ timer, onClose }) {
         </div>
       </div>
 
-      {/* Timer Display - Center */}
+      
       <div className="relative z-10 flex flex-col items-center justify-center flex-1 w-full px-4">
         
-        {/* Event Name */}
+        
         <div className="text-center mb-4 md:mb-8">
           <h2 className="text-2xl md:text-4xl font-bold text-white/80">
             {isComplete ? '🎉 Timer Complete!' : timer?.name || 'Timer'}
@@ -583,7 +584,7 @@ function FullScreenTimer({ timer, onClose }) {
           </p>
         </div>
 
-        {/* Large Timer - Mobile Responsive */}
+        
         <div className="text-center w-full px-2">
           <div className="font-mono font-bold text-white tracking-wider flex flex-wrap justify-center items-center">
             <span className={`text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] inline-block min-w-[1ch] ${
@@ -610,7 +611,7 @@ function FullScreenTimer({ timer, onClose }) {
           </div>
         </div>
 
-        {/* Progress Bar */}
+        
         <div className="w-full max-w-2xl mt-6 md:mt-8 px-2">
           <div className="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
             <div
@@ -632,7 +633,7 @@ function FullScreenTimer({ timer, onClose }) {
           </div>
         </div>
 
-        {/* Status */}
+        
         <div className="mt-4 md:mt-6 text-center">
           <span className={`text-xs sm:text-sm md:text-base font-medium ${
             isComplete ? 'text-green-400' : isPaused ? 'text-yellow-400' : 'text-purple-400'
@@ -644,7 +645,7 @@ function FullScreenTimer({ timer, onClose }) {
           )}
         </div>
 
-        {/* Controls - Mobile Responsive */}
+        
         {!isComplete ? (
           <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 mt-4 md:mt-6 justify-center px-2">
             <button
@@ -685,7 +686,7 @@ function FullScreenTimer({ timer, onClose }) {
         )}
       </div>
 
-      {/* Bottom Info */}
+     
       <div className="absolute bottom-4 left-0 right-0 text-center text-gray-600 text-[8px] xs:text-[10px] sm:text-xs">
         <span className="hidden sm:inline">
           Press <kbd className="px-2 py-0.5 bg-white/5 rounded text-white/50 border border-white/10">Esc</kbd> to exit • 
@@ -702,3 +703,203 @@ function FullScreenTimer({ timer, onClose }) {
 }
 
 export default FullScreenTimer;
+
+*/
+
+
+
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { TimerContext } from '../context/TimerContext';
+
+const formatTime = (seconds) => {
+  const safe = Math.max(0, Math.floor(Number(seconds) || 0));
+  return {
+    hours: String(Math.floor(safe / 3600)).padStart(2, '0'),
+    minutes: String(Math.floor((safe % 3600) / 60)).padStart(2, '0'),
+    seconds: String(safe % 60).padStart(2, '0'),
+  };
+};
+
+function FullScreenTimer({ timer, onClose }) {
+  const { activeTimers, addTimer, resetTimer, updateTimer } = useContext(TimerContext);
+  const liveTimer = activeTimers.find((item) => item.id === timer?.id);
+  const currentTimer = liveTimer || timer;
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [volume, setVolume] = useState(50);
+  const [isFullScreen, setIsFullScreen] = useState(Boolean(document.fullscreenElement));
+  const [showComplete, setShowComplete] = useState(false);
+
+  const remaining = Math.max(0, Number(currentTimer?.remaining) || 0);
+  const isPaused = Boolean(currentTimer?.isPaused || currentTimer?.status === 'paused');
+  const isComplete = !liveTimer || currentTimer?.status === 'completed' || remaining <= 0;
+  const time = useMemo(() => formatTime(remaining), [remaining]);
+  const progress = currentTimer?.duration ? ((currentTimer.duration - remaining) / currentTimer.duration) * 100 : 0;
+
+  useEffect(() => {
+    if (isComplete) setShowComplete(true);
+  }, [isComplete]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => setIsFullScreen(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        handleClose();
+      } else if (event.code === 'Space') {
+        event.preventDefault();
+        if (!isComplete) togglePause();
+      } else if (event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        setSoundEnabled((value) => !value);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isComplete, isPaused, remaining]);
+
+  const playCompletionSound = () => {
+    if (!soundEnabled) return;
+    try {
+      const context = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      gain.gain.value = Math.max(0.01, volume / 1000);
+      oscillator.frequency.value = 880;
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.25);
+    } catch {
+      // Audio is optional and can be blocked by the browser.
+    }
+  };
+
+  useEffect(() => {
+    if (isComplete && showComplete) playCompletionSound();
+    // Play only when the timer transitions into completion.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showComplete]);
+
+  const togglePause = () => {
+    if (!currentTimer?.id || isComplete) return;
+    updateTimer(currentTimer.id, remaining, false, !isPaused);
+  };
+
+  const handleReset = () => {
+    if (!currentTimer?.id) return;
+    setShowComplete(false);
+
+    if (liveTimer) {
+      resetTimer(currentTimer.id);
+      return;
+    }
+
+    // Completed timers are removed from activeTimers. Re-create the same timer when
+    // the user presses Reset from the completion screen.
+    addTimer({
+      name: currentTimer.name,
+      duration: currentTimer.duration,
+      type: currentTimer.type,
+      targetDate: currentTimer.targetDate,
+      theme: currentTimer.theme,
+    });
+  };
+
+  const toggleFullScreen = async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await document.documentElement.requestFullscreen?.();
+      }
+    } catch (error) {
+      console.warn('Fullscreen request was blocked by the browser:', error);
+    }
+  };
+
+  const handleClose = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+    } catch {
+      // Ignore fullscreen cleanup errors.
+    }
+    onClose?.();
+  };
+
+  if (!currentTimer?.id) return null;
+
+  return (
+    <div className="fixed inset-0 z-[9999] bg-gradient-to-br from-[#070707] via-[#180a29] to-[#070707] text-white flex flex-col">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl animate-pulse" />
+      </div>
+
+      <header className="relative z-10 flex items-center justify-between gap-3 p-4 sm:p-6 bg-black/30 backdrop-blur-md border-b border-white/10">
+        <div className="min-w-0">
+          <h1 className="font-bold text-base sm:text-xl truncate">{currentTimer.name || 'Timer'}</h1>
+          <p className="text-xs sm:text-sm text-white/50">{currentTimer.type || 'custom'} · {isPaused ? 'Paused' : isComplete ? 'Completed' : 'Running'}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setSoundEnabled((value) => !value)} className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-sm" aria-label="Toggle sound">
+            {soundEnabled ? '🔊' : '🔇'}
+          </button>
+          <button onClick={toggleFullScreen} className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-sm" aria-label="Toggle fullscreen">
+            {isFullScreen ? '⛶ Exit' : '⛶ Fullscreen'}
+          </button>
+          <button onClick={handleClose} className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm">✕ Close</button>
+        </div>
+      </header>
+
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-8">
+        {showComplete ? (
+          <div className="text-center mb-8">
+            <div className="text-7xl sm:text-9xl mb-4">🎉</div>
+            <h2 className="text-3xl sm:text-5xl font-bold">Timer Complete!</h2>
+            <p className="text-purple-300 mt-2">{currentTimer.name}</p>
+          </div>
+        ) : (
+          <>
+            <div className="text-[clamp(4rem,16vw,11rem)] leading-none font-mono font-bold tracking-tight text-center tabular-nums">
+              {time.hours}<span className="text-purple-400">:</span>{time.minutes}<span className="text-purple-400">:</span>{time.seconds}
+            </div>
+            <div className="w-full max-w-3xl mt-8">
+              <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500 transition-[width] duration-300" style={{ width: `${Math.min(100, Math.max(0, progress))}%` }} />
+              </div>
+              <div className="flex justify-between mt-2 text-xs text-white/40">
+                <span>{Math.round(progress)}% complete</span>
+                <span>Space: {isPaused ? 'Resume' : 'Pause'}</span>
+              </div>
+            </div>
+          </>
+        )}
+
+        <div className="flex flex-wrap justify-center gap-3 mt-8">
+          {!showComplete && (
+            <button onClick={togglePause} className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 font-bold">
+              {isPaused ? '▶ Resume' : '⏸ Pause'}
+            </button>
+          )}
+          <button onClick={handleReset} className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/15 font-semibold">🔄 Reset</button>
+          <button onClick={handleClose} className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/15 font-semibold">✕ Close</button>
+        </div>
+
+        <div className="mt-8 flex items-center gap-3 text-xs text-white/40">
+          <label htmlFor="fullscreen-volume">Volume</label>
+          <input id="fullscreen-volume" type="range" min="0" max="100" value={volume} onChange={(event) => setVolume(Number(event.target.value))} disabled={!soundEnabled} />
+          <span>{volume}%</span>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default FullScreenTimer;
+

@@ -182,7 +182,9 @@ export default CountdownCreator;
 
 
 
-// src/components/Timer/CountdownCreator.jsx
+// src/components/Timer/CountdownCreator.jsx working
+/*
+
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { TimerContext } from '../../context/TimerContext';
 import { ShareButtons } from '../../Viral/ShareButtons';
@@ -309,7 +311,7 @@ function CountdownCreator() {
 
   return (
     <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 animate-fade-in">
-      {/* Header */}
+     
       <div className="flex items-center gap-3 mb-6">
         <span className="text-3xl">📅</span>
         <div>
@@ -319,7 +321,7 @@ function CountdownCreator() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-        {/* Event Name */}
+        
         <div>
           <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">
             Event Name <span className="text-purple-400">*</span>
@@ -337,7 +339,7 @@ function CountdownCreator() {
           </div>
         </div>
 
-        {/* Date & Time */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
             <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">
@@ -370,7 +372,7 @@ function CountdownCreator() {
           </div>
         </div>
 
-        {/* Theme Selection */}
+        
         <div>
           <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">
             Theme Color
@@ -394,7 +396,7 @@ function CountdownCreator() {
           </div>
         </div>
 
-        {/* Submit Button */}
+   
         <button
           type="submit"
           disabled={isLoading}
@@ -415,7 +417,7 @@ function CountdownCreator() {
         </button>
       </form>
 
-      {/* ✅ URL Section */}
+     
       {generatedURL && (
         <div id="url-section" className="mt-6 pt-6 border-t border-white/5 animate-fade-in">
           <div className="flex items-center gap-2 mb-3">
@@ -460,6 +462,195 @@ function CountdownCreator() {
             <span>💡</span>
             <span>Click <span className="text-purple-400 font-medium">"Test"</span> to preview the countdown</span>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default CountdownCreator;
+
+*/
+
+
+
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { TimerContext } from '../../context/TimerContext';
+import { ShareButtons } from '../../Viral/ShareButtons';
+import { URLGenerator } from '../../Viral/URLGenerator';
+import toast from 'react-hot-toast';
+
+const THEMES = [
+  { id: 'neon', label: 'Neon Dark', bg: 'from-purple-900 to-pink-900', emoji: '🌙' },
+  { id: 'sunset', label: 'Sunset', bg: 'from-orange-600 to-pink-600', emoji: '🌅' },
+  { id: 'cyber', label: 'Cyberpunk', bg: 'from-cyan-900 to-purple-900', emoji: '🤖' },
+  { id: 'ocean', label: 'Ocean Blue', bg: 'from-blue-900 to-teal-900', emoji: '🌊' },
+  { id: 'forest', label: 'Forest Green', bg: 'from-green-900 to-emerald-900', emoji: '🌿' },
+];
+
+const getBaseURL = () => {
+  if (typeof window === 'undefined') return 'https://timecounterpro.com';
+  return window.location.origin;
+};
+
+const toLocalDateTime = (date, time) => `${date}T${time}:00`;
+
+function CountdownCreator() {
+  const { addTimer } = useContext(TimerContext);
+  const [eventName, setEventName] = useState('');
+  const [targetDate, setTargetDate] = useState('');
+  const [targetTime, setTargetTime] = useState('23:59');
+  const [selectedTheme, setSelectedTheme] = useState('neon');
+  const [generatedURL, setGeneratedURL] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (!eventName.trim() || !targetDate) {
+      setGeneratedURL('');
+      return;
+    }
+
+    const target = new Date(toLocalDateTime(targetDate, targetTime));
+    if (Number.isNaN(target.getTime())) {
+      setGeneratedURL('');
+      return;
+    }
+
+    // Store an ISO UTC timestamp in the share URL so viewers in different timezones see the same instant.
+    const query = new URLSearchParams({
+      event: eventName.trim(),
+      date: target.toISOString(),
+      theme: selectedTheme,
+    });
+    setGeneratedURL(`${getBaseURL()}?${query.toString()}`);
+  }, [eventName, targetDate, targetTime, selectedTheme]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!eventName.trim() || !targetDate) {
+      toast.error('Please enter an event name and target date.');
+      return;
+    }
+
+    const target = new Date(toLocalDateTime(targetDate, targetTime));
+    const targetAt = target.getTime();
+    const duration = Math.ceil((targetAt - Date.now()) / 1000);
+
+    if (!Number.isFinite(targetAt) || duration <= 0) {
+      toast.warning('Please choose a future date and time.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      addTimer({
+        name: eventName.trim(),
+        duration,
+        type: 'countdown',
+        targetDate: target.toISOString(),
+        theme: selectedTheme,
+      });
+
+      const query = new URLSearchParams({
+        event: eventName.trim(),
+        date: target.toISOString(),
+        theme: selectedTheme,
+      });
+      const url = `${getBaseURL()}?${query.toString()}`;
+      setGeneratedURL(url);
+      toast.success('🎉 Countdown created successfully!');
+
+      setTimeout(() => document.getElementById('url-section')?.scrollIntoView({ behavior: 'smooth' }), 150);
+    } catch (error) {
+      console.error('Countdown creation error:', error);
+      toast.error('Failed to create countdown. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!generatedURL) return;
+    try {
+      await navigator.clipboard.writeText(generatedURL);
+      setIsCopied(true);
+      toast.success('Link copied! 📋');
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch {
+      if (inputRef.current) {
+        inputRef.current.select();
+        document.execCommand('copy');
+        setIsCopied(true);
+        toast.success('Link copied! 📋');
+        setTimeout(() => setIsCopied(false), 2000);
+      } else {
+        toast.error('Unable to copy the link.');
+      }
+    }
+  };
+
+  return (
+    <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 animate-fade-in">
+      <div className="flex items-center gap-3 mb-6">
+        <span className="text-3xl">📅</span>
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-white">Create Custom Countdown</h2>
+          <p className="text-xs sm:text-sm text-gray-400">Create a countdown and share one exact moment with anyone.</p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+        <div>
+          <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">Event Name <span className="text-purple-400">*</span></label>
+          <input type="text" value={eventName} onChange={(e) => setEventName(e.target.value)} maxLength={80} placeholder="e.g. New Year 2027 🎆" className="w-full px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20" required />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div>
+            <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">Target Date <span className="text-purple-400">*</span></label>
+            <input type="date" value={targetDate} min={new Date().toISOString().slice(0, 10)} onChange={(e) => setTargetDate(e.target.value)} className="w-full px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500" required />
+          </div>
+          <div>
+            <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">Target Time</label>
+            <input type="time" value={targetTime} onChange={(e) => setTargetTime(e.target.value)} className="w-full px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500" required />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-gray-400 text-xs sm:text-sm font-medium mb-1.5">Theme</label>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            {THEMES.map((theme) => (
+              <button key={theme.id} type="button" onClick={() => setSelectedTheme(theme.id)} className={`p-2 sm:p-3 rounded-lg border-2 transition-all ${selectedTheme === theme.id ? `bg-gradient-to-br ${theme.bg} border-purple-500 shadow-lg shadow-purple-500/25` : 'bg-white/5 border-white/10 hover:border-white/30'}`}>
+                <div className="text-xl sm:text-2xl">{theme.emoji}</div>
+                <div className="text-[10px] sm:text-xs text-white mt-1">{theme.label}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button type="submit" disabled={isLoading} className="w-full py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-2xl hover:shadow-purple-500/25">
+          {isLoading ? 'Creating...' : '🚀 Create Countdown'}
+        </button>
+      </form>
+
+      {generatedURL && (
+        <div id="url-section" className="mt-6 pt-6 border-t border-white/5 animate-fade-in">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🔗</span>
+            <h3 className="text-sm sm:text-base font-semibold text-white">Shareable Link</h3>
+            <span className="text-xs text-green-400 bg-green-500/20 px-2 py-0.5 rounded-full">Ready</span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input ref={inputRef} type="text" value={generatedURL} readOnly className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none" />
+            <div className="flex gap-2">
+              <button type="button" onClick={handleCopy} className={`px-4 py-2.5 rounded-lg text-sm font-medium ${isCopied ? 'bg-green-600 text-white' : 'bg-purple-600 hover:bg-purple-700 text-white'}`}>{isCopied ? '✅ Copied!' : '📋 Copy'}</button>
+              <button type="button" onClick={() => window.open(generatedURL, '_blank', 'noopener,noreferrer')} className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">🔗 Test</button>
+            </div>
+          </div>
+          <div className="mt-4"><URLGenerator url={generatedURL} /></div>
+          <div className="mt-3"><ShareButtons url={generatedURL} title={eventName} /></div>
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 // src/components/Timer/Stopwatch.jsx
+/*
 import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 
@@ -68,7 +69,7 @@ function Stopwatch() {
 
   return (
     <div ref={containerRef} className="glass rounded-2xl p-4 sm:p-6 md:p-8 animate-fade-in min-h-[400px] sm:min-h-[500px]">
-      {/* Header */}
+    
       <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2">
         <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white flex items-center gap-2">
           <span className="text-xl sm:text-2xl md:text-3xl">⏱️</span>
@@ -76,7 +77,7 @@ function Stopwatch() {
           <span className="xs:hidden">Stopwatch</span>
         </h2>
         
-        {/* Full Screen Button */}
+        
         <button
           onClick={toggleFullScreen}
           className="p-1.5 sm:p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs sm:text-sm text-gray-400 hover:text-white transition-all"
@@ -85,7 +86,7 @@ function Stopwatch() {
         </button>
       </div>
 
-      {/* Timer Display - BIG on mobile */}
+      
       <div className="text-center py-4 sm:py-6 md:py-8">
         <div className="text-6xl xs:text-7xl sm:text-8xl md:text-9xl font-mono font-bold text-white tracking-wider leading-none">
           <span className="inline-block min-w-[2ch]">{timeDisplay.minutes}</span>
@@ -102,7 +103,7 @@ function Stopwatch() {
         </div>
       </div>
 
-      {/* Controls - Mobile Optimized */}
+      
       <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-3 justify-center">
         <button 
           onClick={() => setIsRunning(true)} 
@@ -130,7 +131,7 @@ function Stopwatch() {
         </button>
       </div>
 
-      {/* Lap Times - Mobile Responsive */}
+      
       {laps.length > 0 && (
         <div className="mt-4 sm:mt-6 max-h-36 sm:max-h-48 overflow-y-auto">
           <div className="flex items-center justify-between mb-2">
@@ -149,6 +150,156 @@ function Stopwatch() {
                       +{formatTime(lap.difference).formatted}
                     </span>
                   )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Stopwatch;
+
+*/
+
+
+import React, { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+
+function Stopwatch() {
+  const [elapsed, setElapsed] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [laps, setLaps] = useState([]);
+  const [showFullScreen, setShowFullScreen] = useState(false);
+  const startedAtRef = useRef(null);
+  const accumulatedRef = useRef(0);
+  const intervalRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!isRunning) return undefined;
+
+    const update = () => {
+      const startedAt = startedAtRef.current;
+      if (startedAt == null) return;
+      setElapsed(accumulatedRef.current + (Date.now() - startedAt));
+    };
+
+    update();
+    intervalRef.current = window.setInterval(update, 50);
+    return () => window.clearInterval(intervalRef.current);
+  }, [isRunning]);
+
+  const formatTime = (ms) => {
+    const safe = Math.max(0, Math.floor(ms));
+    const minutes = Math.floor(safe / 60000);
+    const seconds = Math.floor((safe % 60000) / 1000);
+    const milliseconds = Math.floor((safe % 1000) / 10);
+    return {
+      formatted: `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(2, '0')}`,
+    };
+  };
+
+  const handleStart = () => {
+    if (isRunning) return;
+    startedAtRef.current = Date.now();
+    setIsRunning(true);
+  };
+
+  const handlePause = () => {
+    if (!isRunning) return;
+    const now = Date.now();
+    accumulatedRef.current += now - startedAtRef.current;
+    startedAtRef.current = null;
+    setElapsed(accumulatedRef.current);
+    setIsRunning(false);
+  };
+
+  const handleLap = () => {
+    if (!isRunning) return;
+    const current = startedAtRef.current == null
+      ? accumulatedRef.current
+      : accumulatedRef.current + (Date.now() - startedAtRef.current);
+    setElapsed(current);
+    setLaps((prev) => [...prev, current]);
+    toast.success('Lap recorded! 🏁');
+  };
+
+  const handleReset = () => {
+    setIsRunning(false);
+    startedAtRef.current = null;
+    accumulatedRef.current = 0;
+    setElapsed(0);
+    setLaps([]);
+    toast('Reset complete');
+  };
+
+  const toggleFullScreen = async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        setShowFullScreen(false);
+      } else {
+        await containerRef.current?.requestFullscreen?.();
+        setShowFullScreen(true);
+      }
+    } catch (error) {
+      console.warn('Fullscreen request failed:', error);
+    }
+  };
+
+  const timeDisplay = formatTime(elapsed);
+  const formattedLaps = laps.map((lap, index) => ({
+    index: index + 1,
+    time: formatTime(lap),
+    difference: index > 0 ? lap - laps[index - 1] : 0,
+  }));
+
+  return (
+    <div ref={containerRef} className="glass rounded-2xl p-4 sm:p-6 md:p-8 animate-fade-in min-h-[400px] sm:min-h-[500px]">
+      <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2">
+        <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white flex items-center gap-2">
+          <span className="text-xl sm:text-2xl md:text-3xl">⏱️</span>
+          <span className="hidden xs:inline">Digital Stopwatch</span>
+          <span className="xs:hidden">Stopwatch</span>
+        </h2>
+        <button onClick={toggleFullScreen} className="p-1.5 sm:p-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs sm:text-sm text-gray-400 hover:text-white" aria-label="Toggle fullscreen">
+          {showFullScreen ? '⛶' : '⛶'}
+        </button>
+      </div>
+
+      <div className="text-center py-4 sm:py-6 md:py-8">
+        <div className="text-6xl xs:text-7xl sm:text-8xl md:text-9xl font-mono font-bold text-white tracking-wider leading-none tabular-nums">
+          {timeDisplay.formatted}
+        </div>
+        <div className="mt-2 sm:mt-4 text-gray-400 text-xs sm:text-sm">
+          {isRunning ? '▶️ Running' : '⏸️ Paused'}
+          {isRunning && <span className="ml-2 text-green-400 animate-pulse">●</span>}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-3 justify-center">
+        <button onClick={handleStart} disabled={isRunning} className="flex-1 sm:flex-none px-3 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-green-600 hover:bg-green-700 disabled:opacity-40 text-white font-semibold rounded-xl text-xs sm:text-sm md:text-base">▶ Start</button>
+        <button onClick={handlePause} disabled={!isRunning} className="flex-1 sm:flex-none px-3 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-yellow-600 hover:bg-yellow-700 disabled:opacity-40 text-white font-semibold rounded-xl text-xs sm:text-sm md:text-base">⏸ Pause</button>
+        <button onClick={handleLap} disabled={!isRunning} className="flex-1 sm:flex-none px-3 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-semibold rounded-xl text-xs sm:text-sm md:text-base">🏁 Lap</button>
+        <button onClick={handleReset} className="flex-1 sm:flex-none px-3 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs sm:text-sm md:text-base">🔄 Reset</button>
+      </div>
+
+      {laps.length > 0 && (
+        <div className="mt-4 sm:mt-6 max-h-36 sm:max-h-48 overflow-y-auto">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-gray-400 text-xs sm:text-sm font-medium">🏁 Lap Times</h3>
+            <span className="text-gray-500 text-[10px] sm:text-xs">{laps.length} laps</span>
+          </div>
+          <div className="space-y-1">
+            {formattedLaps.map((lap) => (
+              <div key={lap.index} className="flex justify-between items-center py-1.5 px-2 sm:px-3 rounded-lg bg-white/5 hover:bg-white/10">
+                <span className="text-gray-400 text-xs sm:text-sm">Lap {lap.index}</span>
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <span className="text-white font-mono text-xs sm:text-sm">{lap.time.formatted}</span>
+                  {lap.index > 1 && <span className="text-[10px] sm:text-xs text-purple-400 font-mono">+{formatTime(lap.difference).formatted}</span>}
                 </div>
               </div>
             ))}

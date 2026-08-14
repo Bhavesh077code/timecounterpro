@@ -104,6 +104,7 @@ import TimerSlugPage from "./pages/TimerSlugPage";
 import SharedCountdown from "./components/Timer/SharedCountdown";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import PomodoroTimer from "./components/Timer/PomodoroTimer";
 
 // ✅ Shared Countdown Wrapper
 function SharedCountdownWrapper() {
@@ -156,6 +157,12 @@ const router = createBrowserRouter([
     path: "/",
     element: <SharedCountdownWrapper />,
   },
+
+  {
+    path: "/pomodro",
+    element: <Layout><PomodoroTimer /></Layout>,
+  },
+
   {
     path: "/about",
     element: <Layout><About /></Layout>,
