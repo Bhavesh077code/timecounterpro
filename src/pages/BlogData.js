@@ -750,7 +750,7 @@ export const blogPosts = [
   title: 'The Value of Time: Why Every Minute Matters',
   excerpt: 'Time is something we all have, but once a moment is gone, we can never get it back. Learn why time may be the most valuable thing you own.',
   content: `
-    <h2>Imagine You Could Buy Time</h2>
+    <h2>Imagine You Could Buy Time </h2>
     <p>Imagine waking up one morning and receiving $86,400.</p>
 
     <p>There is only one rule: you must spend all of it before the day ends. You cannot save it for tomorrow, transfer it to someone else, or get back anything you did not use.</p>
