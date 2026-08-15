@@ -32,3 +32,154 @@
 .animate-fade-out-up {
   animation: fadeOutUp 0.3s ease-in forwards;
 }
+
+
+
+
+
+
+
+
+/* src/index.css - Add these styles */
+
+/* ✅ Blog Post Content Styling */
+.prose {
+  max-width: 100%;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+.prose h2 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.prose h3 {
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 1.25rem;
+}
+
+.prose ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+.prose a {
+  color: #a78bfa;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.prose a:hover {
+  color: #ec4899;
+}
+
+.prose strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.prose blockquote {
+  border-left: 4px solid #7c3aed;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.prose code {
+  color: #c084fc;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 1.5rem 0;
+}
+
+/* ✅ Timer Links Box in Blog */
+.prose .timer-links-box {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.prose .timer-links-box h3 {
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.prose .timer-links-box ul {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.prose .timer-links-box ul li {
+  margin-bottom: 0;
+}
+
+.prose .timer-links-box ul li a {
+  display: block;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+}
+
+.prose .timer-links-box ul li a:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+  .prose .timer-links-box ul {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+  
+  .prose .timer-links-box ul li a {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
+  }
+}

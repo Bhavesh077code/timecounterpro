@@ -78,6 +78,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>http://timecounterpro.com/blog/value-of-time</loc>
+    <lastmod>2026-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://timecounterpro.com/blog/meeting-timer-best-practices</loc>
     <lastmod>2026-08-11</lastmod>
     <changefreq>weekly</changefreq>
@@ -85,6 +91,18 @@
   </url>
   <url>
     <loc>https://timecounterpro.com/blog/pomodoro-technique-for-students</loc>
+    <lastmod>2026-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+   <url>
+    <loc>https://timecounterpro.com/blog/complete-guide-to-time-management</loc>
+    <lastmod>2026-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+<url>
+    <loc>https://timecounterpro.com/blog/how-to-use-study-timer-effectively</loc>
     <lastmod>2026-08-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

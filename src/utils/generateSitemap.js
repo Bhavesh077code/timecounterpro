@@ -1,5 +1,6 @@
-// src/utils/generateSitemap.js
+
 /*
+// src/utils/generateSitemap.js
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -25,7 +26,7 @@ try {
 }
 
 // ✅ Build all URLs with error handling
-const buildUrls = () => {
+const buildUrls = async () => {
   const urls = [
     { loc: '/', changefreq: 'daily', priority: 1.0 },
     { loc: '/about', changefreq: 'monthly', priority: 0.5 },
@@ -37,23 +38,8 @@ const buildUrls = () => {
 
   // ✅ Add blog URLs
   try {
-    const blogPosts = [
-      { slug: 'how-to-use-pomodoro-timer-for-study' },
-      { slug: 'best-study-timer-techniques' },
-      { slug: 'workout-timer-guide' },
-      { slug: 'meditation-timer-benefits' },
-      { slug: 'cooking-timer-tips' },
-      { slug: 'classroom-timer-for-teachers' },
-      { slug: 'meeting-timer-best-practices' },
-      { slug: 'pomodoro-technique-for-students' },
-      { slug: 'hiit-timer-workout-guide' },
-      { slug: 'mindfulness-timer-tips' },
-      { slug: 'baking-timer-guide' },
-      { slug: 'exam-countdown-tips' },
-      { slug: 'productivity-timer-for-work' },
-      { slug: 'time-management-techniques' },
-      { slug: 'focus-timer-benefits' },
-    ];
+    const blogModule = await import('../pages/BlogData.js');
+    const blogPosts = blogModule.blogPosts || [];
     
     blogPosts.forEach(post => {
       if (post && post.slug) {
@@ -89,7 +75,7 @@ const buildUrls = () => {
 // ✅ Generate sitemap XML with error handling
 const generateSitemap = () => {
   try {
-    const urls = buildUrls();
+    const urls = await buildUrls();
     
     if (!urls || urls.length === 0) {
       console.warn('⚠️ No URLs found to generate sitemap');
@@ -244,6 +230,7 @@ if (sitemapSuccess && robotsSuccess) {
 }
 
 */
+
 
 // src/utils/generateSitemap.js
 import fs from 'fs';

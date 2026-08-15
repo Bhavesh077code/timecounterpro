@@ -32,7 +32,7 @@ function Contact() {
                 <span className="text-2xl">📧</span>
                 <div>
                   <p className="text-gray-400 text-sm">Email</p>
-                  <p className="text-white">support@timecounterpro.app</p>
+                  <p className="text-white">timecounterpro@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -45,8 +45,8 @@ function Contact() {
               <div className="flex items-center gap-3">
                 <span className="text-2xl">💻</span>
                 <div>
-                  <p className="text-gray-400 text-sm">GitHub</p>
-                  <p className="text-white">github.com/timecounterpro</p>
+                  <p className="text-gray-400 text-sm"></p>
+                  <p className="text-white"></p>
                 </div>
               </div>
             </div>
