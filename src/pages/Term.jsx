@@ -47,7 +47,7 @@ function Terms() {
         <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-6">
           <h2 className="text-xl font-bold text-white mb-3">5. Contact</h2>
           <p className="text-gray-300">For questions about these terms, contact us at:</p>
-          <p className="text-purple-400 mt-2">📧 legal@timecounterpro.app</p>
+          <p className="text-purple-400 mt-2">📧 timecounterpro@gmail.com</p>
         </div>
       </div>
     </div>
