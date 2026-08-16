@@ -1,4 +1,4 @@
-// src/components/Navbar.jsx
+// src/components/Navbar.jsx - Updated with smaller button sizes
 import React, { useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { TimerContext } from "../context/TimerContext";
@@ -43,8 +43,8 @@ const Navbar = () => {
         setIsMobileMenuOpen(false);
       }
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [isMobileMenuOpen]);
 
   return (
@@ -54,21 +54,17 @@ const Navbar = () => {
       <nav className="relative z-50 sticky top-0 backdrop-blur-2xl bg-black/40 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            
-            {/* ✅ Logo - Mobile: TCPro, Desktop: TimeCounterPro */}
+            {/* ✅ Logo - Smaller */}
             <Link
               to="/"
               className="flex items-center gap-2 sm:gap-3 cursor-pointer flex-shrink-0"
             >
-              <div className="w-8 h-8 sm:w-9 md:w-10 sm:h-9 md:h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-base sm:text-lg md:text-xl shadow-lg shadow-purple-500/25">
+              <div className="w-7 h-7 sm:w-8 md:w-9 sm:h-8 md:h-9 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm sm:text-base md:text-lg shadow-lg shadow-purple-500/25">
                 ⏱️
               </div>
               <div>
-                {/* ✅ Mobile: TCPro, Desktop: TimeCounterPro */}
-                <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                  {/* Mobile par "TCPro" show karein */}
+                <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
                   <span className="md:hidden">TCPro</span>
-                  {/* Desktop par "TimeCounterPro" show karein */}
                   <span className="hidden md:inline">TimeCounterPro</span>
                 </h1>
                 <p className="text-[8px] sm:text-[10px] text-gray-400 tracking-wider hidden sm:block">
@@ -77,57 +73,57 @@ const Navbar = () => {
               </div>
             </Link>
 
-            {/* ✅ Desktop Navigation - Scrollable on small screens */}
-            <div className="hidden md:flex items-center gap-0.5 lg:gap-1 bg-white/5 rounded-xl p-0.5 lg:p-1 overflow-x-auto max-w-[60%] lg:max-w-full">
+            {/* ✅ Desktop Navigation - Bigger Buttons */}
+            <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-lg p-1">
               <Link to="/">
                 <button
-                  className={`px-2 lg:px-3 xl:px-4 py-1 lg:py-1.5 rounded-lg text-[10px] lg:text-xs xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/")}`}
+                  className={`px-2.5 lg:px-3.5 py-1.5 lg:py-2 rounded-lg text-[11px] lg:text-[12px] xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/")}`}
                 >
-                  <span className="flex items-center gap-1 lg:gap-2">
-                    <span className="text-xs lg:text-sm">📊</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-sm">📊</span>
                     <span className="hidden lg:inline">Home</span>
                     {(activeTimers || []).length > 0 && (
-                      <span className="bg-red-500 text-white text-[8px] lg:text-[10px] px-1 lg:px-1.5 py-0.5 rounded-full">
+                      <span className="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full">
                         {(activeTimers || []).length}
                       </span>
                     )}
                   </span>
                 </button>
               </Link>
-              
+
               <Link to="/history">
                 <button
-                  className={`px-2 lg:px-3 xl:px-4 py-1 lg:py-1.5 rounded-lg text-[10px] lg:text-xs xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/history")}`}
+                  className={`px-2.5 lg:px-3.5 py-1.5 lg:py-2 rounded-lg text-[11px] lg:text-[12px] xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/history")}`}
                 >
-                  <span className="flex items-center gap-1 lg:gap-2">
-                    <span className="text-xs lg:text-sm">📜</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-sm">📜</span>
                     <span className="hidden lg:inline">History</span>
                     {(completedTimers || []).length > 0 && (
-                      <span className="bg-purple-500 text-white text-[8px] lg:text-[10px] px-1 lg:px-1.5 py-0.5 rounded-full">
+                      <span className="bg-purple-500 text-white text-[9px] px-1.5 py-0.5 rounded-full">
                         {(completedTimers || []).length}
                       </span>
                     )}
                   </span>
                 </button>
               </Link>
-              
+
               <Link to="/about">
                 <button
-                  className={`px-2 lg:px-3 xl:px-4 py-1 lg:py-1.5 rounded-lg text-[10px] lg:text-xs xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/about")}`}
+                  className={`px-2.5 lg:px-3.5 py-1.5 lg:py-2 rounded-lg text-[11px] lg:text-[12px] xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/about")}`}
                 >
-                  <span className="flex items-center gap-1 lg:gap-2">
-                    <span className="text-xs lg:text-sm">ℹ️</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-sm">ℹ️</span>
                     <span className="hidden lg:inline">About</span>
                   </span>
                 </button>
               </Link>
-              
+
               <Link to="/contact">
                 <button
-                  className={`px-2 lg:px-3 xl:px-4 py-1 lg:py-1.5 rounded-lg text-[10px] lg:text-xs xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/contact")}`}
+                  className={`px-2.5 lg:px-3.5 py-1.5 lg:py-2 rounded-lg text-[11px] lg:text-[12px] xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/contact")}`}
                 >
-                  <span className="flex items-center gap-1 lg:gap-2">
-                    <span className="text-xs lg:text-sm">✉️</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-sm">✉️</span>
                     <span className="hidden lg:inline">Contact</span>
                   </span>
                 </button>
@@ -135,23 +131,34 @@ const Navbar = () => {
 
               <Link to="/blog">
                 <button
-                  className={`px-2 lg:px-3 xl:px-4 py-1 lg:py-1.5 rounded-lg text-[10px] lg:text-xs xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/blog")}`}
+                  className={`px-2.5 lg:px-3.5 py-1.5 lg:py-2 rounded-lg text-[11px] lg:text-[12px] xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${isActive("/blog")}`}
                 >
-                  <span className="flex items-center gap-1 lg:gap-2">
-                    <span className="text-xs lg:text-sm">📝</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-sm">📝</span>
                     <span className="hidden lg:inline">Blog</span>
                   </span>
                 </button>
               </Link>
-              
-              {/* ✅ Sticker Button - Desktop */}
+
+              {/* ✅ Sticker Button - Bigger */}
               <button
                 onClick={() => setShowStickers(true)}
-                className="px-2 lg:px-3 xl:px-4 py-1 lg:py-1.5 rounded-lg text-[10px] lg:text-xs xl:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-500/20 text-purple-300 flex items-center gap-1 lg:gap-1.5 whitespace-nowrap"
+                className="px-2.5 lg:px-3.5 py-1.5 lg:py-2 rounded-lg text-[11px] lg:text-[12px] xl:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-500/20 text-purple-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap"
               >
-                <span className="text-xs lg:text-sm">✨</span>
+                <span className="text-sm">✨</span>
                 <span className="hidden lg:inline">Stickers</span>
               </button>
+
+              {/* ✅ Feedback Button - Bigger */}
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdHdxQbSQ8IvTlCZ5BYCZij2fXM4a27XWubfbD-a442fwGvkA/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-2.5 lg:px-3.5 py-1.5 lg:py-2 rounded-lg text-[11px] lg:text-[12px] xl:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border border-purple-500/20 text-purple-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <span className="text-sm">💬</span>
+                <span className="hidden lg:inline">Feedback</span>
+              </a>
             </div>
 
             {/* ✅ Right Side - Mobile Optimized */}
@@ -173,67 +180,69 @@ const Navbar = () => {
                 </div>
               </div>
 
-              {/* Today Stats - Small (Mobile) */}
-              <div className="flex lg:hidden items-center gap-1.5 px-2 py-1 rounded-lg bg-white/5">
+              {/* Today Stats - Mobile */}
+              <div className="flex lg:hidden items-center gap-1 px-1.5 py-0.5 rounded-lg bg-white/5">
                 <div className="text-center">
-                  <div className="text-[8px] text-gray-500">Today</div>
-                  <div className="text-[10px] font-bold text-white">{todayStats.count}</div>
+                  <div className="text-[7px] text-gray-500">Today</div>
+                  <div className="text-[9px] font-bold text-white">
+                    {todayStats.count}
+                  </div>
                 </div>
-                <div className="w-px h-4 bg-white/10"></div>
+                <div className="w-px h-3.5 bg-white/10"></div>
                 <div className="text-center">
-                  <div className="text-[8px] text-gray-500">Time</div>
-                  <div className="text-[10px] font-bold text-purple-400">
+                  <div className="text-[7px] text-gray-500">Time</div>
+                  <div className="text-[9px] font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                     {formatTime(todayStats.time).short}
                   </div>
                 </div>
               </div>
 
-              {/* Legal Links - Desktop */}
-              <div className="hidden xl:flex items-center gap-2 text-xs">
+              {/* Legal Links */}
+              <div className="hidden xl:flex items-center gap-1.5 text-[10px]">
                 <Link
                   to="/privacy"
-                  className="text-gray-500 hover:text-purple-400 transition-colors px-2 py-1"
+                  className="text-gray-500 hover:text-purple-400 transition-colors px-1.5 py-0.5"
                 >
                   Privacy
                 </Link>
                 <span className="text-gray-600">|</span>
                 <Link
                   to="/terms"
-                  className="text-gray-500 hover:text-purple-400 transition-colors px-2 py-1"
+                  className="text-gray-500 hover:text-purple-400 transition-colors px-1.5 py-0.5"
                 >
                   Terms
                 </Link>
               </div>
 
-              {/* ✅ Mobile Menu Icons */}
-              <div className="flex md:hidden items-center gap-1">
+              {/* Mobile Menu Icons */}
+              <div className="flex md:hidden items-center gap-0.5">
                 <button
                   onClick={() => setShowStickers(true)}
-                  className="text-gray-400 hover:text-white p-1.5 text-base"
+                  className="text-gray-400 hover:text-white p-1 text-sm"
                   aria-label="Stickers"
                 >
                   ✨
                 </button>
                 <Link
                   to="/contact"
-                  className="text-gray-400 hover:text-white p-1.5 text-base"
+                  className="text-gray-400 hover:text-white p-1 text-sm"
                   aria-label="Contact"
                 >
                   ✉️
                 </Link>
                 <button
                   onClick={toggleMobileMenu}
-                  className="text-gray-400 hover:text-white p-1.5 text-base"
+                  className="text-gray-400 hover:text-white p-1 text-sm"
                   aria-label="Menu"
                 >
-                  {isMobileMenuOpen ? '✕' : '☰'}
+                  {isMobileMenuOpen ? "✕" : "☰"}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* ✅ Mobile Legal Links - Small */}
-          <div className="md:hidden flex items-center justify-center gap-2 py-1.5 border-t border-white/5 text-[10px]">
+          {/* Mobile Legal Links */}
+          <div className="md:hidden flex items-center justify-center gap-1.5 py-1 border-t border-white/5 text-[8px]">
             <Link
               to="/privacy"
               className="text-gray-500 hover:text-purple-400 transition-colors"
@@ -257,10 +266,10 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* ✅ Mobile Menu Dropdown - Slide Animation */}
+        {/* Mobile Menu Dropdown */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+            isMobileMenuOpen ? "max-h-[550px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="bg-black/95 backdrop-blur-2xl border-b border-white/5 px-4 py-3 space-y-1">
@@ -309,9 +318,19 @@ const Navbar = () => {
             >
               <span>📝</span> Blog
             </Link>
-            
+
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdHdxQbSQ8IvTlCZ5BYCZij2fXM4a27XWubfbD-a442fwGvkA/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMobileMenu}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-purple-300 hover:text-white hover:bg-white/5 transition-all text-sm"
+            >
+              <span>💬</span> Give Feedback
+            </a>
+
             <div className="border-t border-white/5 my-2"></div>
-            
+
             <button
               onClick={() => {
                 closeMobileMenu();
@@ -340,8 +359,12 @@ const Navbar = () => {
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-gray-500 text-xs">Today</span>
                 <div className="flex items-center gap-3">
-                  <span className="text-white font-bold text-sm">{todayStats.count} timers</span>
-                  <span className="text-purple-400 font-bold text-sm">{formatTime(todayStats.time).short}</span>
+                  <span className="text-white font-bold text-sm">
+                    {todayStats.count} timers
+                  </span>
+                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-bold text-sm">
+                    {formatTime(todayStats.time).short}
+                  </span>
                 </div>
               </div>
             </div>
