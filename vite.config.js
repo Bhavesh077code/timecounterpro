@@ -25,7 +25,7 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/robots\.txt$/, /^\/sw\.js$/, /^\/workbox-/, /^\/manifest/],
+        navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/robots\.txt$/],
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg,woff,woff2,xml,txt,webmanifest}'],
       },
     }),

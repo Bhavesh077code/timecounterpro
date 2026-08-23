@@ -1,11 +1,11 @@
-{
+﻿{
   "name": "timecounter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp dist/index.html dist/404.html",
     "lint": "oxlint",
     "preview": "vite preview",
     "sitemap": "node src/utils/generateSitemap.js"
