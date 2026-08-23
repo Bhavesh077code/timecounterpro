@@ -28,6 +28,7 @@ function PrivacyPolicy() {
             We use cookies to enhance your experience and serve personalized ads. Third-party vendors, 
             including Google, use cookies to serve ads based on your previous visits to our website.
           </p>
+          {/*
           <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
             <p className="text-yellow-300 text-sm">
               <span className="font-bold">📌 Google AdSense Disclosure:</span> Google uses cookies to serve ads on our site. 
@@ -36,7 +37,7 @@ function PrivacyPolicy() {
                 Google Ads Settings
               </a>.
             </p>
-          </div>
+          </div> */}
         </div>
 
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
