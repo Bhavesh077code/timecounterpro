@@ -1,6 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+try { fs.unlinkSync('dist/_redirects'); } catch {}
+try { fs.unlinkSync('public/_redirects'); } catch {}
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const BASE_URL = 'https://timecounterpro.com';
