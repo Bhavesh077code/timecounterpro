@@ -36,5 +36,10 @@ async function main() {
   fs.writeFileSync('dist/sitemap.xml', sitemap);
   fs.writeFileSync('public/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml`);
   console.log(`✅ Sitemap: ${urls.length} URLs`);
-}
+}// copy 404.html for SPA
+try {
+  const indexHtml = fs.readFileSync('dist/index.html', 'utf8');
+  fs.writeFileSync('dist/404.html', indexHtml);
+  console.log('✅ 404.html created');
+} catch {}
 main();
