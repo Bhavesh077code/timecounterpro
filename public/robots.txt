@@ -1,4 +1,3 @@
-﻿User-agent: *
+User-agent: *
 Allow: /
-
-Sitemap:https://timecounterpro.com/sitemap.xml
+Sitemap: https://timecounterpro.com/sitemap.xml
