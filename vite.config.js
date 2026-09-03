@@ -7,9 +7,18 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "robots.txt", "sitemap.xml", "icons/*"],
+
+      includeAssets: [
+        "favicon.svg",
+        "ads.txt",
+        "robots.txt",
+        "sitemap.xml",
+        "icons/*",
+      ],
+
       manifest: {
         name: "TimeCounterPro",
         short_name: "TimeCounterPro",
@@ -19,13 +28,27 @@ export default defineConfig({
         background_color: "#0a0a0a",
         display: "standalone",
         start_url: "/",
+
         icons: [
-          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+          {
+            src: "/icons/icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "/icons/icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
         ],
       },
+
       workbox: {
-        navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/robots\.txt$/],
+        navigateFallbackDenylist: [
+          /^\/ads\.txt$/,
+          /^\/sitemap\.xml$/,
+          /^\/robots\.txt$/,
+        ],
       },
     }),
   ],
