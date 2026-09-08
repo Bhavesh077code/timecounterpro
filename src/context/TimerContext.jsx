@@ -1,5 +1,4 @@
 
-
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { notifyTimerComplete } from '../utils/notifications';
 
@@ -15,6 +14,111 @@ const EMPTY_STATS = {
   customsCreated: 0,
 };
 
+// ============ ✅ NEW - DYNAMIC BACKGROUND THEMES ============
+export const CATEGORY_THEMES = {
+  meditation: { 
+    image: '/images/backgrounds/meditation-bg.jpg', 
+    video: '/images/backgrounds/meditation-bg.mp4',
+    color: '#8B5CF6', 
+    bgLight: 'bg-purple-50', 
+    border: 'border-purple-200', 
+    icon: '🧘',
+    name: 'meditation'
+  },
+  cooking: { 
+    image: '/images/backgrounds/cooking-bg.jpg', 
+    color: '#F59E0B', 
+    bgLight: 'bg-amber-50', 
+    border: 'border-amber-200', 
+    icon: '🍳',
+    name: 'cooking'
+  },
+  workout: { 
+    image: '/images/backgrounds/workout-bg.jpg', 
+    color: '#EF4444', 
+    bgLight: 'bg-red-50', 
+    border: 'border-red-200', 
+    icon: '💪',
+    name: 'workout'
+  },
+  study: { 
+    image: '/images/backgrounds/study-bg.jpg', 
+    color: '#3B82F6', 
+    bgLight: 'bg-blue-50', 
+    border: 'border-blue-200', 
+    icon: '📚',
+    name: 'study'
+  },
+  pomodoro: { 
+    image: '/images/backgrounds/pomodoro-bg.jpg', 
+    color: '#10B981', 
+    bgLight: 'bg-emerald-50', 
+    border: 'border-emerald-200', 
+    icon: '🍅',
+    name: 'pomodoro'
+  },
+  classroom: { 
+    image: '/images/backgrounds/classroom-bg.jpg', 
+    color: '#6366F1', 
+    bgLight: 'bg-indigo-50', 
+    border: 'border-indigo-200', 
+    icon: '🎓',
+    name: 'classroom'
+  },
+  meeting: { 
+    image: '/images/backgrounds/meeting-bg.jpg', 
+    color: '#0EA5E9', 
+    bgLight: 'bg-sky-50', 
+    border: 'border-sky-200', 
+    icon: '💼',
+    name: 'meeting'
+  },
+  sleep: { 
+    image: '/images/backgrounds/meditation-bg.jpg', 
+    color: '#8B5CF6', 
+    bgLight: 'bg-purple-50', 
+    border: 'border-purple-200', 
+    icon: '😴',
+    name: 'sleep'
+  },
+  default: { 
+    image: '/images/backgrounds/default-timer-bg.jpg', 
+    color: '#4F46E5', 
+    bgLight: 'bg-white', 
+    border: 'border-slate-200', 
+    icon: '⏱️',
+    name: 'default'
+  },
+};
+
+export const getThemeForTimer = (timerName = '', timerType = '') => {
+  const combined = `${timerName} ${timerType}`.toLowerCase();
+
+  if (combined.includes('meditation') || combined.includes('mindfulness') || combined.includes('sleep') || combined.includes('nap') || combined.includes('break') || combined.includes('breath')) {
+    return CATEGORY_THEMES.meditation;
+  }
+  if (combined.includes('cooking') || combined.includes('kitchen') || combined.includes('recipe')) {
+    return CATEGORY_THEMES.cooking;
+  }
+  if (combined.includes('workout') || combined.includes('fitness') || combined.includes('gym') || combined.includes('exercise')) {
+    return CATEGORY_THEMES.workout;
+  }
+  if (combined.includes('study') || combined.includes('exam') || combined.includes('test') || combined.includes('quiz') || combined.includes('homework') || combined.includes('reading') || combined.includes('coding') || combined.includes('school') || combined.includes('kids')) {
+    return CATEGORY_THEMES.study;
+  }
+  if (combined.includes('pomodoro') || combined.includes('focus')) {
+    return CATEGORY_THEMES.pomodoro;
+  }
+  if (combined.includes('classroom') || combined.includes('teacher')) {
+    return CATEGORY_THEMES.classroom;
+  }
+  if (combined.includes('meeting') || combined.includes('presentation') || combined.includes('speech')) {
+    return CATEGORY_THEMES.meeting;
+  }
+
+  return CATEGORY_THEMES.default;
+};
+
 const toSafeSeconds = (value) => {
   const seconds = Number(value);
   return Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
@@ -25,10 +129,14 @@ const normalizeTimer = (timer) => {
   const savedRemaining = toSafeSeconds(timer?.remaining);
   const now = Date.now();
 
+  // ✅ Theme preserve karo localStorage se
+  const theme = timer?.theme || getThemeForTimer(timer?.name, timer?.type);
+
   if (timer?.isPaused || timer?.status === 'paused') {
     return {
       ...timer,
       duration,
+      theme,
       remaining: Math.min(savedRemaining || duration, duration),
       isPaused: true,
       status: 'paused',
@@ -49,6 +157,7 @@ const normalizeTimer = (timer) => {
   return {
     ...timer,
     duration,
+    theme,
     remaining,
     isPaused: false,
     status: remaining > 0 ? 'running' : 'completed',
@@ -79,8 +188,6 @@ export const TimerProvider = ({ children }) => {
     statsRef.current = totalStats;
   }, [totalStats]);
 
-  // Load saved state once. Paused timers use their saved remaining time;
-  // running timers use an absolute target timestamp so refresh/background tabs do not create drift.
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -116,7 +223,6 @@ export const TimerProvider = ({ children }) => {
     }
   }, []);
 
-  // Persist only after hydration so the initial empty state cannot overwrite saved data.
   useEffect(() => {
     if (!hydrated) return;
 
@@ -131,7 +237,6 @@ export const TimerProvider = ({ children }) => {
     }
   }, [activeTimers, completedTimers, totalStats, hydrated]);
 
-  // One timer engine for the whole app. Components only render Context state.
   useEffect(() => {
     if (!hydrated) return undefined;
 
@@ -182,7 +287,6 @@ export const TimerProvider = ({ children }) => {
           totalTime: (prev.totalTime || 0) + completedNow.reduce((sum, timer) => sum + timer.duration, 0),
         }));
 
-        // Notification is opt-in and fires once from the single timer engine.
         completedNow.forEach((timer) => {
           notifyTimerComplete(
             `⏰ ${timer.name || 'Timer'} complete`,
@@ -210,6 +314,10 @@ export const TimerProvider = ({ children }) => {
 
     const now = Date.now();
     const id = `${now}-${Math.random().toString(36).slice(2, 8)}`;
+    
+    // ✅ AUTO THEME DETECT - with-sound wala duplicate logic hat gaya, ab category se theme
+    const autoTheme = getThemeForTimer(options.name, options.type);
+    
     const newTimer = {
       id,
       name: options.name?.trim() || `${options.type || 'custom'} Timer`,
@@ -221,7 +329,7 @@ export const TimerProvider = ({ children }) => {
       startTime: now,
       targetAt: now + duration * 1000,
       targetDate: options.targetDate || null,
-      theme: options.theme || null,
+      theme: options.theme || autoTheme, // ✅ Theme auto assign
       createdAt: new Date(now).toISOString(),
     };
 
@@ -313,7 +421,11 @@ export const TimerProvider = ({ children }) => {
 
   const generateShareURL = useCallback((data) => {
     const base = typeof window !== 'undefined' ? window.location.origin : 'https://timecounterpro.com';
-    return `${base}?${new URLSearchParams(data).toString()}`;
+    const payload = {
+      ...data,
+      timezone: data?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+    return `${base}?${new URLSearchParams(payload).toString()}`;
   }, []);
 
   useEffect(() => {
@@ -322,8 +434,9 @@ export const TimerProvider = ({ children }) => {
     const date = params.get('date');
     const theme = params.get('theme');
     const embed = params.get('embed');
+    const timezone = params.get('timezone');
 
-    if (event && date) setShareData({ event, date, theme, embed });
+    if (event && date) setShareData({ event, date, theme, embed, timezone });
   }, []);
 
   const value = useMemo(() => ({
@@ -339,6 +452,8 @@ export const TimerProvider = ({ children }) => {
     updateTimer,
     resetTimer,
     generateShareURL,
+    CATEGORY_THEMES,
+    getThemeForTimer,
   }), [activeTimers, completedTimers, totalStats, shareData, addTimer, completeTimer, removeTimer, clearHistory, updateTimer, resetTimer, generateShareURL]);
 
   return <TimerContext.Provider value={value}>{children}</TimerContext.Provider>;

@@ -1,6 +1,6 @@
 // src/components/Viral/EmbedWidget.jsx
 import React, { useState } from 'react';
-import { FiCode, FiCopy, FiChevronDown, FiChevronUp, FiCheck } from 'react-icons/fi';
+import { FiCode, FiCopy, FiChevronDown, FiChevronUp, FiCheck, FiExternalLink } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 function EmbedWidget() {
@@ -13,99 +13,153 @@ function EmbedWidget() {
   const embedURL = `${window.location.origin}?view=embed`;
 
   const generateIframeCode = () => {
-    const borderStyle = showBorder ? 'border:1px solid #333;' : 'border:none;';
-    return `<iframe src="${embedURL}" width="${width}" height="${height}" style="${borderStyle} border-radius:12px; background:#0a0a0a;" allowfullscreen></iframe>`;
+    const borderStyle = showBorder ? 'border:1px solid #e2e8f0;' : 'border:none;';
+    return `<iframe src="${embedURL}" width="${width}" height="${height}" style="${borderStyle} border-radius:12px; background:#f8fafc;" allowfullscreen loading="lazy"></iframe>`;
   };
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(generateIframeCode());
       setCopied(true);
-      toast.success('✅ Embed code copied!');
+      toast.success('Embed code copied successfully');
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      toast.error('Failed to copy');
+      toast.error('Failed to copy code');
     }
   };
 
   return (
-    <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 mt-4 sm:mt-5 md:mt-6 animate-fade-in">
-      {/* ✅ Toggle Button - Mobile Optimized */}
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 md:p-6 mt-4 sm:mt-5 md:mt-6 animate-fade-in">
+      {/* Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className="flex items-center justify-between w-full text-white font-semibold group"
+        className="flex items-center justify-between w-full text-slate-900 font-semibold group hover:text-indigo-700 transition-colors"
+        aria-expanded={isOpen}
+        aria-controls="embed-content"
       >
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <FiCode size={16} className="sm:w-[20px] sm:h-[20px] text-purple-400" />
-          <span className="text-sm sm:text-base">Embed This Timer Widget</span>
-          <span className="text-[8px] sm:text-[10px] text-purple-400 ml-1 sm:ml-2 bg-purple-500/20 px-1.5 sm:px-2 py-0.5 rounded-full">
-            ⬇️ Backlink
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 bg-indigo-50 rounded-lg text-indigo-600">
+            <FiCode size={16} className="sm:w-[18px] sm:h-[18px]" />
+          </div>
+          <span className="text-sm sm:text-base font-medium">Embed Timer Widget</span>
+          <span className="text-[8px] sm:text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-medium">
+            Free Backlink
           </span>
         </div>
-        <span className="text-gray-400 group-hover:text-white transition-colors">
-          {isOpen ? <FiChevronUp size={16} className="sm:w-[20px] sm:h-[20px]" /> : <FiChevronDown size={16} className="sm:w-[20px] sm:h-[20px]" />}
+        <span className="text-slate-400 group-hover:text-slate-600 transition-colors">
+          {isOpen ? <FiChevronUp size={18} className="sm:w-[20px] sm:h-[20px]" /> : <FiChevronDown size={18} className="sm:w-[20px] sm:h-[20px]" />}
         </span>
       </button>
 
-      {/* ✅ Content - Mobile Responsive */}
+      {/* Content */}
       {isOpen && (
-        <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4 animate-fade-in">
-          {/* Controls - Mobile Optimized */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+        <div id="embed-content" className="mt-4 sm:mt-5 space-y-4 sm:space-y-5 animate-fade-in">
+          {/* Controls Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             <div>
-              <label className="text-gray-400 text-[10px] sm:text-xs">Width (px)</label>
+              <label htmlFor="embed-width" className="block text-slate-600 text-xs font-medium mb-1.5">
+                Width (px)
+              </label>
               <input 
+                id="embed-width"
                 type="number" 
                 value={width} 
                 onChange={(e) => setWidth(Math.max(100, Number(e.target.value) || 100))} 
-                className="w-full px-2 sm:px-3 py-1.5 sm:py-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs sm:text-sm focus:outline-none focus:border-purple-500 transition-all"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 min="100"
                 max="2000"
+                aria-label="Widget width in pixels"
               />
             </div>
             <div>
-              <label className="text-gray-400 text-[10px] sm:text-xs">Height (px)</label>
+              <label htmlFor="embed-height" className="block text-slate-600 text-xs font-medium mb-1.5">
+                Height (px)
+              </label>
               <input 
+                id="embed-height"
                 type="number" 
                 value={height} 
                 onChange={(e) => setHeight(Math.max(100, Number(e.target.value) || 100))} 
-                className="w-full px-2 sm:px-3 py-1.5 sm:py-2 bg-white/5 border border-white/10 rounded-lg text-white text-xs sm:text-sm focus:outline-none focus:border-purple-500 transition-all"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 min="100"
                 max="2000"
+                aria-label="Widget height in pixels"
               />
             </div>
-            <div className="flex items-center gap-1.5 sm:gap-2 col-span-2 sm:col-span-1">
+            <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
               <input 
+                id="embed-border"
                 type="checkbox" 
                 checked={showBorder} 
                 onChange={(e) => setShowBorder(e.target.checked)} 
-                className="w-3.5 h-3.5 sm:w-4 sm:h-4 accent-purple-500 cursor-pointer" 
+                className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 focus:ring-2 cursor-pointer" 
+                aria-label="Toggle border visibility"
               />
-              <label className="text-gray-400 text-[10px] sm:text-xs cursor-pointer">Show Border</label>
+              <label htmlFor="embed-border" className="text-slate-600 text-sm cursor-pointer select-none">
+                Show Border
+              </label>
             </div>
           </div>
 
-          {/* Code Output - Mobile Optimized */}
+          {/* Code Output */}
           <div className="relative">
-            <textarea 
-              value={generateIframeCode()} 
-              readOnly 
-              rows={3} 
-              className="w-full px-2 sm:px-3 md:px-4 py-2 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-gray-300 text-[8px] sm:text-[10px] md:text-xs font-mono focus:outline-none resize-none overflow-x-auto"
-            />
-            <button 
-              onClick={handleCopy} 
-              className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 p-1.5 sm:p-2 bg-purple-500 hover:bg-purple-600 rounded-lg transition-all duration-300 hover:scale-105 active:scale-95"
-            >
-              {copied ? <FiCheck size={12} className="sm:w-[14px] sm:h-[14px] text-white" /> : <FiCopy size={12} className="sm:w-[14px] sm:h-[14px] text-white" />}
-            </button>
+            <label className="block text-slate-600 text-xs font-medium mb-1.5">
+              Embed Code
+            </label>
+            <div className="relative">
+              <textarea 
+                value={generateIframeCode()} 
+                readOnly 
+                rows={3} 
+                className="w-full px-3 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 text-xs font-mono focus:outline-none resize-none overflow-x-auto"
+                aria-label="Embed code for the timer widget"
+                spellCheck="false"
+              />
+              <button 
+                onClick={handleCopy} 
+                className="absolute top-2 right-2 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 hover:shadow-md active:scale-95"
+                aria-label={copied ? 'Copied successfully' : 'Copy embed code'}
+              >
+                {copied ? <FiCheck size={14} /> : <FiCopy size={14} />}
+              </button>
+            </div>
           </div>
 
-          {/* Info */}
-          <p className="text-[8px] sm:text-[10px] md:text-xs text-gray-500 flex items-start gap-1">
-            <span className="text-purple-400">💡</span>
-            <span>Embed this timer on your blog or website. Free SEO backlink to your site!</span>
-          </p>
+          {/* Features & Benefits */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="flex-shrink-0 mt-0.5 text-indigo-600">
+                <FiExternalLink size={14} />
+              </div>
+              <div>
+                <h4 className="text-slate-700 text-xs font-medium">Free Backlink</h4>
+                <p className="text-slate-500 text-[10px]">Get a free SEO backlink to your website</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="flex-shrink-0 mt-0.5 text-indigo-600">
+                <FiCode size={14} />
+              </div>
+              <div>
+                <h4 className="text-slate-700 text-xs font-medium">Easy Integration</h4>
+                <p className="text-slate-500 text-[10px]">Copy and paste, works on any website</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Info Message */}
+          <div className="flex items-start gap-2 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+            <span className="text-indigo-600 text-sm flex-shrink-0">ℹ️</span>
+            <p className="text-xs text-indigo-700 leading-relaxed">
+              Add this timer to your blog or website. The embed is responsive and works on all devices. 
+              Includes a free backlink to help with your SEO rankings.
+            </p>
+          </div>
+
+          {/* AdSense Notice - Professional */}
+          <div className="text-center text-[9px] text-slate-400 border-t border-slate-200 pt-3 mt-2">
+            This widget is provided free of charge. Backlink attribution is required.
+          </div>
         </div>
       )}
     </div>

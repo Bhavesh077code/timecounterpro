@@ -1,7 +1,9 @@
+
 // src/components/CustomTimer.jsx
 import React, { useState, useContext } from 'react';
 import { TimerContext } from '../context/TimerContext';
 import toast from 'react-hot-toast';
+import { FiClock, FiPlus, FiMinus, FiZap, FiChevronDown, FiChevronUp, FiInfo } from 'react-icons/fi';
 
 function CustomTimer() {
   const { addTimer } = useContext(TimerContext);
@@ -17,12 +19,12 @@ function CustomTimer() {
     const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
     
     if (totalSeconds === 0) {
-      toast.error('⏰ Please set a valid time!');
+      toast.error('Please set a valid time');
       return;
     }
 
     if (totalSeconds > 86400) {
-      toast.error('⏰ Maximum time is 24 hours!');
+      toast.error('Maximum time is 24 hours');
       return;
     }
 
@@ -30,7 +32,7 @@ function CustomTimer() {
 
     try {
       addTimer(name || 'Custom Timer', totalSeconds, 'custom');
-      toast.success('✅ Timer started!');
+      toast.success(`${name || 'Custom Timer'} started`);
       setName('');
       setHours(0);
       setMinutes(0);
@@ -47,7 +49,7 @@ function CustomTimer() {
   const handleQuickAdd = (mins) => {
     try {
       addTimer(`${mins} Minute Timer`, mins * 60, 'custom');
-      toast.success(`✅ ${mins} minute timer started!`);
+      toast.success(`${mins} minute timer started`);
     } catch (error) {
       toast.error('Failed to start timer');
     }
@@ -55,139 +57,196 @@ function CustomTimer() {
 
   const quickMins = [1, 2, 5, 10, 15, 30, 45, 60];
 
+  // Calculate total seconds for display
+  const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+  const hasTime = totalSeconds > 0;
+
   return (
-    <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/5 p-4 sm:p-5 md:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 mt-2 sm:mt-3 md:mt-4">
+    <div className="bg-white  border border-slate-200 p-4 sm:p-5 transition-all hover:border-indigo-200 hover:shadow-sm mt-3">
       {/* Header */}
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-          <span className="text-xl sm:text-2xl">🎨</span>
-          <span className="hidden xs:inline">Custom Timer</span>
-          <span className="xs:hidden">Custom</span>
-        </h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-indigo-50 rounded-lg border border-indigo-100">
+            <FiClock size={16} className="text-indigo-600" />
+          </div>
+          <h2 className="text-sm sm:text-base font-semibold text-slate-800">
+            Custom Timer
+          </h2>
+          <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">
+            Create your own
+          </span>
+        </div>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-gray-500 hover:text-white transition-colors text-xs sm:text-sm"
+          className="flex items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors text-xs font-medium"
         >
-          {isExpanded ? '✕ Close' : '▼ Expand'}
+          {isExpanded ? (
+            <>
+              <FiChevronUp size={14} />
+              <span className="hidden xs:inline">Close</span>
+            </>
+          ) : (
+            <>
+              <FiChevronDown size={14} />
+              <span className="hidden xs:inline">Expand</span>
+            </>
+          )}
         </button>
       </div>
 
       {!isExpanded ? (
-        // ✅ Quick Add Buttons - Mobile Optimized
-        <div className="flex flex-wrap gap-1.5 sm:gap-2">
-          {quickMins.map((mins) => (
+        // Quick Add Buttons
+        <div className="mt-3">
+          <div className="flex flex-wrap gap-1.5">
+            {quickMins.map((mins) => (
+              <button
+                key={mins}
+                onClick={() => handleQuickAdd(mins)}
+                className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-medium transition-all border border-slate-200 hover:border-slate-300 hover:shadow-sm active:scale-95"
+              >
+                {mins}m
+              </button>
+            ))}
             <button
-              key={mins}
-              onClick={() => handleQuickAdd(mins)}
-              className="px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg text-white text-xs sm:text-sm transition-all duration-300 hover:scale-105 active:scale-95"
+              onClick={() => setIsExpanded(true)}
+              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition-all shadow-sm hover:shadow active:scale-95"
             >
-              {mins}m
+              <span className="flex items-center gap-1">
+                <FiPlus size={12} />
+                Custom
+              </span>
             </button>
-          ))}
-          <button
-            onClick={() => setIsExpanded(true)}
-            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 active:scale-95"
-          >
-            Custom ➜
-          </button>
+          </div>
+          <p className="text-[10px] text-slate-400 mt-1.5">
+            Quick presets or create your own custom timer
+          </p>
         </div>
       ) : (
-        // ✅ Expanded Form - Mobile Responsive
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Timer name (optional)"
-            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-          />
+        // Expanded Form
+        <form onSubmit={handleSubmit} className="mt-3 space-y-3">
+          {/* Timer Name */}
+          <div>
+            <label className="text-xs text-slate-600 font-medium block mb-1">
+              Timer Name <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Project Work, Meeting, Break"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            />
+          </div>
           
           {/* Time Inputs */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            <div>
-              <label className="text-[10px] sm:text-xs text-gray-500">Hours</label>
-              <input
-                type="number"
-                value={hours}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value) || 0;
-                  setHours(Math.max(0, Math.min(24, val)));
-                }}
-                min="0"
-                max="24"
-                className="w-full px-2 sm:px-3 py-2 sm:py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-purple-500 transition-all"
-              />
-            </div>
-            <div>
-              <label className="text-[10px] sm:text-xs text-gray-500">Minutes</label>
-              <input
-                type="number"
-                value={minutes}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value) || 0;
-                  setMinutes(Math.max(0, Math.min(59, val)));
-                }}
-                min="0"
-                max="59"
-                className="w-full px-2 sm:px-3 py-2 sm:py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-purple-500 transition-all"
-              />
-            </div>
-            <div>
-              <label className="text-[10px] sm:text-xs text-gray-500">Seconds</label>
-              <input
-                type="number"
-                value={seconds}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value) || 0;
-                  setSeconds(Math.max(0, Math.min(59, val)));
-                }}
-                min="0"
-                max="59"
-                className="w-full px-2 sm:px-3 py-2 sm:py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-purple-500 transition-all"
-              />
+          <div>
+            <label className="text-xs text-slate-600 font-medium block mb-1">
+              Set Duration
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="text-[10px] text-slate-400">Hours</label>
+                <input
+                  type="number"
+                  value={hours}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || 0;
+                    setHours(Math.max(0, Math.min(24, val)));
+                  }}
+                  min="0"
+                  max="24"
+                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-400">Minutes</label>
+                <input
+                  type="number"
+                  value={minutes}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || 0;
+                    setMinutes(Math.max(0, Math.min(59, val)));
+                  }}
+                  min="0"
+                  max="59"
+                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-400">Seconds</label>
+                <input
+                  type="number"
+                  value={seconds}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || 0;
+                    setSeconds(Math.max(0, Math.min(59, val)));
+                  }}
+                  min="0"
+                  max="59"
+                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                />
+              </div>
             </div>
           </div>
 
           {/* Total Summary */}
-          {(hours > 0 || minutes > 0 || seconds > 0) && (
-            <div className="text-center text-purple-300 text-xs sm:text-sm bg-purple-500/10 py-1.5 sm:py-2 rounded-lg">
-              Total: {hours}h {minutes}m {seconds}s
-              <span className="text-gray-500 ml-2 text-[10px] sm:text-xs">
-                ({hours * 3600 + minutes * 60 + seconds}s)
+          {hasTime && (
+            <div className="flex items-center justify-between bg-indigo-50 rounded-lg px-3 py-2 border border-indigo-100">
+              <span className="text-xs text-indigo-700 font-medium">Total Duration</span>
+              <span className="text-sm font-mono font-semibold text-indigo-700">
+                {hours > 0 && `${hours}h `}
+                {minutes > 0 && `${minutes}m `}
+                {seconds > 0 && `${seconds}s`}
+                <span className="text-[10px] text-indigo-400 font-normal ml-1">
+                  ({totalSeconds}s)
+                </span>
               </span>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="flex flex-col xs:flex-row gap-2 sm:gap-3">
+          <div className="flex gap-2">
             <button
               type="submit"
               disabled={isLoading}
-              className={`flex-1 py-2.5 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg transition-all duration-300 text-sm sm:text-base ${
-                isLoading 
-                  ? 'opacity-50 cursor-not-allowed' 
-                  : 'hover:shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-95'
+              className={`flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all text-sm ${
+                isLoading ? 'opacity-60 cursor-not-allowed' : 'shadow-sm hover:shadow'
               }`}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Starting...
                 </span>
               ) : (
-                '🚀 Start Timer'
+                <span className="flex items-center justify-center gap-1.5">
+                  <FiZap size={14} />
+                  Start Timer
+                </span>
               )}
             </button>
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
-              className="px-4 sm:px-6 py-2.5 sm:py-3 bg-white/5 border border-white/10 text-white font-medium rounded-lg hover:bg-white/10 transition-all duration-300 text-sm sm:text-base"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium rounded-lg transition-all text-sm"
             >
               Cancel
             </button>
           </div>
         </form>
       )}
+
+      {/* Helpful Info for AdSense */}
+      <div className="mt-3 pt-3 border-t border-slate-100">
+        <div className="flex items-start gap-2">
+          <FiInfo size={14} className="text-slate-400 flex-shrink-0 mt-0.5" />
+          <p className="text-[10px] text-slate-400 leading-relaxed">
+            Create custom timers for any task. Perfect for <span className="text-slate-500">work sessions</span>, 
+            <span className="text-slate-500"> study blocks</span>, or <span className="text-slate-500">personal goals</span>. 
+            Max 24 hours.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -145,6 +145,7 @@ import SharedCountdown from "./components/Timer/SharedCountdown";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import PomodoroTimer from "./components/Timer/PomodoroTimer";
+import Stopwatch from "./components/Timer/Stopwatch";
 
 function SharedCountdownWrapper() {
   const { shareData, setShareData } = useContext(TimerContext);
@@ -224,6 +225,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <History />
+      </Layout>
+    ),
+  },
+   {
+    path: "/stopwatch",
+    element: (
+      <Layout>
+        <Stopwatch />
       </Layout>
     ),
   },
