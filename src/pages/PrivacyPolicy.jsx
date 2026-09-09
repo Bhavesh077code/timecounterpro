@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { 
   FiShield, FiInfo, FiDatabase, FiUserCheck, 
   FiMail, FiLock, FiFileText, FiGlobe, FiAlertCircle,
@@ -7,7 +8,13 @@ import {
 
 function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-slate-50 py-8 sm:py-12 px-4">
+    <>
+      <Helmet>
+        <title>Privacy Policy | TimeCounterPro</title>
+        <meta name="description" content="Read the TimeCounterPro privacy policy covering local timer data, cookies, analytics, advertising and contact information." />
+        <link rel="canonical" href="https://timecounterpro.com/privacy" />
+      </Helmet>
+      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 px-4">
       <div className="max-w-4xl mx-auto animate-fade-in">
         
         {/* Header */}
@@ -234,7 +241,7 @@ function PrivacyPolicy() {
                 </p>
                 <div className="mt-3 p-3 bg-white rounded-lg border border-indigo-200 inline-block">
                   <a 
-                    href="mailto:privacy@timecounterpro.app" 
+                    href="mailto:timecounterpro@gmail.com" 
                     className="text-indigo-600 hover:text-indigo-700 font-medium text-sm flex items-center gap-2"
                   >
                     <FiMail size={14} />
@@ -286,7 +293,8 @@ function PrivacyPolicy() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

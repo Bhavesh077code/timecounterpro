@@ -158,13 +158,13 @@ function About() {
     {
       icon: <FiUsers className="text-2xl text-indigo-600" />,
       title: "100% Free",
-      description: "All features are completely free. No registration, no payment, no personal data collected.",
+      description: "The core timer tools are available without registration or payment. Please review our Privacy Policy for information about cookies, analytics and contact information you choose to provide.",
       useCase: "Anyone can start using immediately without any barriers."
     },
     {
       icon: <FiTrendingUp className="text-2xl text-emerald-600" />,
-      title: "SEO Benefits",
-      description: "Embed countdowns on your website to get free backlinks. This helps improve your Google rankings.",
+      title: "Simple Sharing",
+      description: "Share timer links with friends, classmates, teams or readers when a simple time limit is useful.",
       useCase: "Website owners and bloggers get free SEO benefits."
     }
   ];
@@ -189,7 +189,7 @@ function About() {
     },
     {
       question: "Do I need to create an account?",
-      answer: "No! TimecounterPro does not require any registration. You can start using it immediately. We do not collect any personal data. Your timers are stored locally on your device."
+      answer: "No account is required for normal timer use. Timer settings and history can be stored locally in your browser. Information you voluntarily submit through a contact form and data collected by third-party services are handled according to our Privacy Policy."
     },
     {
       question: "What is the difference between Countdown and Stopwatch?",
@@ -271,7 +271,7 @@ function About() {
               TimecounterPro provides the right timer for every need.
             </p>
             <p className="text-slate-500 mt-3 text-sm">
-              No sign-up required. No personal data collected. Just open the app and start using it instantly.
+              No sign-up required for normal timer use. Open the app and start timing immediately.
             </p>
           </div>
 
@@ -503,8 +503,8 @@ function About() {
               <div className="flex items-start gap-3 bg-slate-50 p-4">
                 <span className="text-emerald-600 text-xl flex-shrink-0">✓</span>
                 <div>
-                  <h4 className="text-slate-900 font-semibold text-sm">Privacy Focused</h4>
-                  <p className="text-slate-500 text-sm">No data collection. Timers stay on your device.</p>
+                  <h4 className="text-slate-900 font-semibold text-sm">Privacy Information</h4>
+                  <p className="text-slate-500 text-sm">Timer data can remain in your browser; see the Privacy Policy for cookies and third-party services.</p>
                 </div>
               </div>
             </div>

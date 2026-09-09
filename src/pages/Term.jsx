@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { 
   FiFileText, FiCheckCircle, FiAlertCircle, FiShield, 
   FiUserX, FiMail, FiLock, FiInfo, FiExternalLink
@@ -6,7 +7,13 @@ import {
 
 function Terms() {
   return (
-    <div className="min-h-screen bg-slate-50 py-8 sm:py-12 px-4">
+    <>
+      <Helmet>
+        <title>Terms of Service | TimeCounterPro</title>
+        <meta name="description" content="Read the TimeCounterPro Terms of Service for using our online countdown, Pomodoro and stopwatch tools." />
+        <link rel="canonical" href="https://timecounterpro.com/terms" />
+      </Helmet>
+      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 px-4">
       <div className="max-w-4xl mx-auto animate-fade-in">
         
         {/* Header */}
@@ -251,7 +258,7 @@ function Terms() {
                   without regard to its conflict of law provisions.
                 </p>
                 <p className="text-slate-500 text-sm mt-2">
-                  Any disputes arising from these terms shall be resolved in the courts of the United States.
+                  Any dispute will be handled through the appropriate legal process and jurisdiction required by applicable law.
                 </p>
               </div>
             </div>
@@ -298,7 +305,8 @@ function Terms() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

@@ -71,7 +71,7 @@ function Footer() {
             <h4 className="text-sm font-semibold text-slate-900 mb-2">Timers</h4>
             <ul className="space-y-1.5">
               <li>
-                <Link to="/countdown" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
+                <Link to="/timers" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
                   Countdown Timer
                 </Link>
               </li>

@@ -1,5 +1,3 @@
-/*
-// src/pages/TimerSlugPage.jsx
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -7,267 +5,12 @@ import seoTimers from "../data/seoTimers";
 import FullScreenTimer from "../components/FullScreenTimer";
 import { TimerContext } from "../context/TimerContext";
 
-const getBackground = (slug = "", title = "") => {
-  const value = `${slug} ${title}`.toLowerCase();
-  if (/pomodoro|focus|study|exam|work/.test(value)) return "pomodoro";
-  if (/workout|exercise|gym|run|fitness/.test(value)) return "workout";
-  if (/cook|kitchen|bake|food/.test(value)) return "cooking";
-  if (/sleep|nap|bed/.test(value)) return "sleep";
-  return "countdown";
-};
-
-const TimerSlugPage = () => {
-  const { slug } = useParams();
-  const navigate = useNavigate();
-  const { activeTimers, addTimer, removeTimer } = useContext(TimerContext);
-
-  const [timer, setTimer] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const createdRef = useRef(false);
-  const timerKeyRef = useRef(null);
-
-  // IMPORTANT: every hook is above every conditional return.
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-
-    const pomodoroMatch = slug?.match(/pomodoro-(\d+)-(\d+)/);
-
-    if (pomodoroMatch) {
-      const focus = parseInt(pomodoroMatch[1], 10) * 60;
-      if (!cancelled) {
-        setTimer({
-          slug,
-          title: `Pomodoro ${pomodoroMatch[1]}-${pomodoroMatch[2]}`,
-          background: "pomodoro",
-          duration: focus,
-          description: `Free Pomodoro ${pomodoroMatch[1]}-${pomodoroMatch[2]} timer for productivity. Perfect for focused work sessions.`,
-          keywords: "pomodoro timer, focus timer, study timer, productivity timer",
-          category: "pomodoro",
-        });
-        setLoading(false);
-      }
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    const found = seoTimers.find((item) => item.slug === slug);
-
-    if (!found && slug) {
-      const durationMatch = slug.match(/(\d+)-min/);
-      const durationMin = durationMatch ? parseInt(durationMatch[1], 10) : null;
-
-      if (durationMin && durationMin > 0 && durationMin <= 120) {
-        const title = slug
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-
-        if (!cancelled) {
-          setTimer({
-            slug,
-            title,
-            duration: durationMin * 60,
-            description: `Free ${title} with sound and fullscreen. Start the countdown now!`,
-            keywords: `${title}, timer, countdown, online timer`,
-            isCustom: true,
-            background: getBackground(slug, title),
-          });
-          setLoading(false);
-        }
-        return () => {
-          cancelled = true;
-        };
-      }
-    }
-
-    if (!cancelled) {
-      setTimer(found || null);
-      setLoading(false);
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
-
-  // Create one real Context timer after the SEO timer definition is loaded.
-  useEffect(() => {
-    if (loading || !timer || createdRef.current) return undefined;
-
-    createdRef.current = true;
-    addTimer(timer.title, timer.duration, "seo");
-
-    return undefined;
-  }, [loading, timer, addTimer]);
-
-  // Find the timer created for this SEO page.
-  useEffect(() => {
-    if (!timer || !createdRef.current) return;
-
-    const matches = activeTimers.filter(
-      (item) =>
-        item.type === "seo" &&
-        item.name === timer.title &&
-        item.duration === timer.duration
-    );
-
-    const latest = matches[matches.length - 1];
-    if (latest) {
-      timerKeyRef.current = latest.id;
-    }
-  }, [activeTimers, timer]);
-
-  // Remove the SEO timer when leaving the page.
-  useEffect(() => {
-    return () => {
-      if (timerKeyRef.current) {
-        removeTimer(timerKeyRef.current);
-      }
-      createdRef.current = false;
-      timerKeyRef.current = null;
-    };
-  }, [removeTimer]);
-
-  const liveTimer = timerKeyRef.current
-    ? activeTimers.find((item) => item.id === timerKeyRef.current)
-    : null;
-
-  const timerProps = liveTimer || {
-    id: timerKeyRef.current || `seo-${slug}`,
-    name: timer?.title || "Timer",
-    duration: timer?.duration || 0,
-    remaining: timer?.duration || 0,
-    type: "seo",
-    status: "running",
-  };
-
-  // Conditional UI comes only AFTER all hooks.
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-gray-400">Loading timer...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!timer) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0a0a] via-[#1a0a2e] to-[#0a0a0a] px-4">
-        <div className="text-center max-w-md mx-auto">
-          <div className="text-8xl md:text-9xl font-bold text-purple-400 mb-4 animate-pulse">404</div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-3">Timer Not Found</h1>
-          <p className="text-gray-400 text-sm md:text-base mb-6">
-            The timer you're looking for doesn't exist or has been removed.
-          </p>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300"
-          >
-            <span>🏠</span> Back to Home
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const canonicalUrl = `https://timecounterpro.com/timer/${timer.slug}`;
-
-  const schemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    name: timer.title,
-    description: timer.description,
-    applicationCategory: "UtilityApplication",
-    applicationSubCategory: "Timer",
-    operatingSystem: "All",
-    browserRequirements: "Requires JavaScript",
-    image: "https://timecounterpro.com/time.png",
-    url: canonicalUrl,
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
-  };
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://timecounterpro.com/",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Timers",
-        item: "https://timecounterpro.com/",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: timer.title,
-        item: canonicalUrl,
-      },
-    ],
-  };
-
-  const timerWithBackground = { ...timerProps, background: timer.background || getBackground(timer.slug, timer.title) };
-
-  return (
-    <>
-      <Helmet>
-        <title>{`${timer.title} - Free Online Timer with Sound & Fullscreen | TimeCounterPro`}</title>
-        <meta name="description" content={timer.description} />
-        <meta name="keywords" content={timer.keywords} />
-        <link rel="canonical" href={canonicalUrl} />
-
-        <meta property="og:title" content={`${timer.title} - TimeCounterPro`} />
-        <meta property="og:description" content={timer.description} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="TimeCounterPro" />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${timer.title} - TimeCounterPro`} />
-        <meta name="twitter:description" content={timer.description} />
-
-        <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-      </Helmet>
-
-      <div className="min-h-screen bg-[#0a0a0a]">
-        <FullScreenTimer timer={timerWithBackground} onClose={() => navigate("/")} />
-      </div>
-    </>
-  );
-};
-
-export default TimerSlugPage;
-
-*/
-
-
-
-
-
-
-
-// src/pages/TimerSlugPage.jsx - SEO CTR + Content Boost Version
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import seoTimers from "../data/seoTimers";
-import FullScreenTimer from "../components/FullScreenTimer";
-import { TimerContext } from "../context/TimerContext";
+const INDEXABLE_TIMERS = new Set([
+  "5-minute-timer","10-minute-timer","15-minute-timer","20-minute-timer","25-minute-timer",
+  "30-minute-timer","45-minute-timer","60-minute-timer","pomodoro-timer","pomodoro-25-5",
+  "pomodoro-50-10","study-timer","workout-timer","cooking-timer","meditation-timer",
+  "classroom-timer","meeting-timer","exam-timer","reading-timer","coding-timer"
+]);
 
 const getBackground = (slug = "", title = "") => {
   const value = `${slug} ${title}`.toLowerCase();
@@ -277,44 +20,61 @@ const getBackground = (slug = "", title = "") => {
   if (/pomodoro|focus/.test(value)) return "pomodoro";
   if (/study|exam|classroom|school|homework|reading|test|quiz/.test(value)) return "study";
   if (/meeting|presentation|work/.test(value)) return "meeting";
-  return "meditation";
+  return "countdown";
 };
 
-// ✅ NEW - Har category ka alag attractive content
 const CATEGORY_CONTENT = {
   meditation: {
-    intro: "Find inner peace with this meditation timer. Perfect for mindfulness, breathing exercises, and relaxation.",
-    benefits: ["Reduces stress and anxiety", "Improves focus and clarity", "Better sleep quality", "Mindfulness practice"],
-    howTo: ["Sit comfortably", "Set your intention", "Start timer and breathe deeply", "Bell will guide you when complete"]
+    intro: "A meditation timer gives you a simple boundary for a quiet session, so you can spend less attention checking the clock.",
+    benefits: ["Creates a clear session length", "Useful for breathing practice", "Works for short or longer sessions", "Keeps the timing simple"],
+    howTo: ["Choose a comfortable position", "Set the session length", "Start the timer and focus on your practice", "Return when the timer reaches zero"],
+    tips: "For a new routine, a short session can be easier to repeat consistently than an ambitious session that is difficult to maintain."
   },
   cooking: {
-    intro: "Never overcook again! This kitchen timer ensures perfect results every time with loud alarm.",
-    benefits: ["Perfect cooking timing", "Loud alarm for kitchen", "Never burn food", "Recipe precision"],
-    howTo: ["Set time as per recipe", "Start timer", "Continue cooking", "Alarm when done"]
+    intro: "A kitchen timer is useful whenever a recipe asks you to wait for a specific amount of time. It lets you work on another preparation step without constantly watching the clock.",
+    benefits: ["Clear cooking countdown", "Useful for preparation and baking", "Easy to restart for another step", "Fullscreen view is easy to glance at"],
+    howTo: ["Read the recipe and choose the required duration", "Start the countdown", "Continue the next preparation step", "Check the timer when the alert finishes"],
+    tips: "Use the timer as a reminder rather than as a substitute for checking food. Cooking results can also depend on the recipe, appliance and ingredients."
   },
   study: {
-    intro: "Boost your productivity with this study timer. Scientifically proven to improve focus and retention.",
-    benefits: ["Improved concentration", "Better exam preparation", "Pomodoro technique", "Track study sessions"],
-    howTo: ["Choose study duration", "Eliminate distractions", "Focus completely", "Take break when alarm rings"]
+    intro: "A study timer can turn a large study plan into a clearly defined session. The goal is to make the next block of work visible and manageable.",
+    benefits: ["Defines a clear study block", "Useful for revision and reading", "Helps separate work from breaks", "Easy to use without an account"],
+    howTo: ["Choose one specific study task", "Set a realistic duration", "Start the timer and remove distractions", "Stop or continue after reviewing your progress"],
+    tips: "Try matching the timer to the task. A short review may need only 10–15 minutes, while a larger topic can be divided into several sessions."
   },
   workout: {
-    intro: "Stay fit with this workout timer. Perfect for HIIT, gym sessions, and home exercises.",
-    benefits: ["Perfect workout intervals", "HIIT training", "Rest timer included", "Fitness tracking"],
-    howTo: ["Set workout duration", "Start exercising", "Follow intervals", "Cool down when complete"]
+    intro: "A workout countdown can help you keep a planned exercise or rest interval visible while you train.",
+    benefits: ["Simple exercise timing", "Useful for work and rest intervals", "Fullscreen display is easy to see", "Suitable for home workouts and practice"],
+    howTo: ["Choose the interval you need", "Start the timer", "Complete the planned activity", "Use the alert as a cue to change or finish"],
+    tips: "A timer only manages time. Choose exercise intensity and rest periods that are appropriate for your own fitness level and follow professional advice when needed."
   },
   pomodoro: {
-    intro: "Master productivity with Pomodoro technique. 25 min work, 5 min break - proven method.",
-    benefits: ["25-5 proven technique", "Avoid burnout", "Maximum productivity", "Time management"],
-    howTo: ["Work 25 minutes focused", "Take 5 min break", "Repeat 4 times", "Long break after"]
+    intro: "Pomodoro timers organize work into focused periods followed by planned breaks. TimeCounterPro provides ready-made cycles so you can start without calculating each interval.",
+    benefits: ["Clear focus and break boundaries", "Useful for study and desk work", "Simple repeatable routine", "Ready-made 25/5 and longer cycles"],
+    howTo: ["Choose a focus-and-break cycle", "Work on one task during the focus period", "Take the planned break", "Repeat the cycle and adjust it to your routine"],
+    tips: "The 25/5 pattern is a common starting point, but it is not a rule. Choose intervals that fit your task, environment and attention span."
+  },
+  classroom: {
+    intro: "A classroom timer can make activity limits visible to students and teachers during quizzes, group work, reading and short exercises.",
+    benefits: ["Visible activity deadline", "Useful for quizzes and exercises", "Simple fullscreen display", "No account required"],
+    howTo: ["Tell participants the time limit", "Set the matching duration", "Start the timer", "Give your planned instruction when time ends"],
+    tips: "For assessments, use the timer as a communication aid and follow the rules or accommodations that apply to your class."
+  },
+  meeting: {
+    intro: "A meeting timer helps teams keep a planned discussion, presentation or work block within its allocated time.",
+    benefits: ["Clear meeting time limit", "Useful for presentations", "Easy to display on a shared screen", "Simple countdown without setup"],
+    howTo: ["Agree on the time limit", "Set the duration", "Start when the meeting begins", "Use the ending alert as a cue to wrap up"],
+    tips: "A visible timer works best when participants know the time limit before the discussion starts."
   },
   default: {
-    intro: "Free online timer with sound and fullscreen. No ads, 100% free, works on all devices.",
-    benefits: ["Free forever", "Sound alert", "Fullscreen mode", "Works offline"],
-    howTo: ["Set your time", "Click start", "Focus on task", "Get alert when done"]
+    intro: "This online countdown gives you a clear time limit for a task without requiring an account or a separate application.",
+    benefits: ["Simple countdown interface", "Sound and fullscreen controls", "Works in modern browsers", "Useful for many everyday tasks"],
+    howTo: ["Choose the duration", "Start the timer", "Focus on the task", "Return when the countdown finishes"],
+    tips: "Pick a duration that matches the task rather than using the same timer for every situation."
   }
 };
 
-const TimerSlugPage = () => {
+function TimerSlugPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { activeTimers, addTimer, removeTimer } = useContext(TimerContext);
@@ -327,175 +87,143 @@ const TimerSlugPage = () => {
     let cancelled = false;
     setLoading(true);
     const pomodoroMatch = slug?.match(/pomodoro-(\d+)-(\d+)/);
+
     if (pomodoroMatch) {
       if (!cancelled) {
+        const focusMinutes = Number(pomodoroMatch[1]);
         setTimer({
-          slug, title: `Pomodoro ${pomodoroMatch[1]}-${pomodoroMatch[2]}`, background: "pomodoro",
-          duration: parseInt(pomodoroMatch[1], 10) * 60,
-          description: `Free Pomodoro ${pomodoroMatch[1]}-${pomodoroMatch[2]} timer for productivity.`,
-          keywords: "pomodoro timer, focus timer", category: "pomodoro",
+          slug,
+          title: `Pomodoro ${pomodoroMatch[1]}-${pomodoroMatch[2]}`,
+          duration: focusMinutes * 60,
+          description: `A Pomodoro timer with a ${pomodoroMatch[1]} minute focus period and a ${pomodoroMatch[2]} minute break period.`,
+          keywords: "pomodoro timer, focus timer, study timer",
+          category: "pomodoro",
+          background: "pomodoro"
         });
         setLoading(false);
       }
       return () => { cancelled = true; };
     }
+
     const found = seoTimers.find((item) => item.slug === slug);
-    if (!found && slug) {
-      const durationMatch = slug.match(/(\d+)-min/);
-      const durationMin = durationMatch ? parseInt(durationMatch[1], 10) : null;
-      if (durationMin && durationMin > 0 && durationMin <= 120) {
-        const title = slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-        if (!cancelled) {
-          setTimer({
-            slug, title, duration: durationMin * 60,
-            description: `Free ${title} with sound and fullscreen.`,
-            keywords: `${title}, timer`, isCustom: true,
-            background: getBackground(slug, title), category: getBackground(slug, title),
-          });
-          setLoading(false);
-        }
-        return () => { cancelled = true; };
-      }
-    }
     if (!cancelled) {
-      if (found) {
-        setTimer({ ...found, background: found.background || getBackground(found.slug, found.title), category: found.category || getBackground(found.slug, found.title) });
-      } else {
-        setTimer(found || null);
-      }
+      setTimer(found ? { ...found, background: found.background || getBackground(found.slug, found.title), category: found.category || getBackground(found.slug, found.title) } : null);
       setLoading(false);
     }
     return () => { cancelled = true; };
   }, [slug]);
 
   useEffect(() => {
-    if (loading || !timer || createdRef.current) return undefined;
+    if (loading || !timer || createdRef.current) return;
     createdRef.current = true;
     addTimer(timer.title, timer.duration, "seo");
-    return undefined;
   }, [loading, timer, addTimer]);
 
   useEffect(() => {
     if (!timer || !createdRef.current) return;
-    const matches = activeTimers.filter((item) => item.type === "seo" && item.name === timer.title && item.duration === timer.duration);
-    const latest = matches[matches.length - 1];
-    if (latest) timerKeyRef.current = latest.id;
+    const match = activeTimers.filter((item) => item.type === "seo" && item.name === timer.title && item.duration === timer.duration).at(-1);
+    if (match) timerKeyRef.current = match.id;
   }, [activeTimers, timer]);
 
-  useEffect(() => {
-    return () => {
-      if (timerKeyRef.current) removeTimer(timerKeyRef.current);
-      createdRef.current = false;
-      timerKeyRef.current = null;
-    };
+  useEffect(() => () => {
+    if (timerKeyRef.current) removeTimer(timerKeyRef.current);
+    createdRef.current = false;
+    timerKeyRef.current = null;
   }, [removeTimer]);
 
-  const liveTimer = timerKeyRef.current ? activeTimers.find((item) => item.id === timerKeyRef.current) : null;
-  const timerProps = liveTimer || {
-    id: timerKeyRef.current || `seo-${slug}`,
-    name: timer?.title || "Timer", duration: timer?.duration || 0, remaining: timer?.duration || 0,
-    type: "seo", status: "running", background: timer?.background || getBackground(slug, timer?.title),
-  };
-
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white"><div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto" /></div>;
-  }
-  if (!timer) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0a0a] via-[#1a0a2e] to-[#0a0a0a] px-4">
-        <div className="text-center max-w-md mx-auto">
-          <div className="text-8xl font-bold text-purple-400 mb-4">404</div>
-          <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl">Back to Home</Link>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><p className="text-slate-500">Loading timer…</p></div>;
+  if (!timer) return <div className="min-h-screen flex flex-col items-center justify-center gap-4"><h1 className="text-4xl font-bold">Timer not found</h1><Link className="text-indigo-600" to="/timers">Browse timers</Link></div>;
 
   const canonicalUrl = `https://timecounterpro.com/timer/${timer.slug}`;
   const category = timer.category || getBackground(timer.slug, timer.title);
   const content = CATEGORY_CONTENT[category] || CATEGORY_CONTENT.default;
-  const minutes = Math.floor(timer.duration / 60);
-  
-  // ✅ CTR BOOST - Attractive Title & Description for Google
-  const attractiveTitle = `${timer.title} ⏱️ Free Online Timer with Sound & Fullscreen`;
-  const attractiveDesc = `⏰ ${timer.title} - Free online with loud alarm & fullscreen. Perfect for ${category}. No ads, 100% free. Start now at TimeCounterPro!`;
+  const minutes = Math.max(1, Math.round(timer.duration / 60));
+  const indexable = INDEXABLE_TIMERS.has(timer.slug);
+  const title = `${timer.title} — Free Online Timer | TimeCounterPro`;
+  const description = `${timer.title}: a simple online timer for ${category} and everyday tasks. Set the duration, start the countdown and use sound or fullscreen when helpful.`;
+  const liveTimer = timerKeyRef.current ? activeTimers.find((item) => item.id === timerKeyRef.current) : null;
+  const timerProps = liveTimer || { id: timerKeyRef.current || `seo-${slug}`, name: timer.title, duration: timer.duration, remaining: timer.duration, type: "seo", status: "running" };
 
   const schemaMarkup = {
-    "@context": "https://schema.org", "@type": "WebApplication",
-    name: timer.title, description: timer.description,
-    applicationCategory: "UtilityApplication", operatingSystem: "All",
-    url: canonicalUrl, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: timer.title,
+    description,
+    applicationCategory: "UtilityApplication",
+    operatingSystem: "All",
+    url: canonicalUrl,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
   };
 
   const faqSchema = {
-    "@context": "https://schema.org", "@type": "FAQPage",
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
     mainEntity: [
-      { "@type": "Question", name: `How to use ${timer.title}?`, acceptedAnswer: { "@type": "Answer", text: content.howTo.join(", ") } },
-      { "@type": "Question", name: `Is ${timer.title} free?`, acceptedAnswer: { "@type": "Answer", text: `Yes, ${timer.title} is 100% free with sound and fullscreen at TimeCounterPro. No ads, no signup required.` } },
-      { "@type": "Question", name: `Does ${timer.title} have sound?`, acceptedAnswer: { "@type": "Answer", text: `Yes, ${timer.title} has loud alarm sound with volume control and works even when tab is in background.` } }
+      { "@type": "Question", name: `How do I use the ${timer.title}?`, acceptedAnswer: { "@type": "Answer", text: content.howTo.join(" ") } },
+      { "@type": "Question", name: `What can I use a ${timer.title} for?`, acceptedAnswer: { "@type": "Answer", text: content.intro } },
+      { "@type": "Question", name: `Is the ${timer.title} free to use?`, acceptedAnswer: { "@type": "Answer", text: "The timer is available to use without creating an account. Standard browser features such as sound may depend on your device and browser settings." } }
     ]
   };
-
-  const timerWithBackground = { ...timerProps, background: timer.background || getBackground(timer.slug, timer.title), category, slug: timer.slug, title: timer.title };
 
   return (
     <>
       <Helmet>
-        <title>{attractiveTitle}</title>
-        <meta name="description" content={attractiveDesc} />
-        <meta name="keywords" content={timer.keywords} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:title" content={attractiveTitle} />
-        <meta property="og:description" content={attractiveDesc} />
+        {!indexable && <meta name="robots" content="noindex,follow" />}
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={attractiveTitle} />
-        <meta name="twitter:description" content={attractiveDesc} />
-        <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        {indexable && <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>}
+        {indexable && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
       </Helmet>
 
       <div className="min-h-screen bg-[#0a0a0a]">
-        <FullScreenTimer timer={timerWithBackground} onClose={() => navigate("/")} />
-        
-        {/* ✅ NEW - SEO Content Below Timer - AdSense ke liye */}
-        <div className="relative z-10 bg-[#0a0a0a] border-t border-white/10">
-          <div className="max-w-4xl mx-auto px-4 py-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{timer.title} - Free Online Timer</h2>
-            <p className="text-gray-300 text-base leading-relaxed mb-8">{content.intro} This {minutes} minute timer comes with loud alarm sound, fullscreen mode, and works on all devices. Perfect for {category} activities at TimeCounterPro - 100% free, no ads.</p>
-            
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-              <div className="bg-white/[0.05] border border-white/10 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-3">✨ Benefits</h3>
-                <ul className="space-y-2">
-                  {content.benefits.map((b, i) => <li key={i} className="text-gray-300 text-sm flex items-center gap-2"><span className="text-purple-400">•</span> {b}</li>)}
-                </ul>
-              </div>
-              <div className="bg-white/[0.05] border border-white/10 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-3">📝 How to Use</h3>
-                <ol className="space-y-2">
-                  {content.howTo.map((h, i) => <li key={i} className="text-gray-300 text-sm flex gap-2"><span className="text-purple-400">{i+1}.</span> {h}</li>)}
-                </ol>
-              </div>
+        <FullScreenTimer timer={{ ...timerProps, background: timer.background || getBackground(timer.slug, timer.title), category, slug: timer.slug, title: timer.title }} onClose={() => navigate("/timers")} />
+
+        <article className="relative z-10 bg-[#0a0a0a] border-t border-white/10">
+          <div className="max-w-4xl mx-auto px-4 py-12 text-white">
+            <p className="text-xs uppercase tracking-[.18em] text-purple-300">{category} timer</p>
+            <h1 className="mt-2 text-3xl md:text-4xl font-bold">{timer.title}</h1>
+            <p className="mt-4 text-gray-300 text-base leading-7">{content.intro} This {minutes}-minute countdown is designed to make the time limit easy to see while you work on the task.</p>
+
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
+              <section className="border border-white/10 rounded-xl p-6">
+                <h2 className="text-xl font-semibold">Why use this timer?</h2>
+                <ul className="mt-4 space-y-3 text-gray-300 text-sm leading-6">{content.benefits.map((item) => <li key={item}>• {item}</li>)}</ul>
+              </section>
+              <section className="border border-white/10 rounded-xl p-6">
+                <h2 className="text-xl font-semibold">How to use it</h2>
+                <ol className="mt-4 space-y-3 text-gray-300 text-sm leading-6">{content.howTo.map((item, i) => <li key={item}><span className="text-purple-300 mr-2">{i + 1}.</span>{item}</li>)}</ol>
+              </section>
             </div>
 
-            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6 mb-8">
-              <h3 className="text-lg font-semibold text-white mb-2">⏰ Why Choose TimeCounterPro?</h3>
-              <p className="text-gray-300 text-sm">Free forever, no signup, loud alarm even in background tab, fullscreen mode, mobile friendly, works offline. Trusted by 100k+ users for {category} timers.</p>
-            </div>
+            <section className="mt-6 border border-white/10 rounded-xl p-6">
+              <h2 className="text-xl font-semibold">A practical tip</h2>
+              <p className="mt-3 text-gray-300 leading-7">{content.tips}</p>
+            </section>
 
-            <div className="flex flex-wrap gap-2">
-              <Link to="/timer/10-minute-timer" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs text-white/80">10 Min Timer</Link>
-              <Link to="/timer/25-minute-timer" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs text-white/80">25 Min Timer</Link>
-              <Link to="/timer/pomodoro-timer" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs text-white/80">Pomodoro</Link>
-              <Link to="/timer/meditation-timer" className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs text-white/80">Meditation</Link>
-            </div>
+            <section className="mt-6 border border-white/10 rounded-xl p-6">
+              <h2 className="text-xl font-semibold">About this timer</h2>
+              <p className="mt-3 text-gray-300 leading-7">TimeCounterPro provides browser-based timing tools for study, work, exercise, cooking, meetings and everyday tasks. You can start a timer without creating an account. Timer history and preferences may be stored locally in your browser according to the site's privacy policy.</p>
+            </section>
+
+            <nav className="mt-8 flex flex-wrap gap-2" aria-label="Related timers">
+              <Link to="/timers" className="px-4 py-2 rounded-full bg-white/10 text-sm hover:bg-white/20">All timers</Link>
+              <Link to="/timer/10-minute-timer" className="px-4 py-2 rounded-full bg-white/10 text-sm hover:bg-white/20">10 minute timer</Link>
+              <Link to="/timer/25-minute-timer" className="px-4 py-2 rounded-full bg-white/10 text-sm hover:bg-white/20">25 minute timer</Link>
+              <Link to="/timer/pomodoro-timer" className="px-4 py-2 rounded-full bg-white/10 text-sm hover:bg-white/20">Pomodoro timer</Link>
+            </nav>
           </div>
-        </div>
+        </article>
       </div>
     </>
   );
-};
+}
 
 export default TimerSlugPage;

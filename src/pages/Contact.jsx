@@ -1,22 +1,15 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { FiMail, FiTwitter, FiGithub, FiSend, FiCheckCircle, FiClock, FiMapPin, FiGlobe } from 'react-icons/fi';
 
 function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    
-    // Simulate sending
-    setTimeout(() => {
-      setIsLoading(false);
-      setSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setTimeout(() => setSubmitted(false), 5000);
-    }, 1500);
+    const subject = encodeURIComponent(formData.subject || "TimeCounterPro feedback");
+    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`);
+    window.location.href = `mailto:timecounterpro@gmail.com?subject=${subject}&body=${body}`;
   };
 
   const handleChange = (e) => {
@@ -51,7 +44,13 @@ function Contact() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto animate-fade-in px-4 py-6 sm:py-8">
+    <>
+      <Helmet>
+        <title>Contact TimeCounterPro | Feedback & Support</title>
+        <meta name="description" content="Contact TimeCounterPro with questions, feedback, bug reports or suggestions about our online timer tools." />
+        <link rel="canonical" href="https://timecounterpro.com/contact" />
+      </Helmet>
+      <div className="max-w-5xl mx-auto animate-fade-in px-4 py-6 sm:py-8">
       {/* Header */}
       <div className="text-center mb-8 sm:mb-10">
         <div className="inline-flex items-center justify-center p-3 bg-indigo-50 rounded-2xl border border-indigo-100 mb-4">
@@ -135,23 +134,7 @@ function Contact() {
               Send a Message
             </h2>
             
-            {submitted ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-200">
-                  <FiCheckCircle size={32} className="text-emerald-600" />
-                </div>
-                <h3 className="text-slate-800 font-bold text-lg">Message Sent!</h3>
-                <p className="text-slate-500 mt-2 text-sm">
-                  Thank you for reaching out. We'll get back to you within 24 hours.
-                </p>
-                <button
-                  onClick={() => setSubmitted(false)}
-                  className="mt-4 px-4 py-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium hover:underline transition-all"
-                >
-                  Send another message
-                </button>
-              </div>
-            ) : (
+            <div>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -218,27 +201,16 @@ function Contact() {
 
                 <button 
                   type="submit" 
-                  disabled={isLoading}
                   className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-sm"
                 >
-                  {isLoading ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <FiSend size={16} />
-                      Send Message
-                    </>
-                  )}
+                  <><FiSend size={16} /> Open Email</>
                 </button>
 
                 <p className="text-[10px] text-slate-400 text-center">
-                  We'll never share your information with third parties
+                  Your email app will open with the message addressed to timecounterpro@gmail.com
                 </p>
               </form>
-            )}
+            </div>
           </div>
         </div>
       </div>
@@ -247,7 +219,8 @@ function Contact() {
       <div className="mt-6 text-center text-[10px] text-slate-400 border-t border-slate-200 pt-4">
         <p>We value your feedback and aim to respond to all messages within 24 hours.</p>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
