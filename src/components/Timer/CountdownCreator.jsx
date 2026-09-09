@@ -335,7 +335,7 @@ function CountdownCreator() {
         <button 
           type="submit" 
           disabled={isLoading} 
-          className={`w-full py-2.5 xs:py-3 sm:py-3.5 bg-gradient-to-r ${getThemeColor()} text-white font-semibold rounded-lg disabled:opacity-60 disabled:cursor-not-allowed shadow-sm hover:shadow-md transition-all duration-300 text-[11px] xs:text-xs sm:text-sm touch-manipulation active:scale-[0.99]`}
+          className={`w-full py-2.5 xs:py-3 sm:py-3.5 bg-gradient-to-r ${getThemeColor()} text-white font-semibold  disabled:opacity-60 disabled:cursor-not-allowed shadow-sm hover:shadow-md transition-all duration-300 text-[11px] xs:text-xs sm:text-sm touch-manipulation active:scale-[0.99]`}
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
@@ -356,11 +356,11 @@ function CountdownCreator() {
       {generatedURL && (
         <div id="url-section" className="mt-5 xs:mt-6 pt-5 xs:pt-6 border-t border-slate-200 animate-fade-in">
           <div className="flex items-center gap-2 xs:gap-2.5 mb-2.5 xs:mb-3 flex-wrap">
-            <div className="p-1.5 bg-emerald-50 rounded-lg border border-emerald-200 flex-shrink-0">
+            <div className="p-1.5 bg-emerald-50  border border-emerald-200 flex-shrink-0">
               <FiLink size={14} className="xs:text-[16px] text-emerald-600" />
             </div>
             <h3 className="text-xs xs:text-sm font-semibold text-slate-800">Shareable Link</h3>
-            <span className="text-[8px] xs:text-[10px] text-emerald-600 bg-emerald-50 px-1.5 xs:px-2 py-0.5 rounded-full font-medium border border-emerald-200">
+            <span className="text-[8px] xs:text-[10px] text-emerald-600 bg-emerald-50 px-1.5 xs:px-2 py-0.5  font-medium  border-emerald-200">
               Ready
             </span>
           </div>
@@ -372,14 +372,14 @@ function CountdownCreator() {
                 type="text" 
                 value={generatedURL} 
                 readOnly 
-                className="w-full px-3 xs:px-4 py-2 xs:py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] xs:text-xs sm:text-sm text-slate-600 focus:outline-none font-mono pr-20 xs:pr-24 truncate" 
+                className="w-full px-3 xs:px-4 py-2 xs:py-2.5 bg-slate-50 border border-slate-200  text-[11px] xs:text-xs sm:text-sm text-slate-600 focus:outline-none font-mono pr-20 xs:pr-24 truncate" 
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 xs:gap-1.5">
                 <div 
-                  className="w-2 h-2 xs:w-2.5 xs:h-2.5 rounded-full border border-white flex-shrink-0"
+                  className="w-2 h-2 xs:w-2.5 xs:h-2.5  border border-white flex-shrink-0"
                   style={{ background: getThemeColorHex() }}
                 />
-                <span className="text-[7px] xs:text-[8px] sm:text-[9px] text-slate-400 bg-slate-100 px-1 xs:px-1.5 py-0.5 rounded">
+                <span className="text-[7px] xs:text-[8px] sm:text-[9px] text-slate-400 bg-slate-100 px-1 xs:px-1.5 py-0.5 ">
                   {getThemeLabel()}
                 </span>
               </div>
@@ -388,7 +388,7 @@ function CountdownCreator() {
               <button 
                 type="button" 
                 onClick={handleCopy} 
-                className={`flex-1 sm:flex-none px-3 xs:px-4 py-2 xs:py-2.5 rounded-lg text-[11px] xs:text-xs sm:text-sm font-medium transition-all flex items-center justify-center gap-1 xs:gap-1.5 touch-manipulation active:scale-95 ${
+                className={`flex-1 sm:flex-none px-3 xs:px-4 py-2 xs:py-2.5  text-[11px] xs:text-xs sm:text-sm font-medium transition-all flex items-center justify-center gap-1 xs:gap-1.5 touch-manipulation active:scale-95 ${
                   isCopied 
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' 
                     : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow-md'
@@ -426,7 +426,7 @@ function CountdownCreator() {
           </div>
 
           {/* Helpful tip */}
-          <div className="mt-3 xs:mt-4 p-2.5 xs:p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="mt-3 xs:mt-4 p-2.5 xs:p-3 bg-slate-50  border-slate-200">
             <p className="text-[9px] xs:text-[10px] text-slate-500 flex items-start gap-1.5 xs:gap-2">
               <span className="text-indigo-400 mt-0.5 flex-shrink-0">ℹ️</span>
               <span className="break-words">

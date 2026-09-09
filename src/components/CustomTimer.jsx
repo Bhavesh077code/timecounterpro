@@ -62,11 +62,11 @@ function CustomTimer() {
   const hasTime = totalSeconds > 0;
 
   return (
-    <div className="bg-white  border border-slate-200 p-4 sm:p-5 transition-all hover:border-indigo-200 hover:shadow-sm mt-3">
+    <div className="bg-gray-100  border-slate-200 p-4 sm:p-5 transition-all hover:border-indigo-200 hover:shadow-sm mt-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-indigo-50 rounded-lg border border-indigo-100">
+          <div className="p-1.5 bg-indigo-50  border border-indigo-100">
             <FiClock size={16} className="text-indigo-600" />
           </div>
           <h2 className="text-sm sm:text-base font-semibold text-slate-800">
@@ -102,14 +102,14 @@ function CustomTimer() {
               <button
                 key={mins}
                 onClick={() => handleQuickAdd(mins)}
-                className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-medium transition-all border border-slate-200 hover:border-slate-300 hover:shadow-sm active:scale-95"
+                className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700  text-xs font-medium transition-all border border-slate-200 hover:border-slate-300 hover:shadow-sm active:scale-95"
               >
                 {mins}m
               </button>
             ))}
             <button
               onClick={() => setIsExpanded(true)}
-              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition-all shadow-sm hover:shadow active:scale-95"
+              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white  text-xs font-medium transition-all shadow-sm hover:shadow active:scale-95"
             >
               <span className="flex items-center gap-1">
                 <FiPlus size={12} />
@@ -134,7 +134,7 @@ function CustomTimer() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Project Work, Meeting, Break"
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200  text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             />
           </div>
           
@@ -155,7 +155,7 @@ function CustomTimer() {
                   }}
                   min="0"
                   max="24"
-                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200  text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
               </div>
               <div>
@@ -169,7 +169,7 @@ function CustomTimer() {
                   }}
                   min="0"
                   max="59"
-                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200  text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
               </div>
               <div>
@@ -183,7 +183,7 @@ function CustomTimer() {
                   }}
                   min="0"
                   max="59"
-                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  className="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
                 />
               </div>
             </div>
@@ -191,7 +191,7 @@ function CustomTimer() {
 
           {/* Total Summary */}
           {hasTime && (
-            <div className="flex items-center justify-between bg-indigo-50 rounded-lg px-3 py-2 border border-indigo-100">
+            <div className="flex items-center justify-between bg-indigo-50  px-3 py-2 border border-indigo-100">
               <span className="text-xs text-indigo-700 font-medium">Total Duration</span>
               <span className="text-sm font-mono font-semibold text-indigo-700">
                 {hours > 0 && `${hours}h `}
@@ -209,13 +209,13 @@ function CustomTimer() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all text-sm ${
+              className={`flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium  transition-all text-sm ${
                 isLoading ? 'opacity-60 cursor-not-allowed' : 'shadow-sm hover:shadow'
               }`}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent  animate-spin" />
                   Starting...
                 </span>
               ) : (
@@ -228,7 +228,7 @@ function CustomTimer() {
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
-              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium rounded-lg transition-all text-sm"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium  transition-all text-sm"
             >
               Cancel
             </button>

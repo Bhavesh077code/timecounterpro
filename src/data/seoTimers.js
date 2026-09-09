@@ -509,6 +509,7 @@ for (let mins = 1; mins <= 120; mins++) {
 
 [
   { name: 'Meditation Timer', duration: 1200 },
+  { name: 'Meditation Timer with sound', duration: 1500 },
   { name: 'Meditation Timer 5 Minutes', duration: 300 },
   { name: 'Meditation Timer 10 Minutes', duration: 600 },
   { name: 'Meditation Timer 15 Minutes', duration: 900 },

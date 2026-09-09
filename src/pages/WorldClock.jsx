@@ -260,7 +260,7 @@ export default function WorldClock() {
         </script>
       </Helmet>
 
-      <main className="min-h-screen bg-gray-50 dark:bg-gray-950 px-4 py-8">
+      <main className="min-h-screen bg-white px-4 py-8">
         <div className="mx-auto max-w-6xl">
 
          {/* Header */}
@@ -280,13 +280,12 @@ export default function WorldClock() {
           </p>
         </header>
 
-
           {/* CONTROLS */}
-          <section className="bg-white dark:bg-gray-900  shadow-sm border border-gray-200 dark:border-gray-800 p-4 mb-6">
+          <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 mb-6">
             <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
 
               <div className="flex-1">
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-2 text-gray-700">
                   Search city
                 </label>
 
@@ -295,12 +294,12 @@ export default function WorldClock() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search London, Tokyo, Dubai..."
-                  className="w-full  border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium mb-2 text-gray-700">
                   Home / reference city
                 </label>
 
@@ -310,7 +309,7 @@ export default function WorldClock() {
                     setHomeZone(e.target.value);
                     addCity(e.target.value);
                   }}
-                  className="w-full md:w-64  border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3"
+                  className="w-full md:w-64 border border-gray-300 bg-white px-4 py-3"
                 >
                   {CITIES.map((city) => (
                     <option key={city.timeZone} value={city.timeZone}>
@@ -323,14 +322,14 @@ export default function WorldClock() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setIs24Hour((prev) => !prev)}
-                  className=" bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-3 font-medium"
+                  className="bg-gray-900 text-white px-4 py-3 font-medium"
                 >
                   {is24Hour ? "24 Hour" : "12 Hour"}
                 </button>
 
                 <button
                   onClick={resetCities}
-                  className=" border border-gray-300 dark:border-gray-700 px-4 py-3 font-medium"
+                  className="border border-gray-300 px-4 py-3 font-medium"
                 >
                   Reset
                 </button>
@@ -370,22 +369,22 @@ export default function WorldClock() {
               return (
                 <article
                   key={city.timeZone}
-                  className="bg-white dark:bg-gray-900  border border-gray-200 dark:border-gray-800 p-5 shadow-sm"
+                  className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-3">
 
                     <div>
-                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                      <h2 className="text-xl font-bold text-gray-900">
                         {city.city}
                       </h2>
 
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-gray-500">
                         {city.country}
                       </p>
                     </div>
 
                     {city.timeZone === homeZone && (
-                      <span className="text-xs font-semibold  px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                      <span className="text-xs font-semibold px-3 py-1 bg-blue-100 text-blue-700 rounded-full">
                         Home
                       </span>
                     )}
@@ -393,22 +392,22 @@ export default function WorldClock() {
                   </div>
 
                   <div className="mt-5">
-                    <div className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <div className="text-4xl font-bold tracking-tight text-gray-900">
                       {time}
                     </div>
 
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p className="mt-2 text-sm text-gray-500">
                       {date}
                     </p>
                   </div>
 
                   {/* TIME DIFFERENCE */}
-                  <div className="mt-5  bg-gray-50 dark:bg-gray-800 p-4">
-                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  <div className="mt-5 bg-gray-50 rounded-lg p-4">
+                    <p className="text-xs uppercase tracking-wide text-gray-500">
                       Time difference from {homeCity.city}
                     </p>
 
-                    <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="mt-1 text-lg font-semibold text-gray-900">
                       {city.timeZone === homeZone
                         ? "Reference time"
                         : formatDifference(difference)}
@@ -416,11 +415,11 @@ export default function WorldClock() {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2 text-xs">
-                    <span className="rounded-full bg-gray-100 dark:bg-gray-800 px-3 py-1">
+                    <span className="rounded-full bg-gray-100 px-3 py-1">
                       {formatOffset(now, city.timeZone)}
                     </span>
 
-                    <span className=" bg-gray-100 dark:bg-gray-800 px-3 py-1">
+                    <span className="rounded-full bg-gray-100 px-3 py-1">
                       {status}
                     </span>
                   </div>
@@ -428,14 +427,14 @@ export default function WorldClock() {
                   <div className="mt-5 flex gap-2">
                     <button
                       onClick={() => copyTime(city)}
-                      className="flex-1  border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm font-medium"
+                      className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
                     >
                       Copy time
                     </button>
 
                     <button
                       onClick={() => removeCity(city.timeZone)}
-                      className=" border border-red-200 dark:border-red-900 text-red-600 px-3 py-2 text-sm font-medium"
+                      className="border border-red-200 text-red-600 rounded-lg px-3 py-2 text-sm font-medium hover:bg-red-50"
                     >
                       Remove
                     </button>
@@ -446,12 +445,12 @@ export default function WorldClock() {
           </section>
 
           {/* ADD CITIES */}
-          <section className="mt-8 bg-white dark:bg-gray-900  border border-gray-200 dark:border-gray-800 p-5">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <section className="mt-8 bg-white border border-gray-200 rounded-lg p-5">
+            <h2 className="text-xl font-bold text-gray-900">
               Add a city
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-500">
               Add another city to your world clock.
             </p>
 
@@ -464,10 +463,10 @@ export default function WorldClock() {
                     key={city.timeZone}
                     disabled={exists}
                     onClick={() => addCity(city.timeZone)}
-                    className={`rounded-xl px-4 py-2 text-sm font-medium border ${
+                    className={`rounded-lg px-4 py-2 text-sm font-medium border ${
                       exists
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                        ? "opacity-50 cursor-not-allowed bg-gray-100"
+                        : "hover:bg-gray-50 border-gray-300"
                     }`}
                   >
                     {exists ? "✓ " : "+ "}
@@ -479,12 +478,12 @@ export default function WorldClock() {
           </section>
 
           {/* SEO CONTENT */}
-          <section className="mt-10 bg-white dark:bg-gray-900  border border-gray-200 dark:border-gray-800 p-6 md:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <section className="mt-10 bg-white border border-gray-200 rounded-lg p-6 md:p-8">
+            <h2 className="text-2xl font-bold text-gray-900">
               World Clock and Time Zone Comparison
             </h2>
 
-            <div className="mt-4 space-y-4 text-gray-600 dark:text-gray-400 leading-7">
+            <div className="mt-4 space-y-4 text-gray-600 leading-7">
               <p>
                 TimeCounterPro World Clock helps you check the current local
                 time in different cities around the world. You can add cities,
@@ -506,11 +505,11 @@ export default function WorldClock() {
               </p>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-8">
+            <h3 className="text-xl font-bold text-gray-900 mt-8">
               How to use the World Clock
             </h3>
 
-            <ol className="mt-4 list-decimal pl-6 space-y-2 text-gray-600 dark:text-gray-400">
+            <ol className="mt-4 list-decimal pl-6 space-y-2 text-gray-600">
               <li>Search for a city or country.</li>
               <li>Add the cities you want to compare.</li>
               <li>Select your home or reference city.</li>
@@ -520,53 +519,53 @@ export default function WorldClock() {
           </section>
 
           {/* FAQ */}
-          <section className="mt-8 bg-white dark:bg-gray-900  border border-gray-200 dark:border-gray-800 p-6 md:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <section className="mt-8 bg-white border border-gray-200 rounded-lg p-6 md:p-8">
+            <h2 className="text-2xl font-bold text-gray-900">
               Frequently Asked Questions
             </h2>
 
             <div className="mt-5 space-y-5">
 
-              <details className="border-b border-gray-200 dark:border-gray-800 pb-4">
-                <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white">
+              <details className="border-b border-gray-200 pb-4">
+                <summary className="cursor-pointer font-semibold text-gray-900">
                   What is a world clock?
                 </summary>
 
-                <p className="mt-3 text-gray-600 dark:text-gray-400 leading-7">
+                <p className="mt-3 text-gray-600 leading-7">
                   A world clock displays the current local time in different
                   cities and time zones around the world.
                 </p>
               </details>
 
-              <details className="border-b border-gray-200 dark:border-gray-800 pb-4">
-                <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white">
+              <details className="border-b border-gray-200 pb-4">
+                <summary className="cursor-pointer font-semibold text-gray-900">
                   How do I compare two time zones?
                 </summary>
 
-                <p className="mt-3 text-gray-600 dark:text-gray-400 leading-7">
+                <p className="mt-3 text-gray-600 leading-7">
                   Add both cities to the World Clock and select one city as
                   your home or reference city. The tool will show the time
                   difference for the other city.
                 </p>
               </details>
 
-              <details className="border-b border-gray-200 dark:border-gray-800 pb-4">
-                <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white">
+              <details className="border-b border-gray-200 pb-4">
+                <summary className="cursor-pointer font-semibold text-gray-900">
                   What does UTC offset mean?
                 </summary>
 
-                <p className="mt-3 text-gray-600 dark:text-gray-400 leading-7">
+                <p className="mt-3 text-gray-600 leading-7">
                   A UTC offset indicates how far a local time zone is ahead of
                   or behind Coordinated Universal Time (UTC).
                 </p>
               </details>
 
               <details>
-                <summary className="cursor-pointer font-semibold text-gray-900 dark:text-white">
+                <summary className="cursor-pointer font-semibold text-gray-900">
                   Can I use this world clock for international meetings?
                 </summary>
 
-                <p className="mt-3 text-gray-600 dark:text-gray-400 leading-7">
+                <p className="mt-3 text-gray-600 leading-7">
                   Yes. You can add the cities where meeting participants are
                   located and compare their local times before choosing a
                   suitable meeting time.
@@ -578,7 +577,7 @@ export default function WorldClock() {
 
           {/* RELATED TOOLS */}
           <section className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-gray-900">
               Related Time Tools
             </h2>
 
@@ -586,48 +585,48 @@ export default function WorldClock() {
 
               <a
                 href="/timers"
-                className=" bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 hover:shadow-md transition"
+                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
               >
-                <h3 className="font-bold text-gray-900 dark:text-white">
+                <h3 className="font-bold text-gray-900">
                   Countdown Timers
                 </h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-2 text-sm text-gray-500">
                   Create countdown timers for study, work and daily tasks.
                 </p>
               </a>
 
               <a
                 href="/pomodoro"
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 hover:shadow-md transition"
+                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
               >
-                <h3 className="font-bold text-gray-900 dark:text-white">
+                <h3 className="font-bold text-gray-900">
                   Pomodoro Timer
                 </h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-2 text-sm text-gray-500">
                   Work in focused sessions with regular breaks.
                 </p>
               </a>
 
               <a
                 href="/stopwatch"
-                className=" bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 hover:shadow-md transition"
+                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
               >
-                <h3 className="font-bold text-gray-900 dark:text-white">
+                <h3 className="font-bold text-gray-900">
                   Online Stopwatch
                 </h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-2 text-sm text-gray-500">
                   Measure elapsed time with a simple online stopwatch.
                 </p>
               </a>
 
               <a
                 href="/timer/meeting-timer"
-                className=" bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 hover:shadow-md transition"
+                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
               >
-                <h3 className="font-bold text-gray-900 dark:text-white">
+                <h3 className="font-bold text-gray-900">
                   Meeting Timer
                 </h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-2 text-sm text-gray-500">
                   Keep meetings and discussions on schedule.
                 </p>
               </a>

@@ -509,13 +509,13 @@ function Stopwatch() {
             <h3 className="text-slate-600 text-[10px] xs:text-xs sm:text-sm font-medium flex items-center gap-1.5">
               <FiFlag size={12} /> Lap Times
             </h3>
-            <span className="text-slate-400 text-[8px] xs:text-[10px] sm:text-xs bg-slate-100 px-2 py-0.5 rounded-full">{laps.length} laps</span>
+            <span className="text-slate-400 text-[8px] xs:text-[10px] sm:text-xs bg-slate-100 px-2 py-0.5">{laps.length} laps</span>
           </div>
           <div className="space-y-1">
             {formattedLaps.map((lap) => (
               <div
                 key={lap.index}
-                className={`flex justify-between items-center py-1 px-1.5 xs:py-1.5 xs:px-2 sm:px-3 rounded-lg transition-all border ${
+                className={`flex justify-between items-center py-1 px-1.5 xs:py-1.5 xs:px-2 sm:px-3  transition-all border ${
                   lap.index - 1 === bestSplitIndex && splits.length > 1
                     ? 'bg-emerald-50 border-emerald-100'
                     : lap.index - 1 === worstSplitIndex && splits.length > 1
@@ -538,21 +538,21 @@ function Stopwatch() {
 
       {laps.length > 1 && !isFullscreen && (
         <div className="mt-3 xs:mt-4 grid grid-cols-3 gap-2">
-          <div className="bg-emerald-50 rounded-lg border border-emerald-100 p-2 text-center">
+          <div className="bg-emerald-50 border-emerald-100 p-2 text-center">
             <FiTrendingDown className="text-emerald-600 mx-auto" size={14} />
             <div className="text-[10px] xs:text-xs font-mono font-semibold text-emerald-700 mt-1">
               {formatTime(Math.min(...splits)).formatted}
             </div>
             <div className="text-[8px] xs:text-[9px] text-slate-500 mt-0.5">Fastest split</div>
           </div>
-          <div className="bg-slate-50 rounded-lg border border-slate-200 p-2 text-center">
+          <div className="bg-slate-50 border-slate-200 p-2 text-center">
             <FiClock className="text-slate-500 mx-auto" size={14} />
             <div className="text-[10px] xs:text-xs font-mono font-semibold text-slate-700 mt-1">
               {formatTime(averageSplit).formatted}
             </div>
             <div className="text-[8px] xs:text-[9px] text-slate-500 mt-0.5">Average split</div>
           </div>
-          <div className="bg-rose-50 rounded-lg border border-rose-100 p-2 text-center">
+          <div className="bg-rose-50  border-rose-100 p-2 text-center">
             <FiTrendingUp className="text-rose-600 mx-auto" size={14} />
             <div className="text-[10px] xs:text-xs font-mono font-semibold text-rose-700 mt-1">
               {formatTime(Math.max(...splits)).formatted}
