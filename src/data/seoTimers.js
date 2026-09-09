@@ -469,14 +469,14 @@ for (let mins = 1; mins <= 120; mins++) {
 
 [
   { name: 'Study Timer', duration: 1800 },
-  { name: 'Study Timer 30 Minutes', duration: 1800 },
-  { name: 'Study Timer 45 Minutes', duration: 2700 },
-  { name: 'Study Timer 1 Hour', duration: 3600 },
-  { name: 'Study Timer 2 Hours', duration: 7200 },
-  { name: 'Study Timer 50 Minutes', duration: 3000 },
-  { name: 'Study Timer 25 Minutes', duration: 1500 },
-  { name: 'Study Timer 15 Minutes', duration: 900 },
-  { name: 'Study Timer 10 Minutes', duration: 600 },
+  { name: 'Study Timer 30 Minutes with Sound', duration: 1800 },
+  { name: 'Study Timer 45 Minutes with Sound', duration: 2700 },
+  { name: 'Study Timer 1 Hour with Sound', duration: 3600 },
+  { name: 'Study Timer 2 Hours with Sound', duration: 7200 },
+  { name: 'Study Timer 50 Minutes with Sound', duration: 3000 },
+  { name: 'Study Timer 25 Minutes with Sound', duration: 1500 },
+  { name: 'Study Timer 15 Minutes with Sound', duration: 900 },
+  { name: 'Study Timer 10 Minutes with Sound', duration: 600 },
 ].forEach(t => {
   addTimer(slugify(t.name), t.name, t.duration, `Free ${t.name} for students. Perfect for focused learning and exam preparation.`, `${t.name}, study timer, timer for students`, 'study');
 });
@@ -495,14 +495,14 @@ for (let mins = 1; mins <= 120; mins++) {
 
 [
   { name: 'Pomodoro Timer', focus: 1500 },
-  { name: 'Pomodoro 25-5', focus: 1500 },
-  { name: 'Pomodoro 50-10', focus: 3000 },
-  { name: 'Pomodoro 45-15', focus: 2700 },
-  { name: 'Pomodoro 20-5', focus: 1200 },
-  { name: 'Pomodoro 30-5', focus: 1800 },
-  { name: 'Pomodoro 60-10', focus: 3600 },
-  { name: 'Study Pomodoro Timer', focus: 1500 },
-  { name: 'Work Pomodoro Timer', focus: 1500 },
+  { name: 'Pomodoro 25-5 with Sound', focus: 1500 },
+  { name: 'Pomodoro 50-10 with Sound', focus: 3000 },
+  { name: 'Pomodoro 45-15 with Sound', focus: 2700 },
+  { name: 'Pomodoro 20-5 with Sound', focus: 1200 },
+  { name: 'Pomodoro 30-5 with Sound', focus: 1800 },
+  { name: 'Pomodoro 60-10 wiq', focus: 3600 },
+  { name: 'Study Pomodoro Timer with Sound', focus: 1500 },
+  { name: 'Work Pomodoro Timer with Sound', focus: 1500 },
 ].forEach(p => {
   addTimer(slugify(p.name), p.name, p.focus, `Free ${p.name} for productivity. Boost your focus with Pomodoro technique.`, `${p.name}, pomodoro timer, focus timer`, 'pomodoro');
 });
@@ -510,11 +510,11 @@ for (let mins = 1; mins <= 120; mins++) {
 [
   { name: 'Meditation Timer', duration: 1200 },
   { name: 'Meditation Timer with sound', duration: 1500 },
-  { name: 'Meditation Timer 5 Minutes', duration: 300 },
-  { name: 'Meditation Timer 10 Minutes', duration: 600 },
-  { name: 'Meditation Timer 15 Minutes', duration: 900 },
-  { name: 'Meditation Timer 30 Minutes', duration: 1800 },
-  { name: 'Meditation Timer 1 Hour', duration: 3600 },
+  { name: 'Meditation Timer 5 Minutes with Sound', duration: 300 },
+  { name: 'Meditation Timer 10 Minutes with Sound', duration: 600 },
+  { name: 'Meditation Timer 15 Minutes with Sound', duration: 900 },
+  { name: 'Meditation Timer 30 Minutes with Sound', duration: 1800 },
+  { name: 'Meditation Timer 1 Hour with Sound', duration: 3600 },
 ].forEach(t => {
   addTimer(slugify(t.name), t.name, t.duration, `Free ${t.name} for mindfulness and relaxation.`, `${t.name}, meditation timer, mindfulness timer`, 'meditation');
 });
