@@ -19,7 +19,7 @@ const categoryInfo = {
 const featuredSlugs = [
   "5-minute-timer", "10-minute-timer", "15-minute-timer", "20-minute-timer", "25-minute-timer",
   "30-minute-timer", "45-minute-timer", "60-minute-timer", "pomodoro-timer", "pomodoro-25-5",
-  "pomodoro-50-10", "study-timer", "workout-timer", "cooking-timer", "meditation-timer",
+  "pomodoro-50-10", "study-timer", "workout-timer", "cooking-timer", "meditation-timer","meditation-timer-with-sound",
   "classroom-timer", "meeting-timer", "exam-timer", "reading-timer", "coding-timer"
 ];
 

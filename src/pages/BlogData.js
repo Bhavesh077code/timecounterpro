@@ -67,13 +67,7 @@ export const blogPosts = [
       <p><strong>Start with five minutes. Use a gentle bell. Show up every day.</strong> <em>The rest—the calm, the clarity, the consistency—will follow.</em></p>
       
       <h2>Get Started</h2>
-      <p><strong><a href="/timer/5-minute-meditation" style="font-size:1.1em;">→ Start your first 5-minute meditation now</a></strong></p>
-      <p><storag><a href="/timer/10-minute-meditation" style="font-size:1.1em;">→ Start your first 10-minute meditation now</a></storag></p>
-      <p><storag><a href="/timer/15-minute-meditation" style="font-size:1.1em;">→ Start your first 15-minute meditation now</a></storag></p>
-      <p><storag><a href="/timer/20-minute-meditation" style="font-size:1.1em;">→ Start your first 20-minute meditation now</a></storag></p>
-      <p><storag><a href="/timer/30-minute-meditation" style="font-size:1.1em;">→ Start your first 30-minute meditation now</a></storag></p>
-      <p><storag><a href="/timer/60-minute-meditation" style="font-size:1.1em;">→ Start your first 60-minute meditation now</a></storag></p>
-      <p><storag><a href="/timer/90-minute-meditation" style="font-size:1.1em;">→ Start your first 90-minute meditation now</a></storag></p>
+     
     `,
     date: 'September 8, 2026',
     readTime: '6 min read',
@@ -133,7 +127,6 @@ export const blogPosts = [
 
     <ol>
       <li>Choose one task you have been avoiding.</li>
-      <li>Set a <a href="/timer/10-minute-timer">10 Minute Timer</a>.</li>
       <li>Work only on that task until the timer ends.</li>
       <li>After 10 minutes, decide whether you want to continue.</li>
     </ol>
@@ -287,7 +280,7 @@ export const blogPosts = [
 
     <blockquote>Don't worry about finishing everything. Focus on winning the next 10 minutes.</blockquote>
 
-    <p><strong><a href="/timer/10-minute-timer">→ Start your 10 Minute Timer now</a></strong></p>
+    
   `,
 
   date: 'September 8, 2026',
