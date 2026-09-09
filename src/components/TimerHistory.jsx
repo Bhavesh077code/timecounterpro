@@ -121,22 +121,22 @@ function TimerHistory() {
     <div className="space-y-4">
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white rounded-xl p-4 text-center border border-slate-200 shadow-sm">
+        <div className="bg-white  p-4 text-center border border-slate-200 shadow-sm">
           <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
           <div className="text-xs text-slate-500 font-medium">Total Timers</div>
           <div className="text-[10px] text-slate-400 mt-1">Completed</div>
         </div>
-        <div className="bg-white rounded-xl p-4 text-center border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 text-center border border-slate-200 shadow-sm">
           <div className="text-2xl font-bold text-indigo-600">{Math.floor(stats.totalTime / 3600)}h</div>
           <div className="text-xs text-slate-500 font-medium">Total Time</div>
           <div className="text-[10px] text-slate-400 mt-1">{Math.floor((stats.totalTime % 3600) / 60)}m remaining</div>
         </div>
-        <div className="bg-white rounded-xl p-4 text-center border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 text-center border border-slate-200 shadow-sm">
           <div className="text-2xl font-bold text-emerald-600">{Math.floor(stats.averageTime / 60)}m</div>
           <div className="text-xs text-slate-500 font-medium">Average Duration</div>
           <div className="text-[10px] text-slate-400 mt-1">per timer</div>
         </div>
-        <div className="bg-white rounded-xl p-4 text-center border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 text-center border border-slate-200 shadow-sm">
           <div className="text-2xl font-bold text-amber-600 truncate" title={getMostUsed()}>
             {getMostUsed().length > 12 ? getMostUsed().slice(0, 12) + '...' : getMostUsed()}
           </div>
@@ -152,7 +152,7 @@ function TimerHistory() {
             <button
               key={type}
               onClick={() => setFilter(type)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3 py-1.5  text-xs font-medium transition-all ${
                 filter === type
                   ? 'bg-indigo-600 text-white shadow-sm'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -175,7 +175,7 @@ function TimerHistory() {
               placeholder="Search timers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 w-32 sm:w-40 transition-all"
+              className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 text-slate-700 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 w-32 sm:w-40 transition-all"
             />
           </div>
 
@@ -183,7 +183,7 @@ function TimerHistory() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            className="px-3 py-1.5 bg-slate-50 border border-slate-200  text-slate-700 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -194,7 +194,7 @@ function TimerHistory() {
           {/* Export */}
           <button
             onClick={exportHistory}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-all hover:shadow-sm"
+            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700  text-sm font-medium transition-all hover:shadow-sm"
             title="Export history as CSV"
           >
             Export
@@ -203,7 +203,7 @@ function TimerHistory() {
           {/* Clear */}
           <button
             onClick={handleClearHistory}
-            className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5"
+            className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600  text-sm font-medium transition-all flex items-center gap-1.5"
           >
             <FiTrash2 size={14} />
             <span className="hidden sm:inline">Clear</span>
@@ -213,7 +213,7 @@ function TimerHistory() {
 
       {/* Timer List */}
       {filteredTimers.length === 0 ? (
-        <div className="text-center py-8 bg-slate-50 rounded-xl border border-slate-200">
+        <div className="text-center py-8 bg-slate-50  border border-slate-200">
           <p className="text-slate-500 text-sm">No timers found matching your criteria</p>
           <button
             onClick={() => { setFilter('all'); setSearchTerm(''); }}
@@ -227,7 +227,7 @@ function TimerHistory() {
           {filteredTimers.map((timer) => (
             <div
               key={timer.id}
-              className="bg-white rounded-xl p-4 border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all duration-200"
+              className="bg-white  p-4 border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all duration-200"
             >
               <div className="flex flex-col sm:flex-row justify-between gap-2">
                 <div className="min-w-0 flex-1">
@@ -235,7 +235,7 @@ function TimerHistory() {
                     <span className="text-slate-900 font-medium text-sm truncate">
                       {timer.name}
                     </span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                    <span className={`text-[10px] px-2 py-0.5  font-medium ${
                       timer.type === 'preset'
                         ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
                         : timer.type === 'countdown'
@@ -245,7 +245,7 @@ function TimerHistory() {
                       {timer.type}
                     </span>
                     {timer.duration >= 3600 && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                      <span className="text-[10px] px-2 py-0.5  bg-blue-50 text-blue-700 border border-blue-200">
                         Long
                       </span>
                     )}
@@ -265,7 +265,7 @@ function TimerHistory() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-medium">
+                  <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5  border border-emerald-200 font-medium">
                     Complete
                   </span>
                   <span className="text-emerald-600">
