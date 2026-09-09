@@ -26,7 +26,7 @@ const blogSlugs = [
 const staticPages = [
   ['/', '1.0'], ['/timers', '0.9'], ['/pomodoro', '0.8'], ['/stopwatch', '0.8'],
   ['/blog', '0.8'], ['/about', '0.6'], ['/contact', '0.6'], ['/privacy', '0.4'],
-  ['/terms', '0.4'],
+  ['/terms', '0.4'],['/world-clock', '0.9'],
 ];
 
 const urls = [];

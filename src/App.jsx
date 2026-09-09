@@ -23,6 +23,7 @@ import PomodoroTimer from "./components/Timer/PomodoroTimer";
 import Stopwatch from "./components/Timer/Stopwatch";
 import Timers from "./pages/Timers";
 import { Navigate } from "react-router-dom";
+import WorldClock from "./pages/WorldClock";
 
 
 function SharedCountdownWrapper() {
@@ -118,6 +119,14 @@ const router = createBrowserRouter([
       </Layout>
     ),
   },
+  {
+  path: "/world-clock",
+  element: (
+    <Layout>
+      <WorldClock />
+    </Layout>
+  ),
+},
    {
     path: "/stopwatch",
     element: (

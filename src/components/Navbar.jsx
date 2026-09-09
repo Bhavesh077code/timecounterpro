@@ -16,7 +16,7 @@ const Navbar = () => {
     : "text-slate-600 hover:text-slate-950 hover:bg-slate-100";
 
   const links = [
-    ["/", "Home"], ["/pomodoro", "Pomodoro"],["/stopwatch", "Stopwatch"], ["/history", "History"],
+    ["/", "Home"], ["/pomodoro", "Pomodoro"],["/stopwatch", "Stopwatch"],["/timers", "Timers"],["/world-clock", "World Clock"], ["/history", "History"],
     ["/blog", "Guides"], ["/about", "About"], ["/contact", "Contact"]
   ];
 
