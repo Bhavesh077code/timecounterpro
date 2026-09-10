@@ -50,14 +50,14 @@ The goal is to turn TimeCounterPro into a polished, reliable, user-friendly prod
 
 The application should feel:
 
-* Fast
-* Simple
-* Modern
-* Reliable
-* Mobile-friendly
-* Professional
-* Easy to understand
-* Useful for daily productivity
+- Fast
+- Simple
+- Modern
+- Reliable
+- Mobile-friendly
+- Professional
+- Easy to understand
+- Useful for daily productivity
 
 ---
 
@@ -65,23 +65,23 @@ The application should feel:
 
 The project already contains or is designed around features such as:
 
-* Countdown timer
-* Custom timer
-* Quick timer presets
-* Stopwatch
-* Pomodoro timer
-* Full-screen timer
-* Timer history
-* Statistics
-* Timer sharing
-* Shareable countdown URLs
-* Themes
-* Sounds
-* LocalStorage persistence
-* SEO timer pages
-* Blog pages
-* Embedded/shared countdown functionality
-* Responsive UI
+- Countdown timer
+- Custom timer
+- Quick timer presets
+- Stopwatch
+- Pomodoro timer
+- Full-screen timer
+- Timer history
+- Statistics
+- Timer sharing
+- Shareable countdown URLs
+- Themes
+- Sounds
+- LocalStorage persistence
+- SEO timer pages
+- Blog pages
+- Embedded/shared countdown functionality
+- Responsive UI
 
 Do NOT remove these features without checking their dependencies.
 
@@ -109,27 +109,24 @@ runs exactly every second.
 
 JavaScript timers can be delayed by:
 
-* Browser throttling
-* Background tabs
-* CPU load
-* Laptop sleep
-* Mobile browser behavior
+- Browser throttling
+- Background tabs
+- CPU load
+- Laptop sleep
+- Mobile browser behavior
 
 Prefer timestamp-based calculations.
 
 Example:
 
 ```js
-const remaining = Math.max(
-  0,
-  Math.ceil((targetAt - Date.now()) / 1000)
-);
+const remaining = Math.max(0, Math.ceil((targetAt - Date.now()) / 1000));
 ```
 
 For countdown timers, prefer:
 
 ```js
-targetAt
+targetAt;
 ```
 
 as the source of truth.
@@ -137,7 +134,7 @@ as the source of truth.
 For paused timers, preserve:
 
 ```js
-remaining
+remaining;
 ```
 
 and do not allow time to continue decreasing while paused.
@@ -150,19 +147,19 @@ A timer may contain properties such as:
 
 ```js
 {
-  id,
-  name,
-  duration,
-  remaining,
-  type,
-  status,
-  isPaused,
-  startTime,
-  targetAt,
-  targetDate,
-  theme,
-  createdAt,
-  completedAt
+  (id,
+    name,
+    duration,
+    remaining,
+    type,
+    status,
+    isPaused,
+    startTime,
+    targetAt,
+    targetDate,
+    theme,
+    createdAt,
+    completedAt);
 }
 ```
 
@@ -182,15 +179,15 @@ The AI must ensure:
 
 When the page reloads:
 
-* The timer should continue correctly.
-* It should calculate remaining time from a timestamp.
+- The timer should continue correctly.
+- It should calculate remaining time from a timestamp.
 
 ### Paused timer
 
 When the page reloads:
 
-* The timer must remain paused.
-* The remaining time must NOT decrease while the browser is closed.
+- The timer must remain paused.
+- The remaining time must NOT decrease while the browser is closed.
 
 ### Completed timer
 
@@ -218,21 +215,21 @@ TimerCard    FullScreenTimer
 
 Do NOT create separate independent countdown engines in:
 
-* TimerCard
-* FullScreenTimer
-* Dashboard
-* Context
+- TimerCard
+- FullScreenTimer
+- Dashboard
+- Context
 
 If multiple components need timer information, they should consume the same timer state.
 
 This prevents:
 
-* Double-speed timers
-* Duplicate intervals
-* Duplicate completion
-* Wrong statistics
-* Inconsistent pause/resume
-* Fullscreen bugs
+- Double-speed timers
+- Duplicate intervals
+- Duplicate completion
+- Wrong statistics
+- Inconsistent pause/resume
+- Fullscreen bugs
 
 ---
 
@@ -285,7 +282,7 @@ The AI should verify whether these issues still exist before changing them.
 Check whether CountdownCreator calculates:
 
 ```js
-targetDateTime - Date.now()
+targetDateTime - Date.now();
 ```
 
 and passes the result as seconds.
@@ -295,9 +292,7 @@ The result of this calculation is milliseconds.
 Correct conversion:
 
 ```js
-Math.ceil(
-  (targetDateTime - Date.now()) / 1000
-)
+Math.ceil((targetDateTime - Date.now()) / 1000);
 ```
 
 Do not blindly apply this fix if the current implementation has already changed.
@@ -309,7 +304,7 @@ Do not blindly apply this fix if the current implementation has already changed.
 Check that:
 
 ```js
-addTimer()
+addTimer();
 ```
 
 accepts all required arguments.
@@ -317,13 +312,7 @@ accepts all required arguments.
 For example:
 
 ```js
-addTimer(
-  name,
-  duration,
-  type,
-  targetDate,
-  theme
-)
+addTimer(name, duration, type, targetDate, theme);
 ```
 
 All callers and the Context implementation must have compatible APIs.
@@ -383,7 +372,7 @@ https://timecounterpro.com
 Prefer:
 
 ```js
-window.location.origin
+window.location.origin;
 ```
 
 when appropriate.
@@ -416,10 +405,10 @@ Explain why it happens.
 
 Tell me whether to:
 
-* Change code
-* Replace file
-* Create new file
-* Delete file
+- Change code
+- Replace file
+- Create new file
+- Delete file
 
 ### Step 5
 
@@ -449,20 +438,20 @@ without first understanding the existing project.
 
 Do NOT:
 
-* Delete files unnecessarily
-* Rewrite the entire application
-* Remove UI features
-* Remove existing routes
-* Remove existing styling
-* Change package versions unnecessarily
-* Add unnecessary dependencies
-* Duplicate components
-* Duplicate timer logic
-* Change public APIs without checking callers
-* Invent files that do not exist
-* Assume a function exists
-* Assume a component uses a particular prop
-* Give code that conflicts with the current project
+- Delete files unnecessarily
+- Rewrite the entire application
+- Remove UI features
+- Remove existing routes
+- Remove existing styling
+- Change package versions unnecessarily
+- Add unnecessary dependencies
+- Duplicate components
+- Duplicate timer logic
+- Change public APIs without checking callers
+- Invent files that do not exist
+- Assume a function exists
+- Assume a component uses a particular prop
+- Give code that conflicts with the current project
 
 ---
 
@@ -488,14 +477,14 @@ The application should be user-friendly.
 
 Avoid:
 
-* Too many buttons
-* Confusing labels
-* Unnecessary popups
-* Sudden navigation
-* Poor mobile layouts
-* Tiny controls
-* Excessive animations
-* Unclear error messages
+- Too many buttons
+- Confusing labels
+- Unnecessary popups
+- Sudden navigation
+- Poor mobile layouts
+- Tiny controls
+- Excessive animations
+- Unclear error messages
 
 Timer controls should be immediately understandable.
 
@@ -517,10 +506,10 @@ Share
 
 Every UI modification must be checked for:
 
-* Small phones
-* Large phones
-* Tablets
-* Desktop
+- Small phones
+- Large phones
+- Tablets
+- Desktop
 
 Do not assume desktop width.
 
@@ -566,11 +555,11 @@ Unable to create the countdown. Please check the date and time.
 
 Avoid unnecessary:
 
-* setIntervals
-* setTimeout chains
-* React re-renders
-* Context updates
-* localStorage writes every few milliseconds
+- setIntervals
+- setTimeout chains
+- React re-renders
+- Context updates
+- localStorage writes every few milliseconds
 
 Do not write to localStorage on every 10ms timer tick.
 
@@ -582,20 +571,20 @@ Use appropriate throttling or save important state changes only.
 
 Prefer:
 
-* Small functions
-* Clear names
-* Reusable utilities
-* React hooks where appropriate
-* Existing project conventions
-* Minimal dependencies
+- Small functions
+- Clear names
+- Reusable utilities
+- React hooks where appropriate
+- Existing project conventions
+- Minimal dependencies
 
 Avoid:
 
-* Giant files
-* Giant Contexts
-* "miscellaneous" helper functions
-* Dead commented-out implementations
-* Duplicate code
+- Giant files
+- Giant Contexts
+- "miscellaneous" helper functions
+- Dead commented-out implementations
+- Duplicate code
 
 ---
 
@@ -612,10 +601,10 @@ CountdownCreator
 
 Then determine:
 
-* Who imports it?
-* Who calls it?
-* What props does it receive?
-* What Context functions does it use?
+- Who imports it?
+- Who calls it?
+- What props does it receive?
+- What Context functions does it use?
 
 Only then remove or replace it.
 
@@ -653,14 +642,14 @@ Can saved data be missing/corrupted?
 
 Does it work after:
 
-* Start
-* Pause
-* Resume
-* Reset
-* Reload
-* Background tab
-* Fullscreen
-* Completion
+- Start
+- Pause
+- Resume
+- Reset
+- Reload
+- Background tab
+- Fullscreen
+- Completion
 
 ---
 
@@ -668,26 +657,26 @@ Does it work after:
 
 After timer changes, test:
 
-* [ ] Create timer
-* [ ] Start timer
-* [ ] Pause timer
-* [ ] Resume timer
-* [ ] Reset timer
-* [ ] Delete timer
-* [ ] Complete timer
-* [ ] Reload page
-* [ ] Close and reopen browser
-* [ ] Open fullscreen
-* [ ] Exit fullscreen
-* [ ] Switch browser tab
-* [ ] Create countdown
-* [ ] Create countdown with future date
-* [ ] Try past date
-* [ ] Check timer history
-* [ ] Check statistics
-* [ ] Check mobile layout
-* [ ] Check desktop layout
-* [ ] Check localStorage
+- [ ] Create timer
+- [ ] Start timer
+- [ ] Pause timer
+- [ ] Resume timer
+- [ ] Reset timer
+- [ ] Delete timer
+- [ ] Complete timer
+- [ ] Reload page
+- [ ] Close and reopen browser
+- [ ] Open fullscreen
+- [ ] Exit fullscreen
+- [ ] Switch browser tab
+- [ ] Create countdown
+- [ ] Create countdown with future date
+- [ ] Try past date
+- [ ] Check timer history
+- [ ] Check statistics
+- [ ] Check mobile layout
+- [ ] Check desktop layout
+- [ ] Check localStorage
 
 ---
 
@@ -729,12 +718,12 @@ Make TimeCounterPro installable.
 
 Add:
 
-* Custom focus duration
-* Custom short break
-* Custom long break
-* Session count
-* Auto-start
-* Statistics
+- Custom focus duration
+- Custom short break
+- Custom long break
+- Session count
+- Auto-start
+- Statistics
 
 ---
 
@@ -742,13 +731,13 @@ Add:
 
 Improve:
 
-* Daily statistics
-* Weekly statistics
-* Monthly statistics
-* Category filtering
-* Total focus time
-* Completed sessions
-* Average session
+- Daily statistics
+- Weekly statistics
+- Monthly statistics
+- Category filtering
+- Total focus time
+- Completed sessions
+- Average session
 
 ---
 
@@ -822,11 +811,11 @@ The goal is NOT to make the code look completely different.
 
 The goal is to make the EXISTING TimeCounterPro project:
 
-* More reliable
-* Easier to maintain
-* More user-friendly
-* More accurate
-* More professional
+- More reliable
+- Easier to maintain
+- More user-friendly
+- More accurate
+- More professional
 
 while preserving its existing features.
 
@@ -851,20 +840,7 @@ Then wait for my instruction unless I explicitly ask you to implement the change
 
 # END OF PROJECT CONTEXT
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Second Changed file 
+# Second Changed file
 
 # TimeCounterPro — AI Project Context
 
@@ -918,14 +894,14 @@ The goal is to turn TimeCounterPro into a polished, reliable, user-friendly prod
 
 The application should feel:
 
-* Fast
-* Simple
-* Modern
-* Reliable
-* Mobile-friendly
-* Professional
-* Easy to understand
-* Useful for daily productivity
+- Fast
+- Simple
+- Modern
+- Reliable
+- Mobile-friendly
+- Professional
+- Easy to understand
+- Useful for daily productivity
 
 ---
 
@@ -933,23 +909,23 @@ The application should feel:
 
 The project already contains or is designed around features such as:
 
-* Countdown timer
-* Custom timer
-* Quick timer presets
-* Stopwatch
-* Pomodoro timer
-* Full-screen timer
-* Timer history
-* Statistics
-* Timer sharing
-* Shareable countdown URLs
-* Themes
-* Sounds
-* LocalStorage persistence
-* SEO timer pages
-* Blog pages
-* Embedded/shared countdown functionality
-* Responsive UI
+- Countdown timer
+- Custom timer
+- Quick timer presets
+- Stopwatch
+- Pomodoro timer
+- Full-screen timer
+- Timer history
+- Statistics
+- Timer sharing
+- Shareable countdown URLs
+- Themes
+- Sounds
+- LocalStorage persistence
+- SEO timer pages
+- Blog pages
+- Embedded/shared countdown functionality
+- Responsive UI
 
 Do NOT remove these features without checking their dependencies.
 
@@ -977,27 +953,24 @@ runs exactly every second.
 
 JavaScript timers can be delayed by:
 
-* Browser throttling
-* Background tabs
-* CPU load
-* Laptop sleep
-* Mobile browser behavior
+- Browser throttling
+- Background tabs
+- CPU load
+- Laptop sleep
+- Mobile browser behavior
 
 Prefer timestamp-based calculations.
 
 Example:
 
 ```js
-const remaining = Math.max(
-  0,
-  Math.ceil((targetAt - Date.now()) / 1000)
-);
+const remaining = Math.max(0, Math.ceil((targetAt - Date.now()) / 1000));
 ```
 
 For countdown timers, prefer:
 
 ```js
-targetAt
+targetAt;
 ```
 
 as the source of truth.
@@ -1005,7 +978,7 @@ as the source of truth.
 For paused timers, preserve:
 
 ```js
-remaining
+remaining;
 ```
 
 and do not allow time to continue decreasing while paused.
@@ -1018,19 +991,19 @@ A timer may contain properties such as:
 
 ```js
 {
-  id,
-  name,
-  duration,
-  remaining,
-  type,
-  status,
-  isPaused,
-  startTime,
-  targetAt,
-  targetDate,
-  theme,
-  createdAt,
-  completedAt
+  (id,
+    name,
+    duration,
+    remaining,
+    type,
+    status,
+    isPaused,
+    startTime,
+    targetAt,
+    targetDate,
+    theme,
+    createdAt,
+    completedAt);
 }
 ```
 
@@ -1050,15 +1023,15 @@ The AI must ensure:
 
 When the page reloads:
 
-* The timer should continue correctly.
-* It should calculate remaining time from a timestamp.
+- The timer should continue correctly.
+- It should calculate remaining time from a timestamp.
 
 ### Paused timer
 
 When the page reloads:
 
-* The timer must remain paused.
-* The remaining time must NOT decrease while the browser is closed.
+- The timer must remain paused.
+- The remaining time must NOT decrease while the browser is closed.
 
 ### Completed timer
 
@@ -1086,21 +1059,21 @@ TimerCard    FullScreenTimer
 
 Do NOT create separate independent countdown engines in:
 
-* TimerCard
-* FullScreenTimer
-* Dashboard
-* Context
+- TimerCard
+- FullScreenTimer
+- Dashboard
+- Context
 
 If multiple components need timer information, they should consume the same timer state.
 
 This prevents:
 
-* Double-speed timers
-* Duplicate intervals
-* Duplicate completion
-* Wrong statistics
-* Inconsistent pause/resume
-* Fullscreen bugs
+- Double-speed timers
+- Duplicate intervals
+- Duplicate completion
+- Wrong statistics
+- Inconsistent pause/resume
+- Fullscreen bugs
 
 ---
 
@@ -1153,7 +1126,7 @@ The AI should verify whether these issues still exist before changing them.
 Check whether CountdownCreator calculates:
 
 ```js
-targetDateTime - Date.now()
+targetDateTime - Date.now();
 ```
 
 and passes the result as seconds.
@@ -1163,9 +1136,7 @@ The result of this calculation is milliseconds.
 Correct conversion:
 
 ```js
-Math.ceil(
-  (targetDateTime - Date.now()) / 1000
-)
+Math.ceil((targetDateTime - Date.now()) / 1000);
 ```
 
 Do not blindly apply this fix if the current implementation has already changed.
@@ -1177,7 +1148,7 @@ Do not blindly apply this fix if the current implementation has already changed.
 Check that:
 
 ```js
-addTimer()
+addTimer();
 ```
 
 accepts all required arguments.
@@ -1185,13 +1156,7 @@ accepts all required arguments.
 For example:
 
 ```js
-addTimer(
-  name,
-  duration,
-  type,
-  targetDate,
-  theme
-)
+addTimer(name, duration, type, targetDate, theme);
 ```
 
 All callers and the Context implementation must have compatible APIs.
@@ -1251,7 +1216,7 @@ https://timecounterpro.com
 Prefer:
 
 ```js
-window.location.origin
+window.location.origin;
 ```
 
 when appropriate.
@@ -1284,10 +1249,10 @@ Explain why it happens.
 
 Tell me whether to:
 
-* Change code
-* Replace file
-* Create new file
-* Delete file
+- Change code
+- Replace file
+- Create new file
+- Delete file
 
 ### Step 5
 
@@ -1317,20 +1282,20 @@ without first understanding the existing project.
 
 Do NOT:
 
-* Delete files unnecessarily
-* Rewrite the entire application
-* Remove UI features
-* Remove existing routes
-* Remove existing styling
-* Change package versions unnecessarily
-* Add unnecessary dependencies
-* Duplicate components
-* Duplicate timer logic
-* Change public APIs without checking callers
-* Invent files that do not exist
-* Assume a function exists
-* Assume a component uses a particular prop
-* Give code that conflicts with the current project
+- Delete files unnecessarily
+- Rewrite the entire application
+- Remove UI features
+- Remove existing routes
+- Remove existing styling
+- Change package versions unnecessarily
+- Add unnecessary dependencies
+- Duplicate components
+- Duplicate timer logic
+- Change public APIs without checking callers
+- Invent files that do not exist
+- Assume a function exists
+- Assume a component uses a particular prop
+- Give code that conflicts with the current project
 
 ---
 
@@ -1356,14 +1321,14 @@ The application should be user-friendly.
 
 Avoid:
 
-* Too many buttons
-* Confusing labels
-* Unnecessary popups
-* Sudden navigation
-* Poor mobile layouts
-* Tiny controls
-* Excessive animations
-* Unclear error messages
+- Too many buttons
+- Confusing labels
+- Unnecessary popups
+- Sudden navigation
+- Poor mobile layouts
+- Tiny controls
+- Excessive animations
+- Unclear error messages
 
 Timer controls should be immediately understandable.
 
@@ -1385,10 +1350,10 @@ Share
 
 Every UI modification must be checked for:
 
-* Small phones
-* Large phones
-* Tablets
-* Desktop
+- Small phones
+- Large phones
+- Tablets
+- Desktop
 
 Do not assume desktop width.
 
@@ -1434,11 +1399,11 @@ Unable to create the countdown. Please check the date and time.
 
 Avoid unnecessary:
 
-* setIntervals
-* setTimeout chains
-* React re-renders
-* Context updates
-* localStorage writes every few milliseconds
+- setIntervals
+- setTimeout chains
+- React re-renders
+- Context updates
+- localStorage writes every few milliseconds
 
 Do not write to localStorage on every 10ms timer tick.
 
@@ -1450,20 +1415,20 @@ Use appropriate throttling or save important state changes only.
 
 Prefer:
 
-* Small functions
-* Clear names
-* Reusable utilities
-* React hooks where appropriate
-* Existing project conventions
-* Minimal dependencies
+- Small functions
+- Clear names
+- Reusable utilities
+- React hooks where appropriate
+- Existing project conventions
+- Minimal dependencies
 
 Avoid:
 
-* Giant files
-* Giant Contexts
-* "miscellaneous" helper functions
-* Dead commented-out implementations
-* Duplicate code
+- Giant files
+- Giant Contexts
+- "miscellaneous" helper functions
+- Dead commented-out implementations
+- Duplicate code
 
 ---
 
@@ -1480,10 +1445,10 @@ CountdownCreator
 
 Then determine:
 
-* Who imports it?
-* Who calls it?
-* What props does it receive?
-* What Context functions does it use?
+- Who imports it?
+- Who calls it?
+- What props does it receive?
+- What Context functions does it use?
 
 Only then remove or replace it.
 
@@ -1521,14 +1486,14 @@ Can saved data be missing/corrupted?
 
 Does it work after:
 
-* Start
-* Pause
-* Resume
-* Reset
-* Reload
-* Background tab
-* Fullscreen
-* Completion
+- Start
+- Pause
+- Resume
+- Reset
+- Reload
+- Background tab
+- Fullscreen
+- Completion
 
 ---
 
@@ -1536,26 +1501,26 @@ Does it work after:
 
 After timer changes, test:
 
-* [ ] Create timer
-* [ ] Start timer
-* [ ] Pause timer
-* [ ] Resume timer
-* [ ] Reset timer
-* [ ] Delete timer
-* [ ] Complete timer
-* [ ] Reload page
-* [ ] Close and reopen browser
-* [ ] Open fullscreen
-* [ ] Exit fullscreen
-* [ ] Switch browser tab
-* [ ] Create countdown
-* [ ] Create countdown with future date
-* [ ] Try past date
-* [ ] Check timer history
-* [ ] Check statistics
-* [ ] Check mobile layout
-* [ ] Check desktop layout
-* [ ] Check localStorage
+- [ ] Create timer
+- [ ] Start timer
+- [ ] Pause timer
+- [ ] Resume timer
+- [ ] Reset timer
+- [ ] Delete timer
+- [ ] Complete timer
+- [ ] Reload page
+- [ ] Close and reopen browser
+- [ ] Open fullscreen
+- [ ] Exit fullscreen
+- [ ] Switch browser tab
+- [ ] Create countdown
+- [ ] Create countdown with future date
+- [ ] Try past date
+- [ ] Check timer history
+- [ ] Check statistics
+- [ ] Check mobile layout
+- [ ] Check desktop layout
+- [ ] Check localStorage
 
 ---
 
@@ -1597,12 +1562,12 @@ Make TimeCounterPro installable.
 
 Add:
 
-* Custom focus duration
-* Custom short break
-* Custom long break
-* Session count
-* Auto-start
-* Statistics
+- Custom focus duration
+- Custom short break
+- Custom long break
+- Session count
+- Auto-start
+- Statistics
 
 ---
 
@@ -1610,13 +1575,13 @@ Add:
 
 Improve:
 
-* Daily statistics
-* Weekly statistics
-* Monthly statistics
-* Category filtering
-* Total focus time
-* Completed sessions
-* Average session
+- Daily statistics
+- Weekly statistics
+- Monthly statistics
+- Category filtering
+- Total focus time
+- Completed sessions
+- Average session
 
 ---
 
@@ -1690,11 +1655,11 @@ The goal is NOT to make the code look completely different.
 
 The goal is to make the EXISTING TimeCounterPro project:
 
-* More reliable
-* Easier to maintain
-* More user-friendly
-* More accurate
-* More professional
+- More reliable
+- Easier to maintain
+- More user-friendly
+- More accurate
+- More professional
 
 while preserving its existing features.
 
@@ -1719,20 +1684,10 @@ Then wait for my instruction unless I explicitly ask you to implement the change
 
 # END OF PROJECT CONTEXT
 
-
 ## Phase 4 production web
+
 - Improved global SEO/social metadata in `index.html`.
 - Fixed the timer SEO page Close action in `TimerSlugPage.jsx`.
 - Sitemap generation now reads real `BlogData.js` entries instead of a stale hard-coded blog list.
 - Simplified `robots.txt` to one sitemap and standard directives.
 - Fixed the Pomodoro route typo from `/pomodro` to `/pomodoro`.
-
-
-
-
-
-
-
-
-
-

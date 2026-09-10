@@ -8,7 +8,7 @@ import { TimerContext } from "../context/TimerContext";
 const INDEXABLE_TIMERS = new Set([
   "5-minute-timer","10-minute-timer","15-minute-timer","20-minute-timer","25-minute-timer",
   "30-minute-timer","45-minute-timer","60-minute-timer","pomodoro-timer","pomodoro-25-5",
-  "pomodoro-50-10","study-timer","workout-timer","cooking-timer","meditation-timer",
+  "pomodoro-50-10","study-timer","workout-timer","cooking-timer","meditation-timer","meditation-timer-with-sound","meditation-timer-10-minutes","study-timer-45-minutes",
   "classroom-timer","meeting-timer","exam-timer","reading-timer","coding-timer"
 ]);
 
