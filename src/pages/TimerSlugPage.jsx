@@ -139,10 +139,14 @@ function TimerSlugPage() {
   const content = CATEGORY_CONTENT[category] || CATEGORY_CONTENT.default;
   const minutes = Math.max(1, Math.round(timer.duration / 60));
   const indexable = INDEXABLE_TIMERS.has(timer.slug);
-  const title = `${timer.title} — Free Online Timer | TimeCounterPro`;
-  const description = `${timer.title}: a simple online timer for ${category} and everyday tasks. Set the duration, start the countdown and use sound or fullscreen when helpful.`;
+  const title = `${timer.title} — Free ${minutes} Min Online Timer | TimeCounterPro`;
+  const baseDescription = timer.description && timer.description.trim().length > 0 ? timer.description.trim() : content.intro;
+  const description = `${baseDescription} ${minutes} minute ${category} timer with sound and fullscreen, free, no signup.`.slice(0, 160);
+  const seoBlurb = `${content.intro} ${minutes} minute ${category} timer with sound — free, no signup needed.`;
   const liveTimer = timerKeyRef.current ? activeTimers.find((item) => item.id === timerKeyRef.current) : null;
-  const timerProps = liveTimer || { id: timerKeyRef.current || `seo-${slug}`, name: timer.title, duration: timer.duration, remaining: timer.duration, type: "seo", status: "running" };
+  const timerProps = liveTimer
+    ? { ...liveTimer, seoBlurb }
+    : { id: timerKeyRef.current || `seo-${slug}`, name: timer.title, duration: timer.duration, remaining: timer.duration, type: "seo", status: "running", seoBlurb };
 
   const schemaMarkup = {
     "@context": "https://schema.org",
@@ -184,7 +188,7 @@ function TimerSlugPage() {
       </Helmet>
 
       <div className="min-h-screen bg-[#0a0a0a]">
-        <FullScreenTimer timer={{ ...timerProps, background: timer.background || getBackground(timer.slug, timer.title), category, slug: timer.slug, title: timer.title }} onClose={() => navigate("/timers")} />
+        <FullScreenTimer timer={{ ...timerProps, background: timer.background || getBackground(timer.slug, timer.title), category, slug: timer.slug, title: timer.title }} seoBlurb={seoBlurb} onClose={() => navigate("/timers")} />
 
         <article className="relative z-10 bg-[#0a0a0a] border-t border-white/10">
           <div className="max-w-4xl mx-auto px-4 py-12 text-white">

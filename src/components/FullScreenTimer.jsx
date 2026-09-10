@@ -48,7 +48,7 @@ const getThemeForTimer = (timer) => {
 const PIP_WIDTH = 320;
 const PIP_HEIGHT = 180;
 
-function FullScreenTimer({ timer, onClose }) {
+function FullScreenTimer({ timer, onClose, seoBlurb }) {
   const { activeTimers, addTimer, resetTimer, updateTimer } =
     useContext(TimerContext);
   const liveTimer = activeTimers.find((item) => item.id === timer?.id);
@@ -628,9 +628,13 @@ function FullScreenTimer({ timer, onClose }) {
             <h1 className="font-bold text-4xl sm:text-4xl text-white text-center">
               {currentTimer.name || "Timer"}
             </h1>
-            <p className="text-xs sm:text-sm text-white/60 capitalize mt-5.5">
-              {currentTimer.type || "custom"} ·{" "}
-              {isPaused ? "Paused" : isComplete ? "Completed" : "Running"}
+            {seoBlurb && (
+              <p className="text-xs sm:text-sm text-white/60 mt-5.5 max-w-md text-center px-2">
+                {seoBlurb}
+              </p>
+            )}
+            <p className="sr-only" aria-live="polite">
+              {isPaused ? "Timer paused" : isComplete ? "Timer completed" : "Timer running"}
             </p>
           </div>
         </div>

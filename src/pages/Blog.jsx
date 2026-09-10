@@ -1,6 +1,7 @@
 // src/pages/Blog.jsx
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { blogPosts } from './BlogData';
 import { FiClock, FiCalendar, FiArrowRight, FiSearch, FiTrendingUp } from 'react-icons/fi';
 
@@ -34,6 +35,17 @@ function Blog() {
 
   return (
     <div className="min-h-screen bg-[#fcfcfd]">
+      <Helmet>
+        <title>Blog — Productivity, Focus & Time Management Tips | TimeCounterPro</title>
+        <meta
+          name="description"
+          content="Practical guides on Pomodoro focus, study timers, meditation timers, workouts and time management — tips to help you get more done with less stress."
+        />
+        <link rel="canonical" href="https://timecounterpro.com/blog" />
+        <meta property="og:title" content="TimeCounterPro Blog — Productivity & Time Management Tips" />
+        <meta property="og:description" content="Practical guides on focus, study, meditation and time management, from the team behind TimeCounterPro." />
+        <meta property="og:url" content="https://timecounterpro.com/blog" />
+      </Helmet>
       <div className="max-w-6xl mx-auto px-3 xs:px-4 sm:px-6 py-6 xs:py-8 sm:py-12 w-full overflow-x-hidden">
 
         <div className="max-w-3xl mb-6 xs:mb-8 sm:mb-10">

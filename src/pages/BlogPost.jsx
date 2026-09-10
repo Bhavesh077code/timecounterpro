@@ -50,7 +50,19 @@ export default function BlogPost() {
 
   return (
     <>
-      <Helmet><title>{post.title}</title><meta property="og:image" content={post.image} /></Helmet>
+      <Helmet>
+        <title>{post.title} | TimeCounterPro Blog</title>
+        <meta name="description" content={post.excerpt} />
+        <link rel="canonical" href={`https://timecounterpro.com/blog/${post.slug}`} />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt} />
+        <meta property="og:url" content={`https://timecounterpro.com/blog/${post.slug}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={post.image} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt} />
+      </Helmet>
 
       <style>{`
         /* Mobile-first responsive blog styles */
