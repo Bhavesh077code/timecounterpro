@@ -67,9 +67,9 @@ export default function BlogPost() {
       <style>{`
         /* Mobile-first responsive blog styles */
         .blog-content h2 {
-          font-size: 22px;
+          font-size: 20px;
           font-weight: 800;
-          line-height: 1.2;
+          line-height: 1;
           color: #0f172a;
           margin-top: 40px;
           margin-bottom: 14px;

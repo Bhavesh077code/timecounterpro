@@ -164,7 +164,7 @@ function Blog() {
                   {post.excerpt}
                 </p>
                 <div className="mt-3 xs:mt-4 text-[10px] xs:text-xs font-bold text-slate-900 flex items-center gap-1">
-                  READ ARTICLE <FiArrowRight className="group-hover:translate-x-1 transition-transform" size={12} className="xs:text-[14px]" />
+                  READ ARTICLE <FiArrowRight className="group-hover:translate-x-1 transition-transform" size={12}  />
                 </div>
               </div>
             </Link>

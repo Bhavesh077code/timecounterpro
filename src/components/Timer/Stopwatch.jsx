@@ -580,23 +580,49 @@ function Stopwatch() {
           {showAbout && (
             <div className="mt-3 space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
               <p>
-                A "split" is the time for one individual lap, not the running
-                total shown next to it. The stopwatch above records both: the
-                cumulative time when you tap Lap, and the difference from the
-                previous lap, which is the number that actually tells you
-                whether you're speeding up or slowing down.
-              </p>
-              <p>
-                For interval training, comparing your fastest and slowest
-                splits is usually more useful than the total time — a shrinking
-                gap between them across a session is a sign of pacing that's
-                holding steady rather than fading.
-              </p>
-              <ul className="list-disc list-inside space-y-1 text-slate-600">
-                <li>Recording at least 3 laps gives an average worth trusting.</li>
-                <li>The green-highlighted lap is your fastest split; red is your slowest.</li>
-                <li>Use Reset between separate sessions — laps carry over otherwise.</li>
+               <h3><b>What is a Stopwatch? A Complete Guide to Its Uses and Benefits</b></h3>
+               <br />
+              A stopwatch is one of the simplest yet most powerful tools to manage your time accurately.
+               Unlike a regular clock that shows you the current time, a stopwatch measures how much time has passed from a specific starting point.
+                Whether you are a student, an athlete, or someone who wants to be more productive, learning how to use a stopwatch correctly can completely change the way you work.
+             <br /><br />
+              <h3><b>What is a Stopwatch and How Does It Work?</b></h3>
+              <br />
+              In simple words, a stopwatch is a time-measuring device designed to count time with high precision.
+               When you press the start button, it begins counting from zero, showing hours, minutes, seconds, and even milliseconds.
+                You can pause it, resume it, and reset it anytime. Modern digital stopwatches are extremely accurate and can measure time up to 1/100th of a second.
+                <br></br>
+                   The concept of the stopwatch is very old. Earlier mechanical stopwatches were used in sports,
+                   but today we mostly use digital and online stopwatches on our phones and computers.
+                <br /> <br />
+               <h3><b>Types of Stopwatches</b></h3>
+               <br />
+              <ul>
+                <li><b>Digital Stopwatch :</b>The traditional type with a dial and hands. It is still used in some labs and old sports events.</li>
+                <li><b>Mechanical Stopwatch :</b>The most common type. It shows time on an LCD screen, has lap and split functions, and is very accurate.</li>
+                <li><b>Online Stopwatch :</b>A free tool you can use directly in your browser without downloading any app. It is perfect for studying, workouts, and Pomodoro sessions.</li>
               </ul>
+              <br />
+              <h3><b>Stopwatch vs Timer - What is the Difference?</b></h3>
+              <br />
+              Many people get confused between a timer and a stopwatch. They are opposite. A Timer counts DOWN from a set time to zero, for example 25 minutes to 0. A Stopwatch counts UP from zero, for example 0 to 25 minutes. If you want to see how much time you spent on a task, you use a stopwatch. 
+              If you want to limit a task to a fixed time, you use a timer. For techniques like Pomodoro, both are used together.
+                <br />
+                <br />
+                <ul>
+                <li><b>For Students:</b>You can track exactly how long you studied without distraction. Instead of saying "I studied for 2 hours," you will know "I did 1 hour and 45 minutes of deep focus." This helps in better planning.</li><br />
+                <li><b>For Productivity and Work: </b>Use a stopwatch to do time auditing. Track how much time you waste on social media vs. how much you spend on real work. This one habit can make you 2x more productive.</li><br />
+                <li><b>For Sports and Fitness: </b>Athletes use a stopwatch to measure lap times, running speed, and rest periods between sets. It is essential for any kind of physical training.</li><br />
+                <li><b>For Cooking and Daily Tasks: </b>From boiling eggs to taking a power nap, a stopwatch helps you keep things precise.</li><br />
+              </ul><br />
+              <h3><b>How to Use a Stopwatch Effectively</b></h3><br />
+              <b>Don't just start it and forget it. Use the lap feature to divide your work. For example, 
+                if you are studying a chapter, note the lap time after each topic. Always keep the stopwatch visible in front of you,
+                 not hidden in your phone. This creates a sense of urgency. And after you finish, write down your total focused time in a diary.
+                 When you see your daily focused hours growing from 2 hours to 4 hours, you will get real motivation.</b>
+              <br />
+
+                  </p>
             </div>
           )}
         </div>

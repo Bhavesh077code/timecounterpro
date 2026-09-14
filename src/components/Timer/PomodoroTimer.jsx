@@ -1115,25 +1115,56 @@ function PomodoroTimer() {
 
           {showAbout && (
             <div className="mt-2 xs:mt-3 space-y-2 xs:space-y-3 text-[10px] xs:text-xs sm:text-sm text-slate-600 leading-relaxed">
-              <p>
-                The Pomodoro Technique breaks work into focused 25-minute intervals
-                separated by short 5-minute breaks. The method was developed by
-                Francesco Cirillo in the late 1980s, who used a tomato-shaped
-                kitchen timer to track his study sessions — which is where the
-                name comes from.
-              </p>
-              <p>
-                The idea is simple: a fixed, short deadline makes it easier to
-                start a task without getting overwhelmed, and the built-in break
-                keeps attention fresh instead of letting it decay over a long
-                unbroken stretch of work.
-              </p>
-              <ul className="list-disc list-inside space-y-1 text-slate-600">
-                <li>Pick a single task before you start the timer — switching tasks mid-session defeats the purpose.</li>
-                <li>Use the break to actually step away from the screen, even briefly.</li>
-                <li>After four focus sessions, consider taking a longer 15–20 minute break to recover fully.</li>
-                <li>If you get interrupted, it's fine to reset — the technique is a tool, not a strict rule.</li>
-              </ul>
+             <p>
+<b>The Pomodoro Technique is not some big formula, it's just a smart trick to fool your brain so you can finally start studying.</b>
+<br />
+<br />
+Think about it - you open your book and think, today I will study for 3 hours, and your brain immediately says, leave it man, that's too much. That's why we procrastinate. Pomodoro breaks that big 3-hour burden into small 25-minute pieces. <br /><br />
+This technique was created in the 1980s by a student named Francesco Cirillo. He had a tomato-shaped kitchen timer, in Italy a tomato is called Pomodoro, and that's where the name comes from. He noticed that when he set the timer for 25 minutes and studied, his focus was much better because the brain gets a small and clear deadline.
+<br /> 
+<br />
+
+ <h3><b>How does it work? </b></h3><br />
+
+The core idea is very simple - Our brain cannot naturally focus for a long time. 25 minutes of full focus, then a 5-minute break. That is 1 Pomodoro. After completing 4 Pomodoros, you take a longer break of 15 to 20 minutes. <br /><br />
+
+And that 5-minute break does not mean using your phone. It means closing your eyes, standing up, drinking water, looking out of the window. So that your brain can process the information you just studied. <br /><br />
+
+<h3><b>Why should you use it?</b></h3><br />
+<ul className="list-disc list-inside space-y-1 text-slate-600">
+  <li><b>Procrastination ends:</b> When your brain hears 25 minutes, it says, oh this is doable, let's start. Starting is always the hardest part.</li>
+  <li><b>Focus stays sharp:</b> When you know there is a break after 25 minutes, your mind wanders less. You tell yourself, whatever else I need to do, I'll do it in the break.</li>
+  <li><b>You get a real sense of time:</b> You realize that a chapter is not actually 2 hours, it's 3 Pomodoros. This makes your planning much better.</li>
+  <li><b>No burnout:</b> The tiredness you feel after studying continuously for 2 hours doesn't happen here because you keep recharging in between.</li>
+</ul> <br />
+
+<h3><b>How does it build focus for studies?</b></h3> <br /><br />
+
+Its biggest magic is Single-Tasking. In one Pomodoro, only one task. It means if you are studying a Chemistry topic, then only that. Don't think in between about what happened to Maths. When you bring your brain back to the same place again and again, its focus muscle becomes stronger. <br /><br />
+
+And second, every time you put a tick mark in your diary after 25 minutes, your brain gets a small reward. That small dopamine hit tells you, yes, it's happening, and you get motivated for the next session.<br /><br />
+
+
+<h3><b>Practical method for students:</b></h3> <br />
+<ul className="list-disc list-inside space-y-1 text-slate-600">
+<li><b>Step 1 -</b> Set a timer. Your phone's normal timer will work or apps like Forest or Focus To-Do.</li>
+<li><b>Step 2 -</b> Fix one task, like "notes from page 20 to 35".</li>
+<li><b>Step 3 -</b>For 25 minutes, do only that work. If you remember something in between like you have to message someone, just write it on a rough paper as "will do it later" and come back to studying.</li>
+<li><b>Step 4 -</b> When the timer rings, put your pen down and take a real 5-minute break.</li>
+<li><b>Step 5 -</b>After 4 sessions, take a long break, eat something, walk around a bit.</li>
+</ul><br />
+
+
+
+
+<b><i>
+Never watch Reels or Shorts in the break, it makes your brain even more tired. If someone disturbs you in between, don't feel guilty, just reset that session and start again. This is not a jail rule, it's a tool. If 25 minutes feels too much in the beginning, start with 15 minutes.
+This technique is not magic, but if you follow it honestly for 15 days, you will feel the difference yourself. Study will no longer feel like a burden, but like a game where you are winning every 25 minutes.
+</i></b>
+
+</p>
+
+
             </div>
           )}
         </div>
