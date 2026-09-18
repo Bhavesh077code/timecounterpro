@@ -19,7 +19,6 @@ import { TimerProvider, TimerContext } from "./context/TimerContext";
 
 import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home";
-import Timers from "./pages/Timers";
 import PomodoroPage from "./pages/PomodoroPage";
 import StopwatchPage from "./pages/StopwatchPage";
 import WorldClock from "./pages/WorldClock";
@@ -30,6 +29,9 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Term";
 import NotFound from "./pages/NotFound";
 import SharedCountdown from "./components/Timer/SharedCountdown";
+import CreateTimer from "./pages/CreateTimer";
+
+
 
 function SharedCountdownWrapper() {
   const { shareData, setShareData } = useContext(TimerContext);
@@ -67,7 +69,6 @@ const withLayout = (element) => <Layout>{element}</Layout>;
 
 const router = createBrowserRouter([
   { path: "/", element: <SharedCountdownWrapper /> },
-  { path: "/timers", element: withLayout(<Timers />) },
   { path: "/countdown", element: <Navigate to="/" replace /> },
   { path: "/pomodoro", element: withLayout(<PomodoroPage />) },
   { path: "/stopwatch", element: withLayout(<StopwatchPage />) },
@@ -77,7 +78,7 @@ const router = createBrowserRouter([
   { path: "/contact", element: withLayout(<Contact />) },
   { path: "/privacy", element: withLayout(<PrivacyPolicy />) },
   { path: "/terms", element: withLayout(<Terms />) },
-  
+  { path: "/create", element: <CreateTimer /> },
 
   // Old blog URLs -> timer library, so existing links do not dead-end.
   { path: "/blog", element: <Navigate to="/timers" replace /> },

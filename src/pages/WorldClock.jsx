@@ -575,64 +575,6 @@ export default function WorldClock() {
             </div>
           </section>
 
-          {/* RELATED TOOLS */}
-          <section className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Related Time Tools
-            </h2>
-
-            <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-              <a
-                href="/timers"
-                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
-              >
-                <h3 className="font-bold text-gray-900">
-                  Countdown Timers
-                </h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Create countdown timers for study, work and daily tasks.
-                </p>
-              </a>
-
-              <a
-                href="/pomodoro"
-                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
-              >
-                <h3 className="font-bold text-gray-900">
-                  Pomodoro Timer
-                </h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Work in focused sessions with regular breaks.
-                </p>
-              </a>
-
-              <a
-                href="/stopwatch"
-                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
-              >
-                <h3 className="font-bold text-gray-900">
-                  Online Stopwatch
-                </h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Measure elapsed time with a simple online stopwatch.
-                </p>
-              </a>
-
-              <a
-                href="/timer/meeting-timer"
-                className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
-              >
-                <h3 className="font-bold text-gray-900">
-                  Meeting Timer
-                </h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Keep meetings and discussions on schedule.
-                </p>
-              </a>
-
-            </div>
-          </section>
 
         </div>
       </main>

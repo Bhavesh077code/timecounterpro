@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
 import { TimerContext } from "../context/TimerContext";
 import TimerDashboard from "../components/TimerDashboard";
-import QuickPresets from "../components/QuickPresets";
-import CustomTimer from "../components/CustomTimer";
-import StatsCard from "../components/StartsCard";
+
 import CountdownCreator from "../components/Timer/CountdownCreator";
 import Stopwatch from "../components/Timer/Stopwatch";
 import PomodoroTimer from "../components/Timer/PomodoroTimer";
@@ -126,9 +124,6 @@ function Home() {
         <div className="bg-white p-3 sm:p-6">{renderContent()}</div>
       </section>
 
-      <div className="mb-8">
-        <CustomTimer />
-      </div>
 
       {/*
     <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
@@ -138,9 +133,8 @@ function Home() {
       <StatsCard icon="★" title="Presets Used" value={totalStats.presetsUsed || 0} subtitle={`${totalStats.customsCreated || 0} custom`} color="yellow" />
     </section>  */}
 
-      <QuickPresets />
+      
 
-      <TimerDashboard />
 
       <section className="mt-10 grid lg:grid-cols-2 gap-5">
         <article className="bg-white border border-slate-200  p-6 shadow-sm">

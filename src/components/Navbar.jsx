@@ -17,7 +17,7 @@ const Navbar = () => {
 
   const links = [
     ["/", "Home"],
-    ["/timers", "Timers"],
+    ["/create", "CreateTimer"],
     ["/pomodoro", "Pomodoro"],
     ["/stopwatch", "Stopwatch"],
     ["/world-clock", "World Clock"],

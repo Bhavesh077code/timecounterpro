@@ -146,25 +146,6 @@ function StopwatchPage() {
             </div>
           </section>
 
-          <section className="mt-10 border-t border-slate-200 pt-6">
-            <h2 className="text-xl font-bold text-slate-900">Related tools</h2>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[
-                ["/pomodoro", "Pomodoro timer"],
-                ["/timer/workout-timer", "Workout timer"],
-                ["/timer/reading-timer", "Reading timer"],
-                ["/timers", "All timers"],
-              ].map(([to, label]) => (
-                <Link
-                  key={to}
-                  to={to}
-                  className="px-4 py-2 border border-slate-200 text-sm text-slate-700 hover:border-indigo-300 hover:text-indigo-700"
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
-          </section>
         </article>
       </div>
     </>

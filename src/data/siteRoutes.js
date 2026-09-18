@@ -1,15 +1,4 @@
 // src/data/siteRoutes.js
-//
-// Single source of truth for every URL on the site.
-//
-// Used by:
-//   scripts/generate-sitemap.mjs  -> builds public/sitemap.xml + dist/sitemap.xml
-//   scripts/prerender.mjs         -> writes a real static HTML file per route
-//
-// If you add a page, add it here. Nothing else needs to change.
-
-import seoTimers from "./seoTimers.js";
-import timerContent from "./timerContext.js";
 
 export const SITE_URL = "https://timecounterpro.com";
 
@@ -23,10 +12,10 @@ export const staticRoutes = [
     changefreq: "weekly",
   },
   {
-    path: "/timers",
-    title: "Online Timers for Study, Work, Cooking & Exercise | TimeCounterPro",
+    path: "/create",
+    title: "Online Timers | TimeCounterPro",
     description:
-      "Browse 24 hand-written timer pages for study, Pomodoro, workouts, cooking, meditation, classrooms and meetings. Free and no signup.",
+      "Free online timers for study, work, cooking, exercise and everyday tasks.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -34,7 +23,7 @@ export const staticRoutes = [
     path: "/pomodoro",
     title: "Pomodoro Timer Online - Free Focus Timer with Breaks",
     description:
-      "A free online Pomodoro timer with focus intervals and breaks, plus a practical guide to using the technique for study and deep work.",
+      "A free online Pomodoro timer for focused work and study.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -42,7 +31,7 @@ export const staticRoutes = [
     path: "/stopwatch",
     title: "Online Stopwatch - Free Stopwatch with Lap Times",
     description:
-      "A free online stopwatch for workouts, practice, cooking and any task where you need to measure how long something actually takes.",
+      "A free online stopwatch for workouts, practice, cooking and everyday tasks.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -50,23 +39,23 @@ export const staticRoutes = [
     path: "/world-clock",
     title: "World Clock - Current Time in Cities Around the World",
     description:
-      "Check the current local time across major cities and time zones. Useful for scheduling calls and meetings across countries.",
+      "Check the current local time across major cities and time zones.",
     priority: "0.8",
     changefreq: "daily",
   },
   {
     path: "/about",
-    title: "About TimeCounterPro - Who Builds This Timer",
+    title: "About TimeCounterPro",
     description:
-      "Who makes TimeCounterPro, why it exists, how the timers are built and how the site is funded.",
+      "Learn about TimeCounterPro, its timers and how the website works.",
     priority: "0.6",
     changefreq: "monthly",
   },
   {
     path: "/contact",
-    title: "Contact TimeCounterPro - Feedback, Bugs & Requests",
+    title: "Contact TimeCounterPro",
     description:
-      "Get in touch with TimeCounterPro about a bug, a feature request, a correction or a partnership enquiry.",
+      "Contact TimeCounterPro for feedback, bugs and feature requests.",
     priority: "0.6",
     changefreq: "monthly",
   },
@@ -74,7 +63,7 @@ export const staticRoutes = [
     path: "/privacy",
     title: "Privacy Policy | TimeCounterPro",
     description:
-      "How TimeCounterPro handles data, local storage, cookies and third-party advertising, explained in plain language.",
+      "Learn how TimeCounterPro handles data, storage and cookies.",
     priority: "0.4",
     changefreq: "monthly",
   },
@@ -82,30 +71,22 @@ export const staticRoutes = [
     path: "/terms",
     title: "Terms of Service | TimeCounterPro",
     description:
-      "The terms that apply when you use the timers, stopwatch and other tools on TimeCounterPro.",
+      "Terms that apply when using TimeCounterPro.",
     priority: "0.4",
+    changefreq: "monthly",
+  },
+  {
+    path: "/history",
+    title: "Your Timer History | TimeCounterPro",
+    description:
+      "View and manage your timer history.",
+    priority: "0.2",
     changefreq: "monthly",
   },
 ];
 
-// Routes that exist for users but should never be indexed:
-// they hold no content for a first-time visitor (History reads local storage,
-// share links are user-generated, /404 is an error page).
 export const noindexRoutes = ["/history"];
 
-export const timerRoutes = seoTimers
-  .filter((timer) => Boolean(timerContent[timer.slug]))
-  .map((timer) => {
-    const content = timerContent[timer.slug];
-    return {
-      path: `/timer/${timer.slug}`,
-      title: content.metaTitle,
-      description: content.metaDescription,
-      priority: "0.7",
-      changefreq: "monthly",
-    };
-  });
-
-export const allRoutes = [...staticRoutes, ...timerRoutes];
+export const allRoutes = staticRoutes;
 
 export default allRoutes;

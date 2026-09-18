@@ -238,28 +238,7 @@ function PomodoroPage() {
             </div>
           </section>
 
-          <section className="mt-10 border-t border-slate-200 pt-6">
-            <h2 className="text-xl font-bold text-slate-900">
-              Related timers
-            </h2>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[
-                ["/timer/pomodoro-25-5", "Pomodoro 25/5"],
-                ["/timer/pomodoro-50-10", "Pomodoro 50/10"],
-                ["/timer/25-minute-timer", "25 minute timer"],
-                ["/timer/study-timer", "Study timer"],
-                ["/stopwatch", "Stopwatch"],
-              ].map(([to, label]) => (
-                <Link
-                  key={to}
-                  to={to}
-                  className="px-4 py-2 border border-slate-200 text-sm text-slate-700 hover:border-indigo-300 hover:text-indigo-700"
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
-          </section>
+          
         </article>
       </div>
     </>

@@ -36,7 +36,7 @@
 //     npm install --save-dev puppeteer
 //
 // Then just run `npm run build` as normal.
-
+  
 import fs from "node:fs";
 import path from "node:path";
 import http from "node:http";
@@ -44,7 +44,8 @@ import { fileURLToPath } from "node:url";
 import { allRoutes, SITE_URL } from "../data/siteRoutes.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const distDir = path.join(__dirname, "..", "dist");
+const distDir = path.join(__dirname, "..", "..", "dist");
+
 
 const MIME = {
   ".html": "text/html; charset=utf-8",

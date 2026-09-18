@@ -71,8 +71,8 @@ function Footer() {
             <h4 className="text-sm font-semibold text-slate-900 mb-2">Timers</h4>
             <ul className="space-y-1.5">
               <li>
-                <Link to="/timers" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
-                  Countdown Timer
+                <Link to="/create" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
+                  Create Timer
                 </Link>
               </li>
               <li>
@@ -94,30 +94,7 @@ function Footer() {
           </div>
         </div>
 
-        {/* Popular timer pages - internal linking for crawlers and users */}
-        <div className="border-t border-slate-200 mt-6 pt-5">
-          <h4 className="text-sm font-semibold text-slate-900 mb-2">Popular timers</h4>
-          <div className="flex flex-wrap gap-x-4 gap-y-2">
-            {[
-              ["/timer/5-minute-timer", "5 min"],
-              ["/timer/10-minute-timer", "10 min"],
-              ["/timer/15-minute-timer", "15 min"],
-              ["/timer/20-minute-timer", "20 min"],
-              ["/timer/25-minute-timer", "25 min"],
-              ["/timer/30-minute-timer", "30 min"],
-              ["/timer/45-minute-timer", "45 min"],
-              ["/timer/60-minute-timer", "1 hour"],
-              ["/timer/study-timer", "Study"],
-              ["/timer/workout-timer", "Workout"],
-              ["/timer/cooking-timer", "Cooking"],
-              ["/timer/meditation-timer", "Meditation"],
-            ].map(([to, label]) => (
-              <Link key={to} to={to} className="text-xs text-slate-500 hover:text-indigo-600 transition-colors duration-200">
-                {label}
-              </Link>
-            ))}
-          </div>
-        </div>
+        
 
         {/* Bottom Bar - Copyright */}
         <div className="border-t border-slate-200 mt-6 sm:mt-8 pt-4 sm:pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">

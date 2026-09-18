@@ -33,8 +33,8 @@ const sitemap =
   `</urlset>\n`;
 
 for (const target of [
-  path.join(__dirname, "..", "public", "sitemap.xml"),
-  path.join(__dirname, "..", "dist", "sitemap.xml"),
+  path.join(__dirname, "../../dist/sitemap.xml"),
+  path.join(__dirname, "../../public/sitemap.xml"),
 ]) {
   try {
     fs.mkdirSync(path.dirname(target), { recursive: true });
