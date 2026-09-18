@@ -1,4 +1,4 @@
-# TimeCounterPro — AI Project Context
+# TimeCounterPro — Project Context
 
 ## 1. Project Identity
 
@@ -13,7 +13,7 @@ The AI must understand the existing codebase BEFORE making any code changes.
 
 ---
 
-# 2. IMPORTANT INSTRUCTION FOR AI
+# 2. IMPORTANT INSTRUCTION 
 
 You are working on an EXISTING project.
 

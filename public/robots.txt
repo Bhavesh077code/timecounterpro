@@ -1,4 +1,27 @@
+# TimeCounterPro robots.txt
+
 User-agent: *
+Allow: /
+
+# Pages with no content for a first-time visitor.
+Disallow: /history
+Disallow: /countdown
+
+# Shared-countdown links are user-generated query strings, not content pages.
+Disallow: /*?event=
+Disallow: /*?date=
+
+# Old blog URLs were removed in 2026; they now redirect to /timers.
+Disallow: /blog
+
+# AdSense crawler must be able to reach every page it is asked to review.
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
 Allow: /
 
 Sitemap: https://timecounterpro.com/sitemap.xml

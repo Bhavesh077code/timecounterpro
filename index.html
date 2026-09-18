@@ -1,34 +1,80 @@
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/time.png" />
+    <link rel="icon" type="image/png" href="/time.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <title>TimeCounterPro - Free Online Countdown Timer</title>
-    <meta name="description" content="Create beautiful countdown timers for free. Perfect for events, study sessions, workouts, and productivity. No registration required! ⏱" />
-    <meta name="keywords" content="countdown timer, online timer, free timer, productivity timer, study timer, workout timer" />
-    
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="TimeCounterPro - Free Online Countdown Timer" />
-    <meta property="og:description" content="Create beautiful countdown timers for free. Perfect for events, study, workouts, and productivity! ⏱" />
 
-    <meta name="google-adsense-account" content="ca-pub-8793114997971427">
-    
+    <!--
+      NOTE ON SEO
+      -----------
+      This file used to contain a hard-coded <link rel="canonical"> pointing at
+      the homepage. Because the app is a single-page React app, that canonical
+      was served on EVERY route, telling Google that /terms, /about, /pomodoro
+      and every timer page were all duplicates of "/". It has been removed.
+
+      Each route now sets its own title, description and canonical through
+      src/components/Seo.jsx, and `npm run build` prerenders a real static HTML
+      file per route (see scripts/prerender.mjs) so crawlers that do not execute
+      JavaScript still receive full content.
+
+      The tags below are only the fallback for a route that has not been
+      prerendered.
+    -->
+    <title>TimeCounterPro - Free Online Countdown Timer, Pomodoro & Stopwatch</title>
+    <meta
+      name="description"
+      content="Free online countdown timer, Pomodoro focus timer and stopwatch for study, work, workouts and cooking. No registration, no download."
+    />
+
+    <meta name="google-adsense-account" content="ca-pub-8793114997971427" />
     <meta name="theme-color" content="#7c3aed" />
-    <link rel="canonical" href="https://timecounterpro.com/" />
-    
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TimeCounterPro" />
+    <meta property="og:title" content="TimeCounterPro - Free Online Countdown Timer" />
+    <meta
+      property="og:description"
+      content="Free countdown, Pomodoro and stopwatch tools for study, work, workouts and cooking."
+    />
+    <meta property="og:image" content="https://timecounterpro.com/icons/icon-512.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8793114997971427"
-     crossorigin="anonymous"></script>
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8793114997971427"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div id="root"></div>
+
+    <noscript>
+      <h1>TimeCounterPro - free online timers</h1>
+      <p>
+        TimeCounterPro provides a free countdown timer, Pomodoro focus timer,
+        stopwatch and world clock in your browser. No account or download is
+        required. JavaScript needs to be enabled to run the timers.
+      </p>
+      <ul>
+        <li><a href="/timers">Browse all timers</a></li>
+        <li><a href="/pomodoro">Pomodoro timer</a></li>
+        <li><a href="/stopwatch">Online stopwatch</a></li>
+        <li><a href="/world-clock">World clock</a></li>
+        <li><a href="/about">About TimeCounterPro</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/privacy">Privacy policy</a></li>
+        <li><a href="/terms">Terms of service</a></li>
+      </ul>
+    </noscript>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

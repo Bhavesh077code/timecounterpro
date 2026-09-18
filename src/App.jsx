@@ -1,30 +1,35 @@
-
 // src/App.jsx
+//
+// Changes from the previous version:
+//  - /blog and /blog/:slug removed (Blog.jsx, BlogPost.jsx, BlogData.js deleted)
+//  - /pomodoro and /stopwatch now render dedicated page components that carry
+//    their own title, description and canonical
+//  - added a "*" catch-all so unknown URLs return a noindexed 404 page instead
+//    of silently rendering something indexable
+
 import React, { useEffect, useContext } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { TimerProvider, TimerContext } from "./context/TimerContext";
+
+import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home";
+import Timers from "./pages/Timers";
+import PomodoroPage from "./pages/PomodoroPage";
+import StopwatchPage from "./pages/StopwatchPage";
+import WorldClock from "./pages/WorldClock";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import History from "./pages/History";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Term";
-import Contact from "./pages/Contact";
-import Layout from "./components/Layout/Layout";
-import TimerSlugPage from "./pages/TimerSlugPage";
+import NotFound from "./pages/NotFound";
 import SharedCountdown from "./components/Timer/SharedCountdown";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import PomodoroTimer from "./components/Timer/PomodoroTimer";
-import Stopwatch from "./components/Timer/Stopwatch";
-import Timers from "./pages/Timers";
-import { Navigate } from "react-router-dom";
-import WorldClock from "./pages/WorldClock";
-
 
 function SharedCountdownWrapper() {
   const { shareData, setShareData } = useContext(TimerContext);
@@ -37,11 +42,7 @@ function SharedCountdownWrapper() {
     const theme = params.get("theme");
 
     if (event && date) {
-      setShareData({
-        event,
-        date,
-        theme: theme || "neon",
-      });
+      setShareData({ event, date, theme: theme || "neon" });
     } else if (!event && !date) {
       setShareData(null);
     }
@@ -49,7 +50,7 @@ function SharedCountdownWrapper() {
 
   if (shareData?.event && shareData?.date) {
     return (
-      <Layout showAds={false}>
+      <Layout>
         <SharedCountdown />
       </Layout>
     );
@@ -62,107 +63,27 @@ function SharedCountdownWrapper() {
   );
 }
 
+const withLayout = (element) => <Layout>{element}</Layout>;
+
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <SharedCountdownWrapper />,
-  },
-  {
-    path: "/timers",
-    element: (
-      <Layout>
-        <Timers />
-      </Layout>
-    ),
-  },
-  {
-    path: "/countdown",
-    element: <Navigate to="/" replace />,
-  },
-  {
-    path: "/pomodoro",
-    element: (
-      <Layout>
-        <PomodoroTimer />
-      </Layout>
-    ),
-  },
-  {
-    path: "/about",
-    element: (
-      <Layout>
-        <About />
-      </Layout>
-    ),
-  },
-  {
-    path: "/blog",
-    element: (
-      <Layout>
-        <Blog />
-      </Layout>
-    ),
-  },
-  {
-    path: "/blog/:slug",
-    element: (
-      <Layout>
-        <BlogPost />
-      </Layout>
-    ),
-  },
-  {
-    path: "/history",
-    element: (
-      <Layout>
-        <History />
-      </Layout>
-    ),
-  },
-  {
-  path: "/world-clock",
-  element: (
-    <Layout>
-      <WorldClock />
-    </Layout>
-  ),
-},
-   {
-    path: "/stopwatch",
-    element: (
-      <Layout>
-        <Stopwatch />
-      </Layout>
-    ),
-  },
-  {
-    path: "/privacy",
-    element: (
-      <Layout>
-        <PrivacyPolicy />
-      </Layout>
-    ),
-  },
-  {
-    path: "/terms",
-    element: (
-      <Layout>
-        <Terms />
-      </Layout>
-    ),
-  },
-  {
-    path: "/contact",
-    element: (
-      <Layout>
-        <Contact />
-      </Layout>
-    ),
-  },
-  {
-    path: "/timer/:slug",
-    element: <TimerSlugPage />,
-  },
+  { path: "/", element: <SharedCountdownWrapper /> },
+  { path: "/timers", element: withLayout(<Timers />) },
+  { path: "/countdown", element: <Navigate to="/" replace /> },
+  { path: "/pomodoro", element: withLayout(<PomodoroPage />) },
+  { path: "/stopwatch", element: withLayout(<StopwatchPage />) },
+  { path: "/world-clock", element: withLayout(<WorldClock />) },
+  { path: "/history", element: withLayout(<History />) },
+  { path: "/about", element: withLayout(<About />) },
+  { path: "/contact", element: withLayout(<Contact />) },
+  { path: "/privacy", element: withLayout(<PrivacyPolicy />) },
+  { path: "/terms", element: withLayout(<Terms />) },
+  
+
+  // Old blog URLs -> timer library, so existing links do not dead-end.
+  { path: "/blog", element: <Navigate to="/timers" replace /> },
+  { path: "/blog/:slug", element: <Navigate to="/timers" replace /> },
+
+  { path: "*", element: withLayout(<NotFound />) },
 ]);
 
 function App() {

@@ -16,8 +16,14 @@ const Navbar = () => {
     : "text-slate-600 hover:text-slate-950 hover:bg-slate-100";
 
   const links = [
-    ["/", "Home"], ["/pomodoro", "Pomodoro"],["/stopwatch", "Stopwatch"],["/timers", "Timers"],["/world-clock", "World Clock"], ["/history", "History"],
-    ["/blog", "Guides"], ["/about", "About"], ["/contact", "Contact"]
+    ["/", "Home"],
+    ["/timers", "Timers"],
+    ["/pomodoro", "Pomodoro"],
+    ["/stopwatch", "Stopwatch"],
+    ["/world-clock", "World Clock"],
+    ["/history", "History"],
+    ["/about", "About"],
+    ["/contact", "Contact"],
   ];
 
   return <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">

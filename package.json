@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node src/utils/generateSitemap.js",
+    "build": "vite build && node src/scripts/generate-sitemap.mjs && node src/scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "sitemap": "node src/utils/generateSitemap.js"
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "prerender": "node scripts/prerender.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "oxlint": "^1.75.0",
+    "puppeteer": "^25.11.0",
     "vite": "^8.2.0",
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-pwa": "^1.3.0"
