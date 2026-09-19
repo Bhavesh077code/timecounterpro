@@ -108,6 +108,19 @@ export const staticRoutes = [
   },
 
   // ============================================
+  // GAMING TIMERS
+  // ============================================
+  {
+    path: "/gameplay-timer",
+    title: "Game Timer - Free Arcade Challenge with 2 Mini-Games",
+    description:
+      "Free arcade countdown timer with 2 unique mini-games: Tap Target and Simon Says. Beat the clock, score points and improve your reaction time. No sign-up required.",
+    priority: "0.85",
+    changefreq: "weekly",
+  },
+
+
+  // ============================================
   // PROFESSIONAL & PRESENTATION TIMERS
   // ============================================
   {

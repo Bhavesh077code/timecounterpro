@@ -39,6 +39,7 @@ import FastingTrackerClock from "./Tools/FastingTrackerClock";
 import PresentationAlertTimer from "./Tools/PresentationAlertTimer";
 import RemoteWorldClock from "./Tools/RemoteWorldClock";
 import GroupStudyGridTimer from "./Tools/GroupStudyGridTimer";
+import GamePlayTimer from "./Tools/GamePlayTimer";
 
 
 
@@ -98,6 +99,7 @@ const router = createBrowserRouter([
   { path: "/presentation-timer", element: <PresentationAlertTimer /> },
   { path: "/world-clock-board-timer", element: <RemoteWorldClock /> },
   { path: "/group-study-timer", element: <GroupStudyGridTimer /> },
+  { path: "/gameplay-timer", element: <GamePlayTimer /> },
 
 
   // Old blog URLs -> timer library, so existing links do not dead-end.

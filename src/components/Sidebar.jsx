@@ -14,6 +14,7 @@ const SECTIONS = [
       { to: "/hiit-timer", code: "T01", label: "HIIT / Tabata" },
       { to: "/stream-timer",     code: "T02", label: "stream-overlay" },
       { to: "/jungle-timer",  code: "T03", label: "Esports Jungle" },
+      { to: "/gameplay-timer", code: "T04", label: "GamePlay Timer" },
     ],
   },
   {
