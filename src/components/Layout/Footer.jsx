@@ -36,6 +36,11 @@ function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/timers" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
+                  All Timer Tools
+                </Link>
+              </li>
+              <li>
                 <Link to="/about" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
                   About
                 </Link>

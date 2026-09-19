@@ -254,8 +254,7 @@ function Terms() {
               <div>
                 <h2 className="text-lg font-bold text-slate-800 mb-2">9. Governing Law</h2>
                 <p className="text-slate-600 leading-relaxed text-sm">
-                  These Terms & Conditions are governed by and construed in accordance with the laws of the United States, 
-                  without regard to its conflict of law provisions.
+                  These Terms & Conditions are governed by the applicable laws and regulations that apply to the service and your use of it.
                 </p>
                 <p className="text-slate-500 text-sm mt-2">
                   Any dispute will be handled through the appropriate legal process and jurisdiction required by applicable law.

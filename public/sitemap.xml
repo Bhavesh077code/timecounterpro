@@ -85,6 +85,12 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://timecounterpro.com/world-clock-board-timer</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://timecounterpro.com/about</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
@@ -107,11 +113,5 @@
     <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://timecounterpro.com/history</loc>
-    <lastmod>2026-09-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.2</priority>
   </url>
 </urlset>

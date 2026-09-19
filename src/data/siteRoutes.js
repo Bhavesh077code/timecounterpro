@@ -14,6 +14,7 @@ export const staticRoutes = [
     priority: "1.0",
     changefreq: "weekly",
   },
+
   {
     path: "/create",
     title: "Create Custom Timer Online - Free Countdown Builder | TimeCounterPro",
@@ -74,7 +75,7 @@ export const staticRoutes = [
     path: "/fasting-tracker-timer",
     title: "Intermittent Fasting Tracker Clock - Free 16:8, 18:6, 20:4 Timer",
     description:
-      "Free intermittent fasting tracker with live count-up and count-down clocks, metabolic phase indicators, water intake tracker and fasting history. Track 16:8, 18:6, 20:4 and custom protocols.",
+      "Free intermittent fasting tracker with live count-up and count-down clocks, protocol presets, water intake tracking and fasting history. Use it as a timing tool for 16:8, 18:6, 20:4 and custom intervals.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -139,6 +140,14 @@ export const staticRoutes = [
     priority: "0.85",
     changefreq: "daily",
   },
+  {
+    path: "/world-clock-board-timer",
+    title: "World Clock Board - Multi-City Time Zone Timer | TimeCounterPro",
+    description:
+      "Compare multiple cities at once with a simple world clock board for remote teams, meetings and international planning.",
+    priority: "0.8",
+    changefreq: "daily",
+  },
 
   // ============================================
   // INFORMATION PAGES
@@ -163,7 +172,7 @@ export const staticRoutes = [
     path: "/privacy",
     title: "Privacy Policy | TimeCounterPro",
     description:
-      "Learn how TimeCounterPro handles data, local storage and cookies. No personal information is collected.",
+      "Learn how TimeCounterPro handles local timer data, contact information, cookies, analytics and advertising.",
     priority: "0.4",
     changefreq: "monthly",
   },
@@ -173,14 +182,6 @@ export const staticRoutes = [
     description:
       "Terms and conditions that apply when using TimeCounterPro and its online timers.",
     priority: "0.4",
-    changefreq: "monthly",
-  },
-  {
-    path: "/history",
-    title: "Your Timer History | TimeCounterPro",
-    description:
-      "View and manage your personal timer history. All data is stored locally in your browser.",
-    priority: "0.2",
     changefreq: "monthly",
   },
 ];
@@ -194,10 +195,12 @@ export const staticRoutes = [
 // CATEGORIES for navbar/footer organization
 // ============================================
 export const routeCategories = {
-  study: ["/pomodoro", "/mock-test", "/group-study", "/create"],
-  fitness: ["/hiit-timer", "/fasting-timer"],
-  gaming: ["/stream-overlay", "/jungle-timer", "/speedrun-timer"],
-  professional: ["/presentation-timer", "/world-clock"],
+  core: ["/", "/create", "/pomodoro", "/stopwatch", "/world-clock"],
+  study: ["/pomodoro", "/mock-test-timer", "/group-study-timer"],
+  fitness: ["/hiit-timer", "/fasting-tracker-timer"],
+  gaming: ["/jungle-timer", "/speed-timer", "/gameplay-timer"],
+  streaming: ["/stream-timer"],
+  professional: ["/presentation-timer", "/world-clock-board-timer"],
   info: ["/about", "/contact", "/privacy", "/terms"],
 };
 
