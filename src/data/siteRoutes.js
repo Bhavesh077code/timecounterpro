@@ -8,18 +8,17 @@ export const staticRoutes = [
   // ============================================
   {
     path: "/",
-    title: "TimeCounterPro - Free Countdown, Pomodoro & Stopwatch",
+    title: "100% Free Online Timer - Countdown Clock & Stopwatch",
     description:
-      "Free online countdown timer, Pomodoro focus timer and stopwatch for study, work, workouts and cooking. No registration, no download.",
+      "Looking for a reliable timer? Use TimeCounterPro for a free online countdown, Pomodoro tracker, and stopwatch. Clean, fast, and no registration required!",
     priority: "1.0",
     changefreq: "weekly",
   },
-
   {
     path: "/create",
-    title: "Create Custom Timer Online - Free Countdown Builder | TimeCounterPro",
+    title: "Create Custom Timer Online - Make Your Own Countdown Clock",
     description:
-      "Build your own custom countdown timer with personalized durations, labels, sounds and colors. Free online timer for study, work, cooking and workouts.",
+      "Design your personal timer in seconds! Customize names, colors, alarm sounds, and exact durations. The ultimate free countdown builder online.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -29,33 +28,33 @@ export const staticRoutes = [
   // ============================================
   {
     path: "/pomodoro",
-    title: "Pomodoro Timer Online - Free Focus Timer with Breaks",
+    title: "Pomodoro Timer Online - Beat Procrastination & Stay Focused",
     description:
-      "Free online Pomodoro timer for focused work and study. Customizable 25/5 intervals, session tracking and notification alerts. No sign-up required.",
+      "Boost your focus instantly with our free Pomodoro timer. Fully customizable 25/5 minute intervals with desktop alert sounds to maximize your productivity.",
     priority: "0.9",
     changefreq: "weekly",
   },
   {
     path: "/stopwatch",
-    title: "Online Stopwatch - Free Stopwatch with Lap Times",
+    title: "Online Stopwatch - Precise Chronometer with Lap Times",
     description:
-      "A free online stopwatch with millisecond precision, lap times and split tracking. Perfect for workouts, practice sessions and everyday timing.",
+      "Track time down to the millisecond! An accurate online stopwatch with unlimited lap splits. Perfect for runners, athletes, and workplace efficiency.",
     priority: "0.9",
     changefreq: "weekly",
   },
   {
     path: "/mock-test-timer",
-    title: "Free Mock Test Sectional Timer - CAT, JEE, GRE, UPSC Practice",
+    title: "Exam Sectional Mock Test Timer - Practice CAT, JEE, UPSC Online",
     description:
-      "Free online sectional mock test timer for CAT, JEE, GRE, GMAT and UPSC practice. Auto-locks sections with warning beeps, exactly like real exam portals.",
+      "Simulate real exam portals! Free sectional mock test timer with auto-locking screens and warning buzzers for competitive exams like CAT, JEE, GRE, and UPSC.",
     priority: "0.9",
     changefreq: "weekly",
   },
   {
     path: "/group-study-timer",
-    title: "Group Study Multi-Timer Grid - Free Virtual Study Room Timer",
+    title: "Group Study Multi-Timer Grid - 4 Clocks on One Screen",
     description:
-      "Free 2x2 multi-timer grid for group study sessions. Run four independent countdown timers in parallel with editable names and custom durations.",
+      "Manage multiple tasks at once! A unique 2x2 multi-timer grid for virtual classrooms and group studies. Run 4 independent countdowns simultaneously.",
     priority: "0.85",
     changefreq: "weekly",
   },
@@ -65,17 +64,17 @@ export const staticRoutes = [
   // ============================================
   {
     path: "/hiit-timer",
-    title: "Free HIIT & Tabata Interval Timer Online - Work & Rest Countdown",
+    title: "HIIT & Tabata Interval Timer - Custom Work Rest Countdown",
     description:
-      "Free HIIT and Tabata interval timer with customizable work/rest periods, cycle tracking and audio cues. Perfect for high-intensity workouts at home or the gym.",
+      "Crush your fitness goals! Free online interval timer for HIIT, Tabata, and home gym workouts. Easily adjust rounds, work cycles, and recovery periods.",
     priority: "0.9",
     changefreq: "weekly",
   },
   {
     path: "/fasting-tracker-timer",
-    title: "Intermittent Fasting Tracker Clock - Free 16:8, 18:6, 20:4 Timer",
+    title: "Intermittent Fasting Tracker Clock - Free 16:8 & 18:6 Fast Timer",
     description:
-      "Free intermittent fasting tracker with live count-up and count-down clocks, protocol presets, water intake tracking and fasting history. Use it as a timing tool for 16:8, 18:6, 20:4 and custom intervals.",
+      "Track your fasting window effortlessly. Features preset clocks for 16:8, 18:6, and 20:4 fasting protocols, water tracking, and a live progress calendar.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -85,25 +84,25 @@ export const staticRoutes = [
   // ============================================
   {
     path: "/stream-timer",
-    title: "Free Twitch & OBS Stream Countdown Overlay Timer",
+    title: "Twitch & OBS Stream Countdown Overlay - Chroma Green Screen",
     description:
-      "Free stream countdown overlay for Twitch, YouTube Live and OBS Studio. Chroma-key green or pitch-black backgrounds, keyboard hotkeys and embed code included.",
+      "Upgrade your stream quality! Free countdown overlay for OBS Studio and Twitch. Features hotkey support, black/green background controls, and quick embed codes.",
     priority: "0.85",
     changefreq: "weekly",
   },
   {
     path: "/jungle-timer",
-    title: "Esports Jungle Buff Timer - Multi-Objective MOBA Timer",
+    title: "MOBA Esports Jungle Buff Timer - Live Respawn Tracker",
     description:
-      "Free multi-objective jungle timer for League of Legends, Dota 2 and Wild Rift. Track Baron, Dragon, Blue/Red Buff and Scuttle respawns independently.",
+      "Never lose an objective! Multi-target jungle clock for League of Legends, Dota 2, and Wild Rift. Tracks Baron, Dragon, and Buff camps simultaneously.",
     priority: "0.8",
     changefreq: "weekly",
   },
   {
     path: "/speed-timer",
-    title: "Speedrun Split Stopwatch - Free Millisecond Precision Timer",
+    title: "Speedrun Split Stopwatch - Professional Millisecond Timer",
     description:
-      "Free speedrun split stopwatch with millisecond precision, split logging, delta variance and baseline comparison. Matches speedrun.com standards.",
+      "Track your speedrun progress like a pro! High-precision split stopwatch with delta variance calculation, fully compliant with speedrun.com rules.",
     priority: "0.8",
     changefreq: "weekly",
   },
@@ -113,38 +112,37 @@ export const staticRoutes = [
   // ============================================
   {
     path: "/gameplay-timer",
-    title: "Game Timer - Free Arcade Challenge with 2 Mini-Games",
+    title: "Arcade Game Timer - Test Your Reaction Time Online",
     description:
-      "Free arcade countdown timer with 2 unique mini-games: Tap Target and Simon Says. Beat the clock, score points and improve your reaction time. No sign-up required.",
+      "Beat the ticking clock! Play 2 interactive mini-games (Tap Target and Simon Says) inside a countdown window to train your focus and hand-eye coordination.",
     priority: "0.85",
     changefreq: "weekly",
   },
-
 
   // ============================================
   // PROFESSIONAL & PRESENTATION TIMERS
   // ============================================
   {
     path: "/presentation-timer",
-    title: "Presentation & Speech Timer - Stage Warning Countdown",
+    title: "Presentation & Speech Timer - Full Screen Color Alert Clock",
     description:
-      "Free presentation and public speaking timer with giant full-screen display, dynamic color warnings (green → amber → red) and stage-ready visibility from across an auditorium.",
+      "Never run out of time on stage! A massive full-screen speech timer that automatically transitions colors (Green → Amber → Red) as your time runs out.",
     priority: "0.85",
     changefreq: "weekly",
   },
   {
     path: "/world-clock",
-    title: "World Clock - Live Time in Cities Around the World | Remote Team Tool",
+    title: "World Clock Dashboard - Live Global Meeting Time Planner",
     description:
-      "Free world clock dashboard for remote teams. Live times across San Francisco, New York, London, Berlin, Mumbai, Tokyo, Singapore and Sydney with a time-travel planning slider.",
+      "Coordinate international meetings instantly! Track current times in major tech hubs (San Francisco, London, Mumbai, Tokyo) with a built-in time slider.",
     priority: "0.85",
     changefreq: "daily",
   },
   {
     path: "/world-clock-board-timer",
-    title: "World Clock Board - Multi-City Time Zone Timer | TimeCounterPro",
+    title: "Multi-City Time Zone Board - Remote Team Planning Tool",
     description:
-      "Compare multiple cities at once with a simple world clock board for remote teams, meetings and international planning.",
+      "Say goodbye to time zone confusion. Compare multiple global locations side-by-side on an interactive dashboard designed for remote operations.",
     priority: "0.8",
     changefreq: "daily",
   },
@@ -154,46 +152,38 @@ export const staticRoutes = [
   // ============================================
   {
     path: "/about",
-    title: "About TimeCounterPro - Free Online Timers & Tools",
+    title: "About Us | TimeCounterPro Productivity Suite",
     description:
-      "Learn about TimeCounterPro, our collection of free online timers, and how our tools help students, professionals, athletes and streamers stay on schedule.",
+      "Discover the story behind TimeCounterPro and find out how our high-performance timing tools assist developers, students, and athletes every day.",
     priority: "0.6",
     changefreq: "monthly",
   },
   {
     path: "/contact",
-    title: "Contact TimeCounterPro - Feedback, Bugs & Feature Requests",
+    title: "Contact TimeCounterPro - Report Bugs & Suggest Features",
     description:
-      "Contact TimeCounterPro for feedback, bug reports or new timer feature requests. We reply within 48 hours.",
+      "Have an idea for a new timing tool or spotted a bug? Drop us a line. The TimeCounterPro team responds within 48 hours.",
     priority: "0.6",
     changefreq: "monthly",
   },
   {
     path: "/privacy",
-    title: "Privacy Policy | TimeCounterPro",
+    title: "Privacy Policy | How We Protect Your Timer Data",
     description:
-      "Learn how TimeCounterPro handles local timer data, contact information, cookies, analytics and advertising.",
+      "Your privacy is our priority. Read how TimeCounterPro safely manages cookies, browser storage, and locally saved countdown configurations.",
     priority: "0.4",
     changefreq: "monthly",
   },
   {
     path: "/terms",
-    title: "Terms of Service | TimeCounterPro",
+    title: "Terms of Service & Usage Agreements | TimeCounterPro",
     description:
-      "Terms and conditions that apply when using TimeCounterPro and its online timers.",
+      "Review the standard terms, legal conditions, and acceptable use frameworks governing the open-source timers on TimeCounterPro.",
     priority: "0.4",
     changefreq: "monthly",
   },
 ];
 
-// ============================================
-// NOINDEX ROUTES — don't index in Google
-// ============================================
-
-
-// ============================================
-// CATEGORIES for navbar/footer organization
-// ============================================
 export const routeCategories = {
   core: ["/", "/create", "/pomodoro", "/stopwatch", "/world-clock"],
   study: ["/pomodoro", "/mock-test-timer", "/group-study-timer"],
@@ -204,9 +194,5 @@ export const routeCategories = {
   info: ["/about", "/contact", "/privacy", "/terms"],
 };
 
-// ============================================
-// EXPORTS
-// ============================================
 export const allRoutes = staticRoutes;
-
 export default allRoutes;
