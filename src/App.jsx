@@ -30,6 +30,15 @@ import Terms from "./pages/Term";
 import NotFound from "./pages/NotFound";
 import SharedCountdown from "./components/Timer/SharedCountdown";
 import CreateTimer from "./pages/CreateTimer";
+import HiitTabataTimer from "./Tools/HiitTabataTimer";
+import StreamOverlayTimer from "./Tools/StreamOverlayTimer";
+import EsportsJungleTimer from "./Tools/EsportsJungleTimer";
+import SpeedrunSplitTimer from "./Tools/SpeedrunSplitTimer";
+import MockTestTimer from "./Tools/MockTestTimer";
+import FastingTrackerClock from "./Tools/FastingTrackerClock";
+import PresentationAlertTimer from "./Tools/PresentationAlertTimer";
+import RemoteWorldClock from "./Tools/RemoteWorldClock";
+import GroupStudyGridTimer from "./Tools/GroupStudyGridTimer";
 
 
 
@@ -79,6 +88,17 @@ const router = createBrowserRouter([
   { path: "/privacy", element: withLayout(<PrivacyPolicy />) },
   { path: "/terms", element: withLayout(<Terms />) },
   { path: "/create", element: <CreateTimer /> },
+
+  { path: "/hiit-timer", element: <HiitTabataTimer /> },
+  { path: "/stream-timer", element: <StreamOverlayTimer /> },
+  { path: "/jungle-timer", element: <EsportsJungleTimer /> },
+  { path: "/speed-timer", element: <SpeedrunSplitTimer /> },
+  { path: "/mock-test-timer", element: <MockTestTimer /> },
+  { path: "/fasting-tracker-timer", element: <FastingTrackerClock /> },
+  { path: "/presentation-timer", element: <PresentationAlertTimer /> },
+  { path: "/world-clock-board-timer", element: <RemoteWorldClock /> },
+  { path: "/group-study-timer", element: <GroupStudyGridTimer /> },
+
 
   // Old blog URLs -> timer library, so existing links do not dead-end.
   { path: "/blog", element: <Navigate to="/timers" replace /> },
