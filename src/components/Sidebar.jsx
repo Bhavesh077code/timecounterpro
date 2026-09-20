@@ -34,6 +34,7 @@ const SECTIONS = [
     items: [
       { to: "/world-clock-board-timer", code: "T09", label: "World Clock Board" },
       { to: "/group-study-timer",  code: "T10", label: "Group Study Grid" },
+      { to: "/meditation-timer-with-sound", code: "T11", label: "Medatioton Timer" },
     ],
   },
 ];

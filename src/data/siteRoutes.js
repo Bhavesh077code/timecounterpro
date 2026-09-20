@@ -16,9 +16,9 @@ export const staticRoutes = [
   },
   {
     path: "/create",
-    title: "Create Custom Timer Online - Make Your Own Countdown Clock",
+    title: "Create Custom Timer Online (Free) - Design Your Own Countdown",
     description:
-      "Design your personal timer in seconds! Customize names, colors, alarm sounds, and exact durations. The ultimate free countdown builder online.",
+      "Make a custom countdown timer in seconds! ⚡ Fully personalize names, 🎨 custom colors, 🔊 premium alarms & loops. Free, fullscreen, and perfect for any event.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -31,6 +31,14 @@ export const staticRoutes = [
     title: "Pomodoro Timer Online - Beat Procrastination & Stay Focused",
     description:
       "Boost your focus instantly with our free Pomodoro timer. Fully customizable 25/5 minute intervals with desktop alert sounds to maximize your productivity.",
+    priority: "0.9",
+    changefreq: "weekly",
+  },
+  {
+    path: "/meditation-timer-with-sound",
+    title: "5-Min Meditation Timer with Sound (Free) - Deep Calm & Focus",
+    description:
+      "Relax instantly with our free online mindfulness clock. 🧘 Enjoy soothing ambient music, 🌧️ soft rain sounds, and an animated breathing guide for deep focus.",
     priority: "0.9",
     changefreq: "weekly",
   },
@@ -185,8 +193,8 @@ export const staticRoutes = [
 ];
 
 export const routeCategories = {
-  core: ["/", "/create", "/pomodoro", "/stopwatch", "/world-clock"],
-  study: ["/pomodoro", "/mock-test-timer", "/group-study-timer"],
+  core: ["/", "/create", "/pomodoro", "/meditation-timer-with-sound", "/stopwatch", "/world-clock"],
+  study: ["/pomodoro", "/meditation-timer-with-sound", "/mock-test-timer", "/group-study-timer"],
   fitness: ["/hiit-timer", "/fasting-tracker-timer"],
   gaming: ["/jungle-timer", "/speed-timer", "/gameplay-timer"],
   streaming: ["/stream-timer"],

@@ -40,6 +40,7 @@ import PresentationAlertTimer from "./Tools/PresentationAlertTimer";
 import RemoteWorldClock from "./Tools/RemoteWorldClock";
 import GroupStudyGridTimer from "./Tools/GroupStudyGridTimer";
 import GamePlayTimer from "./Tools/GamePlayTimer";
+import MeditationTimer from "./Tools/MeditationTimer";
 
 
 
@@ -100,6 +101,7 @@ const router = createBrowserRouter([
   { path: "/world-clock-board-timer", element: <RemoteWorldClock /> },
   { path: "/group-study-timer", element: <GroupStudyGridTimer /> },
   { path: "/gameplay-timer", element: <GamePlayTimer /> },
+  { path: "/meditation-timer-with-sound", element: <MeditationTimer /> },
 
 
   // Old blog URLs -> timer library, so existing links do not dead-end.
