@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Layout/Footer';
 
 const StreamOverlayTimer = () => {
   // --- State ---
@@ -169,6 +170,7 @@ const StreamOverlayTimer = () => {
   const isUrgent = timeLeft > 0 && timeLeft <= 10 && isRunning;
 
   return (
+    <div className="relative">
     <div className="min-h-screen bg-[#0a0a0a]">
       <Navbar />
 
@@ -999,6 +1001,9 @@ const StreamOverlayTimer = () => {
           </div>
         )}
       </div>
+    </div>
+
+    <Footer />
     </div>
   );
 };

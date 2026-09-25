@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Layout/Footer';
 
 const HiitTabataTimer = () => {
   const [workTime, setWorkTime] = useState(30);
@@ -150,6 +151,7 @@ const HiitTabataTimer = () => {
   const handleCyclesChange = (e) => setCycles(Math.max(1, Math.min(99, parseInt(e.target.value) || 1)));
 
   return (
+    <div>
     <div>
         <Navbar />
     <div
@@ -623,6 +625,9 @@ const HiitTabataTimer = () => {
 
       </div>
       </div>
+    </div>
+
+     <Footer />
     </div>
   );
 };

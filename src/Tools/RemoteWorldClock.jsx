@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Layout/Footer';
 
 // ============================================
 // TIMEZONES
@@ -131,7 +132,6 @@ function getDateInZone(tz, offsetMinutes = 0) {
 }
 
 function getZoneOffsetMinutes(tz) {
-  // Get offset of a timezone relative to UTC (in minutes)
   const now = new Date();
   try {
     const local = new Date(now.toLocaleString('en-US', { timeZone: tz }));
@@ -154,12 +154,12 @@ function formatOffset(minutes) {
 // MAIN COMPONENT
 // ============================================
 const RemoteWorldClock = () => {
-  const [offsetMinutes, setOffsetMinutes] = useState(0); // user time-travel offset
-  const [tick, setTick] = useState(0); // re-render trigger
-  const [baseOffset, setBaseOffset] = useState(0); // user's local tz offset
+  const [offsetMinutes, setOffsetMinutes] = useState(0);
+  const [tick, setTick] = useState(0);
+  const [baseOffset, setBaseOffset] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [view, setView] = useState('grid'); // 'grid' | 'list'
+  const [view, setView] = useState('grid');
 
   const intervalRef = useRef(null);
   const pageRef = useRef(null);
@@ -276,25 +276,25 @@ const RemoteWorldClock = () => {
     day: 'numeric',
   });
 
-  // --- Timeline range: -12h to +12h ---
-  const MIN_OFFSET = -720; // -12h
-  const MAX_OFFSET = 720; // +12h
+  // --- Timeline range ---
+  const MIN_OFFSET = -720;
+  const MAX_OFFSET = 720;
   const timelinePercent =
     ((offsetMinutes - MIN_OFFSET) / (MAX_OFFSET - MIN_OFFSET)) * 100;
 
-  // Hour ticks on timeline
   const hourTicks = [];
   for (let h = -12; h <= 12; h += 2) {
     hourTicks.push(h);
   }
 
-  // --- Availability calculation for a city at given offset ---
+  // --- Availability ---
   const isInWorkHours = (city, offset) => {
     const t = getTimeInZone(city.tz, offset);
     return t.hour24 >= city.workStart && t.hour24 < city.workEnd;
   };
 
   return (
+    <div>
     <div
       className="min-h-screen transition-colors duration-300"
       style={{ background: theme.bg, color: theme.text }}
@@ -314,7 +314,6 @@ const RemoteWorldClock = () => {
           50% { opacity: 0.4; }
         }
         .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
-        /* Custom timeline slider */
         input[type="range"].timeline-slider {
           -webkit-appearance: none;
           appearance: none;
@@ -367,15 +366,23 @@ const RemoteWorldClock = () => {
           background: theme.bg,
         }}
       >
-        {/* Top-right controls */}
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        {/* ===== TOP-RIGHT CONTROLS (moved below navbar) ===== */}
+        <div
+          className="fixed right-4 md:right-8 z-50 flex items-center gap-2"
+          style={{
+            top: isFullscreen ? '1rem' : '5rem',
+          }}
+        >
           <button
             onClick={() => setView(view === 'grid' ? 'list' : 'grid')}
-            className="h-9 px-3 rounded-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95 text-xs font-semibold"
+            className="h-10 px-3 rounded-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95 text-xs font-semibold"
             style={{
               background: theme.card,
               border: `1px solid ${theme.cardBorder}`,
               color: theme.textMuted,
+              boxShadow: darkMode
+                ? '0 4px 16px rgba(0,0,0,0.4)'
+                : '0 4px 16px rgba(15,23,42,0.08)',
             }}
             title="Toggle view"
           >
@@ -383,10 +390,13 @@ const RemoteWorldClock = () => {
           </button>
           <button
             onClick={() => setDarkMode((v) => !v)}
-            className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 text-sm"
+            className="w-10 h-10 rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 text-sm"
             style={{
               background: theme.card,
               border: `1px solid ${theme.cardBorder}`,
+              boxShadow: darkMode
+                ? '0 4px 16px rgba(0,0,0,0.4)'
+                : '0 4px 16px rgba(15,23,42,0.08)',
             }}
             title="Toggle dark mode (D)"
           >
@@ -394,20 +404,23 @@ const RemoteWorldClock = () => {
           </button>
           <button
             onClick={toggleFullscreen}
-            className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+            className="w-10 h-10 rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95"
             style={{
               background: theme.card,
               border: `1px solid ${theme.cardBorder}`,
               color: theme.textMuted,
+              boxShadow: darkMode
+                ? '0 4px 16px rgba(0,0,0,0.4)'
+                : '0 4px 16px rgba(15,23,42,0.08)',
             }}
             title="Fullscreen (F)"
           >
             {isFullscreen ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
               </svg>
             ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
               </svg>
             )}
@@ -491,7 +504,6 @@ const RemoteWorldClock = () => {
               const offsetMin = getZoneOffsetMinutes(city.tz);
               const inWork = isInWorkHours(city, offsetMinutes);
 
-              // Determine work status
               let statusColor = theme.textSubtle;
               let statusBg = theme.card;
               let statusLabel = 'Off hours';
@@ -531,7 +543,6 @@ const RemoteWorldClock = () => {
                         : '0 4px 16px rgba(15,23,42,0.04)',
                     }}
                   >
-                    {/* Card header */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="text-2xl flex-shrink-0">{city.flag}</span>
@@ -553,7 +564,6 @@ const RemoteWorldClock = () => {
                       </div>
                     </div>
 
-                    {/* Time */}
                     <div className="my-3">
                       <div
                         className="font-bold tabular-nums leading-none tracking-tight"
@@ -578,7 +588,6 @@ const RemoteWorldClock = () => {
                       </p>
                     </div>
 
-                    {/* Footer */}
                     <div
                       className="pt-3 flex items-center justify-between text-[10px]"
                       style={{ borderTop: `1px solid ${theme.divider}` }}
@@ -594,7 +603,6 @@ const RemoteWorldClock = () => {
                 );
               }
 
-              // List view
               return (
                 <div
                   key={city.id}
@@ -647,7 +655,6 @@ const RemoteWorldClock = () => {
                 : '0 4px 16px rgba(15,23,42,0.04)',
             }}
           >
-            {/* Header */}
             <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
               <div>
                 <p
@@ -664,7 +671,6 @@ const RemoteWorldClock = () => {
                 </p>
               </div>
 
-              {/* Current offset display */}
               <div className="flex items-center gap-2">
                 <div
                   className="px-4 py-2 rounded-lg"
@@ -702,9 +708,7 @@ const RemoteWorldClock = () => {
               </div>
             </div>
 
-            {/* Slider */}
             <div className="relative mb-4">
-              {/* Hour ticks */}
               <div className="flex justify-between px-0.5 mb-2">
                 {hourTicks.map((h) => (
                   <div
@@ -722,9 +726,7 @@ const RemoteWorldClock = () => {
                 ))}
               </div>
 
-              {/* Track container */}
               <div className="relative" style={{ paddingTop: '6px', paddingBottom: '6px' }}>
-                {/* Background track */}
                 <div
                   className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-2 rounded-full"
                   style={{
@@ -733,7 +735,6 @@ const RemoteWorldClock = () => {
                   }}
                 ></div>
 
-                {/* Zero marker */}
                 <div
                   className="absolute top-0 bottom-0 w-[2px]"
                   style={{
@@ -743,7 +744,6 @@ const RemoteWorldClock = () => {
                   }}
                 ></div>
 
-                {/* Active fill from zero to current */}
                 <div
                   className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full"
                   style={{
@@ -754,7 +754,6 @@ const RemoteWorldClock = () => {
                   }}
                 ></div>
 
-                {/* Slider input */}
                 <input
                   type="range"
                   min={MIN_OFFSET}
@@ -768,7 +767,6 @@ const RemoteWorldClock = () => {
               </div>
             </div>
 
-            {/* Quick jump buttons */}
             <div className="flex flex-wrap gap-2 mt-6 pt-5" style={{ borderTop: `1px solid ${theme.divider}` }}>
               <span
                 className="text-[10px] font-bold uppercase tracking-widest self-center mr-2"
@@ -800,7 +798,6 @@ const RemoteWorldClock = () => {
               ))}
             </div>
 
-            {/* Best meeting windows hint */}
             <div
               className="mt-5 p-4 rounded-xl flex items-start gap-3"
               style={{ background: theme.inputBg, border: `1px solid ${theme.divider}` }}
@@ -948,6 +945,9 @@ const RemoteWorldClock = () => {
           </div>
         </div>
       </div>
+    </div>
+
+    <Footer />
     </div>
   );
 };

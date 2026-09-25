@@ -41,6 +41,10 @@ import RemoteWorldClock from "./Tools/RemoteWorldClock";
 import GroupStudyGridTimer from "./Tools/GroupStudyGridTimer";
 import GamePlayTimer from "./Tools/GamePlayTimer";
 import MeditationTimer from "./Tools/MeditationTimer";
+import Animation from "./Tools/Animation";
+import Animation2 from "./Tools/animation2";
+
+
 
 
 
@@ -94,7 +98,7 @@ const router = createBrowserRouter([
   { path: "/hiit-timer", element: <HiitTabataTimer /> },
   { path: "/stream-timer", element: <StreamOverlayTimer /> },
   { path: "/jungle-timer", element: <EsportsJungleTimer /> },
-  { path: "/speed-timer", element: <SpeedrunSplitTimer /> },
+  { path: "/online-rubiks-cube-stopwatch-with-milliseconds", element: <SpeedrunSplitTimer /> },
   { path: "/mock-test-timer", element: <MockTestTimer /> },
   { path: "/fasting-tracker-timer", element: <FastingTrackerClock /> },
   { path: "/presentation-timer", element: <PresentationAlertTimer /> },
@@ -102,6 +106,9 @@ const router = createBrowserRouter([
   { path: "/group-study-timer", element: <GroupStudyGridTimer /> },
   { path: "/gameplay-timer", element: <GamePlayTimer /> },
   { path: "/meditation-timer-with-sound", element: <MeditationTimer /> },
+  { path: "/focus-timer-plant-growing-animation-10-minutes", element: <Animation /> },
+  { path: "/orbital-launch-focus-timer", element: <Animation2 /> },
+
 
 
   // Old blog URLs -> timer library, so existing links do not dead-end.

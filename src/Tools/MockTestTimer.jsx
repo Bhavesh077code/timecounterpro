@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Layout/Footer';
 
 // ============================================
 // DEFAULT SECTIONS
@@ -253,6 +254,7 @@ const MockTestTimer = () => {
   const examGray = '#475569';
 
   return (
+    <div>
     <div className="min-h-screen bg-[#f1f5f9] text-slate-800">
       <style>{`
         html, body { scrollbar-width: none; -ms-overflow-style: none; }
@@ -1017,6 +1019,9 @@ const MockTestTimer = () => {
           animation: pulse-slow 2s ease-in-out infinite;
         }
       `}</style>
+    </div>
+
+        <Footer />
     </div>
   );
 };

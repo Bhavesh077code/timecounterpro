@@ -15,6 +15,16 @@ const SECTIONS = [
       { to: "/stream-timer",     code: "T02", label: "stream-overlay" },
       { to: "/jungle-timer",  code: "T03", label: "Esports Jungle" },
       { to: "/gameplay-timer", code: "T04", label: "GamePlay Timer" },
+      { to: "/online-rubiks-cube-stopwatch-with-milliseconds", code: "T05", label: "Speedrun Split" },
+    ],
+  },
+  {
+    key: "study",
+    title: "Animation timers",
+    hint: "T05–T06",
+    items: [
+      { to: "/focus-timer-plant-growing-animation-10-minutes", code: "T06", label: "Plant Growing" },
+      { to: "/orbital-launch-focus-timer", code: "T07", label: "Orbital Launch " },
     ],
   },
   {
@@ -22,9 +32,9 @@ const SECTIONS = [
     title: "Workspace",
     hint: "T06–T08",
     items: [
-      { to: "/mock-test-timer", code: "T06", label: "Mock Test Exam" },
-      { to: "/fasting-tracker-timer",    code: "T07", label: "Fasting Tracker" },
-      { to: "/presentation-timer", code: "T08", label: "Presentation Alert" },
+      { to: "/mock-test-timer", code: "T08", label: "Mock Test Exam" },
+      { to: "/fasting-tracker-timer",    code: "T09", label: "Fasting Tracker" },
+      { to: "/presentation-timer", code: "T10", label: "Presentation Alert" },
     ],
   },
   {
@@ -32,9 +42,9 @@ const SECTIONS = [
     title: "Global",
     hint: "T09–T10",
     items: [
-      { to: "/world-clock-board-timer", code: "T09", label: "World Clock Board" },
-      { to: "/group-study-timer",  code: "T10", label: "Group Study Grid" },
-      { to: "/meditation-timer-with-sound", code: "T11", label: "Medatioton Timer" },
+      { to: "/world-clock-board-timer", code: "T11", label: "World Clock Board" },
+      { to: "/group-study-timer",  code: "T12", label: "Group Study Grid" },
+      { to: "/meditation-timer-with-sound", code: "T13", label: "Medatioton Timer" },
     ],
   },
 ];

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Layout/Footer';
 
 // ============================================
 // DEFAULT BASELINE SPLITS (for comparison)
@@ -209,6 +210,7 @@ const SpeedrunSplitTimer = () => {
     splits.length > 0 ? Math.max(...splits.map((s) => s.delta)) : 0;
 
   return (
+    <div>
     <div className="min-h-screen bg-[#0d0f12] text-white">
       {/* Global scrollbar hide */}
       <style>{`
@@ -244,28 +246,43 @@ const SpeedrunSplitTimer = () => {
           }}
         ></div>
 
-        {/* ===== FULLSCREEN BUTTON ===== */}
-        <button
-          onClick={toggleFullscreen}
-          className="fixed top-4 right-4 z-50 w-9 h-9 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-          style={{
-            background: 'rgba(20, 22, 28, 0.9)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            color: 'rgba(255,255,255,0.8)',
-          }}
-          title="Fullscreen (F)"
-        >
-          {isFullscreen ? (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
-            </svg>
-          ) : (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        {/* ===== FULLSCREEN BUTTON (moved below navbar, larger, black bg) ===== */}
+        {!isFullscreen && (
+          <button
+            onClick={toggleFullscreen}
+            className="fixed top-20 right-4 md:right-8 z-50 w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+            style={{
+              background: '#000000',
+              border: '1px solid rgba(255,255,255,0.18)',
+              color: 'rgba(255,255,255,0.9)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,0,0,0.5)',
+            }}
+            title="Fullscreen (F)"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
             </svg>
-          )}
-        </button>
+          </button>
+        )}
+
+        {/* Fullscreen exit button (visible in fullscreen mode) */}
+        {isFullscreen && (
+          <button
+            onClick={toggleFullscreen}
+            className="fixed top-4 right-4 z-50 w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+            style={{
+              background: '#000000',
+              border: '1px solid rgba(255,255,255,0.18)',
+              color: 'rgba(255,255,255,0.9)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.7)',
+            }}
+            title="Exit Fullscreen (F)"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+            </svg>
+          </button>
+        )}
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
           {/* ===== HEADER ===== */}
@@ -917,6 +934,9 @@ const SpeedrunSplitTimer = () => {
           </div>
         </div>
       </div>
+    </div>
+
+     <Footer />
     </div>
   );
 };

@@ -40,6 +40,28 @@
 
 
 
+
+
+
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: #0b1410;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+
+
+
+
+
+
 /* src/index.css - Add these styles */
 
 /* ✅ Blog Post Content Styling */

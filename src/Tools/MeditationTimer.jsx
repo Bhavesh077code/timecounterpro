@@ -18,6 +18,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Layout/Footer";
 import Seo from "../components/Seo";
 
 const SITE_URL = "https://timecounterpro.com";
@@ -214,6 +215,9 @@ export default function MeditationPage() {
 
         </div>
       </section>
+
+      {/* ═══════════════ FOOTER ═══════════════ */}
+      <Footer />
     </>
   );
 }

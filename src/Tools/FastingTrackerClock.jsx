@@ -228,10 +228,8 @@ const FastingTrackerClock = () => {
           }
         }
       }
-      // Load dark mode preference
       const dm = localStorage.getItem('fasting_darkmode');
       if (dm === 'true') setDarkMode(true);
-      // Check notification permission
       if ('Notification' in window) {
         setNotificationsEnabled(Notification.permission === 'granted');
       }
@@ -280,7 +278,6 @@ const FastingTrackerClock = () => {
       const existing = localStorage.getItem('water_history');
       const data = existing ? JSON.parse(existing) : {};
       data[today] = waterGlasses;
-      // Keep only last 30 days
       const keys = Object.keys(data);
       if (keys.length > 30) {
         keys.sort().slice(0, keys.length - 30).forEach((k) => delete data[k]);
@@ -369,7 +366,6 @@ const FastingTrackerClock = () => {
     setIsFinished(false);
     completionBeepPlayedRef.current = false;
     playBeep(440, 0.1);
-    // Set notification for when fast completes
     if (notificationsEnabled) {
       sendNotification(
         '⏳ Fast Started',
@@ -464,7 +460,6 @@ const FastingTrackerClock = () => {
     METABOLIC_PHASES.find((p) => hoursElapsed < p.max) ||
     METABOLIC_PHASES[METABOLIC_PHASES.length - 1];
 
-  // Weekly stats
   const last7Days = Array.from({ length: 7 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
@@ -479,7 +474,6 @@ const FastingTrackerClock = () => {
   const streak = getStreak(completedFasts);
   const earnedBadges = BADGES.filter((b) => b.req(completedFasts));
 
-  // Ring
   const SIZE = 260;
   const STROKE = 14;
   const RADIUS = (SIZE - STROKE) / 2;
@@ -556,17 +550,26 @@ const FastingTrackerClock = () => {
             : `radial-gradient(circle at 20% 0%, #f9f4ec 0%, ${theme.bg} 40%, ${theme.bg2} 100%)`,
         }}
       >
-        {/* Top-right buttons */}
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        {/* ===== TOP-RIGHT BUTTONS — MOVED BELOW NAVBAR ===== */}
+        <div
+          className="fixed right-4 md:right-8 z-50 flex items-center gap-2"
+          style={{
+            top: isFullscreen ? '1rem' : '5rem',
+            transition: 'top 0.2s ease',
+          }}
+        >
           {/* Dark mode toggle */}
           <button
             onClick={() => setDarkMode((v) => !v)}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
             style={{
               background: theme.card,
               backdropFilter: 'blur(16px)',
               border: `1px solid ${theme.cardBorder}`,
               color: theme.terracottaDeep,
+              boxShadow: darkMode
+                ? '0 4px 20px rgba(0,0,0,0.4)'
+                : '0 4px 20px rgba(124, 74, 45, 0.12)',
             }}
             title="Toggle dark mode"
           >
@@ -575,12 +578,15 @@ const FastingTrackerClock = () => {
           {/* Notification bell */}
           <button
             onClick={requestNotificationPermission}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
             style={{
               background: theme.card,
               backdropFilter: 'blur(16px)',
               border: `1px solid ${theme.cardBorder}`,
               color: notificationsEnabled ? '#7fa567' : theme.terracottaDeep,
+              boxShadow: darkMode
+                ? '0 4px 20px rgba(0,0,0,0.4)'
+                : '0 4px 20px rgba(124, 74, 45, 0.12)',
             }}
             title={notificationsEnabled ? 'Notifications on' : 'Enable notifications'}
           >
@@ -589,21 +595,24 @@ const FastingTrackerClock = () => {
           {/* Fullscreen */}
           <button
             onClick={toggleFullscreen}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
             style={{
               background: theme.card,
               backdropFilter: 'blur(16px)',
               border: `1px solid ${theme.cardBorder}`,
               color: theme.terracottaDeep,
+              boxShadow: darkMode
+                ? '0 4px 20px rgba(0,0,0,0.4)'
+                : '0 4px 20px rgba(124, 74, 45, 0.12)',
             }}
             title="Fullscreen (F)"
           >
             {isFullscreen ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
               </svg>
             ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
               </svg>
             )}
@@ -878,7 +887,6 @@ const FastingTrackerClock = () => {
                     </button>
                   </div>
                 </div>
-                {/* Water glasses row */}
                 <div className="flex gap-1.5 flex-wrap">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div
@@ -1205,7 +1213,6 @@ const FastingTrackerClock = () => {
               <button onClick={() => setShowStats(false)} className="text-xl" style={{ color: theme.textMuted }}>×</button>
             </div>
 
-            {/* Top stats */}
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="rounded-2xl p-4 text-center" style={{ background: theme.inputBg }}>
                 <p className="text-2xl font-bold" style={{ color: theme.terracottaDeep }}>{completedFasts.length}</p>
@@ -1225,7 +1232,6 @@ const FastingTrackerClock = () => {
               </div>
             </div>
 
-            {/* Weekly chart */}
             <p className="text-[10px] tracking-[0.25em] uppercase font-bold mb-3" style={{ color: theme.textMuted }}>Last 7 Days</p>
             <div className="flex items-end gap-2 h-32 mb-6">
               {last7Days.map((d, i) => (
@@ -1248,7 +1254,6 @@ const FastingTrackerClock = () => {
               ))}
             </div>
 
-            {/* Badges */}
             <p className="text-[10px] tracking-[0.25em] uppercase font-bold mb-3" style={{ color: theme.textMuted }}>Achievements</p>
             <div className="grid grid-cols-3 gap-2">
               {BADGES.map((b) => {
