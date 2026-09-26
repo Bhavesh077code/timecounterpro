@@ -42,7 +42,7 @@ import GroupStudyGridTimer from "./Tools/GroupStudyGridTimer";
 import GamePlayTimer from "./Tools/GamePlayTimer";
 import MeditationTimer from "./Tools/MeditationTimer";
 import Animation from "./Tools/Animation";
-import Animation2 from "./Tools/animation2";
+import Animation2 from "./Tools/Animation2";
 
 
 
@@ -111,9 +111,6 @@ const router = createBrowserRouter([
 
 
 
-  // Old blog URLs -> timer library, so existing links do not dead-end.
-  { path: "/blog", element: <Navigate to="/timers" replace /> },
-  { path: "/blog/:slug", element: <Navigate to="/timers" replace /> },
 
   { path: "*", element: withLayout(<NotFound />) },
 ]);

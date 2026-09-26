@@ -190,6 +190,27 @@ export const staticRoutes = [
     priority: "0.4",
     changefreq: "monthly",
   },
+  {
+    path: "/focus-timer-plant-growing-animation-10-minutes",
+    title: "10 Minute Study Timer with Virtual Plant Growing Animation",
+    description: "Boost deep focus with a free 10-minute countdown clock. Watch a virtual aesthetic seed fluidly bloom into a living tree as you study. No sign-up required.",
+    priority: "0.9",
+    changefreq: "weekly"
+  },
+  {
+    path: "/orbital-launch-focus-timer",
+    title: "Cyberpunk Orbital Launch Focus Timer - Immersive Space Clock",
+    description: "Experience extreme deep work with a gamified sci-fi rocket blast-off clock. Tracks study sessions with real-time plasma thruster animations and spatial audio.",
+    priority: "0.9",
+    changefreq: "weekly"
+  },
+  {
+    path: "/online-rubiks-cube-stopwatch-with-milliseconds",
+    title: "Free Online Rubik's Cube Stopwatch with Milliseconds & Scrambles",
+    description: "A minimalist speedcubing stackmat timer for 3x3 solves. Features standard random scramble generators, spacebar triggers, and fluid millisecond split tracking.",
+    priority: "0.9",
+    changefreq: "weekly"
+  },
 ];
 
 export const routeCategories = {

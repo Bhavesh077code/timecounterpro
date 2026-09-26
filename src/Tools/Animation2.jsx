@@ -66,7 +66,7 @@ const Animation2 = () => {
   useEffect(() => {
     const handler = () =>
       setIsFullscreen(
-        !!(document.fullscreenElement || document.webkitFullscreenElement)
+        !!(document.fullscreenElement || document.webkitFullscreenElement),
       );
     document.addEventListener("fullscreenchange", handler);
     document.addEventListener("webkitfullscreenchange", handler);
@@ -382,7 +382,7 @@ const Animation2 = () => {
             px,
             py,
             px - dx * len,
-            py - dy * len
+            py - dy * len,
           );
           grad.addColorStop(0, `hsla(${s.hue},100%,85%,${depthAlpha})`);
           grad.addColorStop(1, `hsla(${s.hue},100%,60%,0)`);
@@ -1078,26 +1078,25 @@ const Animation2 = () => {
         </audio>
       </section>
 
+
       {/* =========================================================
-          📖 ABOUT SECTION — DARK (blends with hero)
-         ========================================================= */}
+    📖 ABOUT SECTION — WHITE BACKGROUND
+   ========================================================= */}
       <section
         id="about"
-        className="relative bg-black text-cyan-50 px-5 sm:px-10 py-16 sm:py-24 border-t border-cyan-400/10"
+        className="relative bg-white text-neutral-800 px-5 sm:px-10 py-16 sm:py-24 border-t border-neutral-200"
       >
-        {/* Subtle top glow so it transitions smoothly from hero */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-cyan-500/5 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/5 to-transparent" />
 
         <div className="relative max-w-3xl mx-auto text-center">
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-cyan-400 font-semibold mb-3 sm:mb-4">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-cyan-600 font-semibold mb-3 sm:mb-4">
             About This Launch Timer
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-cyan-50 leading-tight mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-neutral-900 leading-tight mb-6 sm:mb-8">
             Set Your Mission Duration. Watch the Rocket Reach Orbit.
           </h2>
 
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-cyan-100/70 mb-4 sm:mb-5">
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-neutral-600 mb-4 sm:mb-5">
             Focus sessions are not all the same. Sometimes you need a quick
             five-minute sprint. Sometimes you need a full ninety-minute deep
             work dive. This launch timer was built to adapt to both. Before you
@@ -1107,17 +1106,21 @@ const Animation2 = () => {
             around your number.
           </p>
 
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-cyan-100/70 mb-4 sm:mb-5">
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-neutral-600 mb-4 sm:mb-5">
             The scene opens in deep cosmic silence. A soft galaxy of purple and
             cyan gas drifts behind hundreds of twinkling stars scattered at
             different depths inside a real three-dimensional field. At the
             center of everything sits a glowing nebula cloud, quietly breathing
             light into the void. A sleek matte-black rocket rests between three
             mechanical gantry arms, its red beacon lights pulsing in slow
-            rhythm. You press <em className="text-cyan-200 not-italic">Ignite Sequence</em>, and the mission begins.
+            rhythm. You press{" "}
+            <em className="text-cyan-700 not-italic font-medium">
+              Ignite Sequence
+            </em>
+            , and the mission begins.
           </p>
 
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-cyan-100/70 mb-4 sm:mb-5">
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-neutral-600 mb-4 sm:mb-5">
             And here is where the real magic happens. The rocket does not sit
             still while the timer ticks. The moment you start, it begins to
             climb. Slowly at first, then faster. Every second that passes, every
@@ -1130,7 +1133,7 @@ const Animation2 = () => {
             growing louder as liftoff approaches.
           </p>
 
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-cyan-100/70 mb-4 sm:mb-5">
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-neutral-600 mb-4 sm:mb-5">
             If you press pause, the rocket slows, then begins to fall — pulled
             back toward the pad by a gentle gravity, the exhaust flickering
             lower, the thrust trail shrinking. It settles back onto the launch
@@ -1138,11 +1141,11 @@ const Animation2 = () => {
             where it fell. Focus earns height. Distraction loses it.
           </p>
 
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-cyan-100/70 mb-4 sm:mb-5">
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-neutral-600 mb-4 sm:mb-5">
             When the countdown hits zero, the rocket continues its ascent and
             disappears completely off the top of the screen, leaving behind a
             single beautiful message:{" "}
-            <em className="text-cyan-200 not-italic">
+            <em className="text-cyan-700 not-italic font-medium">
               Mission Complete · Orbit Achieved
             </em>
             . The stars stretch into warp-speed streaks, and the HUD confirms
@@ -1150,9 +1153,9 @@ const Animation2 = () => {
             duration you selected at the start.
           </p>
 
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-cyan-100/70">
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed text-neutral-600">
             Every animation runs on{" "}
-            <code className="px-1.5 py-0.5 rounded bg-cyan-950/60 text-cyan-300 text-xs sm:text-sm font-mono">
+            <code className="px-1.5 py-0.5 rounded bg-neutral-100 text-cyan-700 text-xs sm:text-sm font-mono">
               requestAnimationFrame
             </code>{" "}
             at a locked sixty frames per second, the starfield now layers in a
