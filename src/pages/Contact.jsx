@@ -1,225 +1,243 @@
-import React, { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { FiMail, FiTwitter, FiGithub, FiSend, FiCheckCircle, FiClock, FiMapPin, FiGlobe } from 'react-icons/fi';
+import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
+
+const SITE_URL = "https://timecounterpro.com";
+const CONTACT_EMAIL = "timecounterpro@gmail.com";
 
 function Contact() {
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const subject = encodeURIComponent(formData.subject || "TimeCounterPro feedback");
-    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`);
-    window.location.href = `mailto:timecounterpro@gmail.com?subject=${subject}&body=${body}`;
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (event) => {
+    setFormData((current) => ({
+      ...current,
+      [event.target.name]: event.target.value,
+    }));
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  // Contact info items
-  const contactInfo = [
-    {
-      icon: FiMail,
-      label: 'Email',
-      value: 'timecounterpro@gmail.com',
-      link: 'mailto:timecounterpro@gmail.com'
-    },
-    {
-      icon: FiTwitter,
-      label: 'Twitter',
-      value: '@TimeCounterPro',
-      link: 'https://twitter.com/TimeCounterPro'
-    },
-    {
-      icon: FiGlobe,
-      label: 'Website',
-      value: 'timecounterpro.com',
-      link: 'https://timecounterpro.com'
-    },
-    {
-      icon: FiClock,
-      label: 'Response Time',
-      value: 'Within 24 hours'
-    }
-  ];
+    const subject = encodeURIComponent(
+      formData.subject || "TimeCounterPro Contact"
+    );
+
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+    );
+
+    window.location.href =
+      `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+
+    setSubmitted(true);
+  };
 
   return (
     <>
       <Helmet>
-        <title>Contact TimeCounterPro | Feedback & Support</title>
-        <meta name="description" content="Contact TimeCounterPro with questions, feedback, bug reports or suggestions about our online timer tools." />
-        <link rel="canonical" href="https://timecounterpro.com/contact" />
+        <title>Contact TimeCounterPro | Support & Feedback</title>
+
+        <meta
+          name="description"
+          content="Contact TimeCounterPro for questions, feedback, bug reports, feature suggestions or website-related concerns."
+        />
+
+        <link
+          rel="canonical"
+          href={`${SITE_URL}/contact`}
+        />
+
+        <meta name="robots" content="index,follow" />
       </Helmet>
-      <div className="max-w-5xl mx-auto animate-fade-in px-4 py-6 sm:py-8">
-      {/* Header */}
-      <div className="text-center mb-8 sm:mb-10">
-        <div className="inline-flex items-center justify-center p-3 bg-indigo-50 rounded-2xl border border-indigo-100 mb-4">
-          <FiMail size={28} className="text-indigo-600" />
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-800">
-          Contact Us
-        </h1>
-        <p className="text-slate-500 mt-2 max-w-md mx-auto">
-          Have questions, feedback, or suggestions? We'd love to hear from you.
-        </p>
-      </div>
 
-      <div className="grid md:grid-cols-5 gap-6">
-        {/* Contact Info - 2 columns on md+ */}
-        <div className="md:col-span-2 space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">
-              Get in Touch
-            </h2>
-            
-            <div className="space-y-4">
-              {contactInfo.map((item, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="p-2 bg-indigo-50 rounded-lg flex-shrink-0 border border-indigo-100">
-                    <item.icon size={16} className="text-indigo-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">
-                      {item.label}
-                    </p>
-                    {item.link ? (
-                      <a 
-                        href={item.link} 
-                        target={item.link.startsWith('http') ? '_blank' : '_self'}
-                        rel="noopener noreferrer"
-                        className="text-slate-700 hover:text-indigo-600 transition-colors text-sm font-medium"
-                      >
-                        {item.value}
-                      </a>
-                    ) : (
-                      <p className="text-slate-700 text-sm font-medium">
-                        {item.value}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl">
 
-          {/* Office Hours */}
-          <div className="bg-slate-50 rounded-xl border border-slate-200 p-6">
-            <h3 className="text-sm font-semibold text-slate-700 mb-3">
-              Office Hours
-            </h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-500">Monday - Friday</span>
-                <span className="text-slate-700 font-medium">9:00 AM - 6:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Saturday</span>
-                <span className="text-slate-700 font-medium">10:00 AM - 4:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Sunday</span>
-                <span className="text-slate-400">Closed</span>
-              </div>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-3 border-t border-slate-200 pt-3">
-              We respond to all inquiries within 24 hours
+          <header className="mb-10 text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
+              Support & Feedback
             </p>
-          </div>
-        </div>
 
-        {/* Contact Form - 3 columns on md+ */}
-        <div className="md:col-span-3">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">
-              Send a Message
-            </h2>
-            
-            <div>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Your Name <span className="text-rose-500">*</span>
-                  </label>
-                  <input 
-                    type="text" 
-                    name="name" 
-                    value={formData.name} 
-                    onChange={handleChange} 
-                    required 
-                    placeholder="John Doe" 
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" 
-                  />
-                </div>
+            <h1 className="mt-2 text-4xl font-bold text-slate-900">
+              Contact TimeCounterPro
+            </h1>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Email Address <span className="text-rose-500">*</span>
-                  </label>
-                  <input 
-                    type="email" 
-                    name="email" 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
-                    placeholder="john@example.com" 
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" 
-                  />
-                </div>
+            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+              Have a question, found a bug, or have an idea for improving
+              TimeCounterPro? Send us a message and we will review it.
+            </p>
+          </header>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Subject <span className="text-rose-500">*</span>
-                  </label>
-                  <input 
-                    type="text" 
-                    name="subject" 
-                    value={formData.subject} 
-                    onChange={handleChange} 
-                    required 
-                    placeholder="How can we help?" 
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" 
-                  />
-                </div>
+          <div className="grid gap-6 md:grid-cols-5">
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Message <span className="text-rose-500">*</span>
-                  </label>
-                  <textarea 
-                    name="message" 
-                    value={formData.message} 
-                    onChange={handleChange} 
-                    required 
-                    rows="4" 
-                    placeholder="Tell us what's on your mind..." 
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none" 
-                  />
-                  <p className="text-[10px] text-slate-400 mt-1.5">
-                    {formData.message.length}/500 characters
-                  </p>
-                </div>
+            <section className="md:col-span-2">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-                <button 
-                  type="submit" 
-                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 text-sm"
-                >
-                  <><FiSend size={16} /> Open Email</>
-                </button>
+                <h2 className="text-xl font-bold text-slate-900">
+                  Get in touch
+                </h2>
 
-                <p className="text-[10px] text-slate-400 text-center">
-                  Your email app will open with the message addressed to timecounterpro@gmail.com
+                <p className="mt-3 leading-7 text-slate-600">
+                  The easiest way to contact TimeCounterPro is by email.
                 </p>
-              </form>
-            </div>
+
+                <div className="mt-6 rounded-xl bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    Email
+                  </p>
+
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="mt-2 block break-all font-semibold text-indigo-600 hover:text-indigo-700"
+                  >
+                    {CONTACT_EMAIL}
+                  </a>
+                </div>
+
+                <div className="mt-6">
+                  <h3 className="font-semibold text-slate-900">
+                    What you can contact us about
+                  </h3>
+
+                  <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
+                    <li>Bug reports</li>
+                    <li>Feature suggestions</li>
+                    <li>Problems with a timer</li>
+                    <li>Questions about the website</li>
+                    <li>Privacy questions</li>
+                    <li>Content or technical corrections</li>
+                  </ul>
+                </div>
+
+              </div>
+            </section>
+
+            <section className="md:col-span-3">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+
+                <h2 className="text-xl font-bold text-slate-900">
+                  Send a message
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  Submitting this form opens your default email application.
+                  The website does not send this form to a separate server.
+                </p>
+
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-6 space-y-5"
+                >
+
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                      Your name
+                    </label>
+
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      autoComplete="name"
+                      placeholder="Your name"
+                      className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                      Your email
+                    </label>
+
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="subject"
+                      className="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                      Subject
+                    </label>
+
+                    <input
+                      id="subject"
+                      name="subject"
+                      type="text"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      placeholder="How can we help?"
+                      className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="message"
+                      className="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                      Message
+                    </label>
+
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      rows={7}
+                      placeholder="Tell us what happened or what you would like to suggest..."
+                      className="w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  >
+                    Open Email
+                  </button>
+
+                  {submitted && (
+                    <p className="rounded-xl bg-emerald-50 p-3 text-sm leading-6 text-emerald-700">
+                      Your email application should open with the message
+                      prepared for TimeCounterPro.
+                    </p>
+                  )}
+
+                </form>
+
+              </div>
+            </section>
+
           </div>
         </div>
-      </div>
-
-      {/* Footer Note */}
-      <div className="mt-6 text-center text-[10px] text-slate-400 border-t border-slate-200 pt-4">
-        <p>We value your feedback and aim to respond to all messages within 24 hours.</p>
-      </div>
-      </div>
+      </main>
     </>
   );
 }

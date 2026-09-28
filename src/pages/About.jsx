@@ -2,738 +2,1536 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
-const tools = [
-  { name: "Custom Countdown", path: "/create", description: "Set a duration for a task, event, meeting, practice session, cooking task, study block or any other activity that needs a clear end point." },,
-  { name: "Pomodoro", path: "/pomodoro", description: "Use repeating focus and break periods for study, coding, reading, writing and other work where structured sessions are useful." },,
-  { name: "Stopwatch", path: "/stopwatch", description: "Measure elapsed time upward and use the timing result when you need to understand how long an activity takes." },,
-  { name: "World Clock", path: "/world-clock", description: "Compare the current local time in different cities when arranging calls, meetings, travel plans or remote collaboration." },,
-  { name: "HIIT and Tabata", path: "/hiit-timer", description: "Create work and rest intervals for structured interval exercise. The tool measures time and does not provide medical advice." },,
-  { name: "Mock Test", path: "/mock-test-timer", description: "Practice an examination under a chosen time limit so you can become familiar with pacing and time awareness." },,
-  { name: "Group Study", path: "/group-study-timer", description: "Coordinate shared study periods when several people want the same start and end timing." },,
-  { name: "Presentation", path: "/presentation-timer", description: "Keep a presentation, speech, lesson or rehearsal inside a planned duration." },,
-  { name: "Stream Countdown", path: "/stream-timer", description: "Prepare a visible countdown for livestreams, broadcasts and stream preparation." },,
-  { name: "Esports Jungle", path: "/jungle-timer", description: "Track game-related timing events during practice and gameplay. It is a general timing utility, not a source of game-policy information." },,
-  { name: "Speedrun Split", path: "/speed-timer", description: "Measure elapsed attempts and splits when practicing routes or comparing personal runs." },,
-  { name: "Gameplay", path: "/gameplay-timer", description: "Use a simple timing tool for gaming sessions, challenges and practice activities." },,
-  { name: "Fasting Tracker", path: "/fasting-tracker-timer", description: "Measure the elapsed duration of a fasting interval. It does not determine whether fasting is suitable for a person." },,
-  { name: "World Clock Board", path: "/world-clock-board-timer", description: "Keep several cities visible together when working with people in different time zones." },
-];
+const SITE_URL = "https://timecounterpro.com";
 
 function About() {
+  const tools = [
+    {
+      name: "Countdown Timer",
+      description:
+        "A countdown timer helps you measure a specific amount of time from a chosen starting point. It can be useful for studying, cooking, meetings, presentations, classroom activities, practice sessions, personal challenges and many other everyday tasks.",
+      useCases: [
+        "Study sessions",
+        "Cooking and baking",
+        "Meetings and presentations",
+        "Classroom activities",
+        "Practice sessions",
+        "Daily productivity tasks",
+      ],
+    },
+    {
+      name: "Pomodoro Timer",
+      description:
+        "The Pomodoro Timer is designed around focused work periods followed by planned breaks. It can help students, developers, writers, readers and other users create a simple structure for focused work without continuously checking the clock.",
+      useCases: [
+        "Studying",
+        "Coding",
+        "Reading",
+        "Writing",
+        "Research",
+        "Focused office work",
+      ],
+    },
+    {
+      name: "Online Stopwatch",
+      description:
+        "The online stopwatch measures elapsed time starting from zero. It can be useful whenever you want to know how long an activity takes, compare attempts or practice completing an activity within a particular period.",
+      useCases: [
+        "Sports practice",
+        "Workout sessions",
+        "Speed practice",
+        "Cooking",
+        "Experiments",
+        "Everyday time measurement",
+      ],
+    },
+    {
+      name: "World Clock",
+      description:
+        "The World Clock helps users compare the current time in different locations. This can be useful for remote teams, online meetings, communication with friends and family in other countries, travel planning and international work.",
+      useCases: [
+        "Remote work",
+        "International meetings",
+        "Travel planning",
+        "Online classes",
+        "Communication across countries",
+        "Time-zone comparison",
+      ],
+    },
+    {
+      name: "World Clock Board",
+      description:
+        "The World Clock Board provides a convenient way to keep multiple locations visible together. Instead of checking different websites repeatedly, users can compare selected locations from one place.",
+      useCases: [
+        "Remote teams",
+        "International businesses",
+        "Travel planning",
+        "Friends and family in different countries",
+        "Online communities",
+      ],
+    },
+    {
+      name: "HIIT Timer",
+      description:
+        "The HIIT Timer is intended for structured work and rest intervals. Users can use timed intervals during exercise sessions where alternating periods need to be clearly separated.",
+      useCases: [
+        "Interval training",
+        "Home workouts",
+        "Exercise practice",
+        "Circuit training",
+        "Fitness routines",
+      ],
+    },
+    {
+      name: "Tabata Timer",
+      description:
+        "The Tabata Timer provides a simple timing structure for activities that use repeated work and rest intervals. It can be used during personal workouts and practice sessions.",
+      useCases: [
+        "Tabata-style workouts",
+        "Interval exercise",
+        "Fitness practice",
+        "Home training",
+      ],
+    },
+    {
+      name: "Fasting Timer",
+      description:
+        "The Fasting Timer is a time-tracking utility for users who want to measure the duration of a fasting period. It is a timing tool only and does not provide medical advice, diagnosis or individualized nutrition recommendations.",
+      useCases: [
+        "Personal time tracking",
+        "Meal schedule tracking",
+        "Duration tracking",
+      ],
+    },
+    {
+      name: "Mock Test Timer",
+      description:
+        "The Mock Test Timer helps students practice completing tests within a planned time limit. A visible timer can make practice sessions more similar to situations where a fixed amount of time is available.",
+      useCases: [
+        "Exam preparation",
+        "Mock tests",
+        "Practice papers",
+        "Timed quizzes",
+        "Study sessions",
+      ],
+    },
+    {
+      name: "Group Study Timer",
+      description:
+        "The Group Study Timer can be used when several people want to follow the same planned study or activity period. It provides a shared timing structure that can make group sessions easier to organize.",
+      useCases: [
+        "Group study",
+        "Classroom activities",
+        "Study groups",
+        "Team practice",
+      ],
+    },
+    {
+      name: "Presentation Timer",
+      description:
+        "The Presentation Timer helps speakers monitor the length of a presentation, speech, lesson or rehearsal. Practicing with a timer can help users understand how much content fits into a planned time period.",
+      useCases: [
+        "Presentations",
+        "Public speaking practice",
+        "Classroom presentations",
+        "Lectures",
+        "Speech rehearsal",
+      ],
+    },
+    {
+      name: "Stream Timer",
+      description:
+        "The Stream Timer provides a timing tool for livestream preparation, broadcasts, content creation and other activities where a visible countdown or duration indicator can be useful.",
+      useCases: [
+        "Livestreams",
+        "Content creation",
+        "Broadcast preparation",
+        "Streaming sessions",
+      ],
+    },
+    {
+      name: "Speedrun Timer",
+      description:
+        "The Speedrun Timer is designed for users who want to measure and compare timed attempts during speedrun practice or other activities where elapsed time and splits are important.",
+      useCases: [
+        "Speedrun practice",
+        "Gaming challenges",
+        "Timed attempts",
+        "Performance comparison",
+      ],
+    },
+    {
+      name: "Gameplay Timer",
+      description:
+        "The Gameplay Timer provides a simple timing utility for gaming sessions, challenges and practice activities. It can help players track a particular duration without needing a separate timer application.",
+      useCases: [
+        "Gaming sessions",
+        "Challenges",
+        "Practice",
+        "Timed gameplay",
+      ],
+    },
+    {
+      name: "Meditation Timer",
+      description:
+        "The Meditation Timer provides a quiet timing experience for users who want to keep track of a meditation or focused breathing session. It is a timing utility and does not provide medical treatment or therapeutic advice.",
+      useCases: [
+        "Meditation",
+        "Breathing practice",
+        "Quiet focus",
+        "Mindfulness sessions",
+      ],
+    },
+  ];
+
+  const faqs = [
+    {
+      question: "What is TimeCounterPro?",
+      answer:
+        "TimeCounterPro is a browser-based collection of online timing tools. It provides countdown timers, stopwatches, Pomodoro timers, world clocks and activity-specific timing tools that can be used directly from a web browser.",
+    },
+    {
+      question: "Do I need to create an account?",
+      answer:
+        "No account is required for normal use of the core TimeCounterPro tools. Users can open a tool and use it without creating a traditional account or login.",
+    },
+    {
+      question: "Does TimeCounterPro work on mobile devices?",
+      answer:
+        "The website is designed as a responsive web application and can be accessed from supported phones, tablets, laptops and desktop computers. The exact experience can vary depending on the browser, screen size and device.",
+    },
+    {
+      question: "Does TimeCounterPro store my timer settings?",
+      answer:
+        "Some features may use browser storage such as localStorage to remember selected settings or preferences. This storage is maintained by the browser on your device and is not the same as a TimeCounterPro user account.",
+    },
+    {
+      question: "Is TimeCounterPro a precision timing instrument?",
+      answer:
+        "No. TimeCounterPro is a browser-based timing utility. Browser behavior, background tabs, device performance, operating-system restrictions and other technical factors can affect timing behavior. It should not be used as a certified instrument for safety-critical or regulated timing.",
+    },
+    {
+      question: "Can I use TimeCounterPro for studying?",
+      answer:
+        "Yes. Countdown timers, Pomodoro sessions and mock-test timers can be useful for organizing study periods, practice tests, revision sessions and focused work.",
+    },
+    {
+      question: "Can I use TimeCounterPro for workouts?",
+      answer:
+        "Some timing tools can be used for exercise intervals, HIIT-style sessions and other personal workout timing. However, the website does not provide medical advice or individualized exercise recommendations.",
+    },
+    {
+      question: "Does TimeCounterPro provide medical advice?",
+      answer:
+        "No. TimeCounterPro provides timing utilities only. Health-related tools should not be treated as medical diagnosis, treatment or professional healthcare advice.",
+    },
+    {
+      question: "Does TimeCounterPro use analytics?",
+      answer:
+        "The website uses Vercel Web Analytics to understand general website usage and performance. Analytics helps with understanding traffic patterns and identifying areas where the website can be improved.",
+    },
+    {
+      question: "Does TimeCounterPro show advertisements?",
+      answer:
+        "The website may display advertisements through services such as Google AdSense. Advertising providers may use cookies or similar technologies according to their own policies and applicable settings.",
+    },
+    {
+      question: "How can I report a bug?",
+      answer:
+        "You can use the Contact page to send a bug report, describe the problem and provide information that can help us understand what happened.",
+    },
+    {
+      question: "Can I suggest a new feature?",
+      answer:
+        "Yes. Feature suggestions are welcome. When suggesting a feature, explaining the problem it would solve and how you would use it can make the feedback more useful.",
+    },
+  ];
+
   return (
     <>
       <Helmet>
-        <title>About TimeCounterPro - Free Online Time Tools</title>
+        <title>
+          About TimeCounterPro | Free Online Timers, Stopwatch & World Clock
+        </title>
+
         <meta
           name="description"
-          content="Learn what TimeCounterPro is, how its browser-based time tools work, who they are designed for, their limitations, privacy considerations and how to get support."
+          content="Learn about TimeCounterPro, why it was created, how its online timers work, available tools, use cases, privacy approach, limitations and frequently asked questions."
         />
-        <link rel="canonical" href="https://timecounterpro.com/about" />
-        <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="About TimeCounterPro - Free Online Time Tools" />
+
+        <link rel="canonical" href={`${SITE_URL}/about`} />
+
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content="About TimeCounterPro" />
+
         <meta
           property="og:description"
-          content="A detailed guide to TimeCounterPro, its time tools, practical use cases, browser behavior, limitations, privacy information and support."
+          content="Learn about TimeCounterPro and its collection of practical browser-based timing tools."
         />
+
+        <meta property="og:url" content={`${SITE_URL}/about`} />
       </Helmet>
 
-      <main className="min-h-screen bg-white px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <article className="mx-auto max-w-5xl">
-          <header className="border-b border-slate-200 pb-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600">Project information</p>
-            <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl">About TimeCounterPro</h1>
-            <p className="mt-5 max-w-4xl text-lg leading-8 text-slate-700">
-              TimeCounterPro is a browser-based collection of practical time tools. The project is designed for people who need to count down from a chosen duration, measure elapsed time, structure a focus session, compare time zones or manage a specific timed activity without installing a separate application.
+      <main className="min-h-screen bg-white text-slate-900">
+        <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+
+          {/* HERO */}
+
+          <header className="pb-10">
+
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
+              About TimeCounterPro
             </p>
-            <p className="mt-4 max-w-4xl leading-8 text-slate-600">
-              This page explains the project in detail: what each group of tools is for, how visitors can choose the right page, what browser timing can and cannot do, how privacy should be understood, why obsolete generated pages are not presented as current features, and where to ask for help.
+
+            <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+              Simple Online Time Tools for Real Everyday Activities
+            </h1>
+
+            <p className="mt-5 text-base leading-7 text-slate-700">
+              TimeCounterPro is a browser-based collection of practical time
+              management and timing tools designed for people who need a
+              simple way to measure, organize or compare time. Instead of
+              requiring users to install a separate application for every
+              small timing task, TimeCounterPro brings different timing
+              utilities together in one accessible website.
             </p>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              Whether you are studying for an examination, working through a
+              focused coding session, preparing a presentation, practicing a
+              speedrun, measuring an exercise interval, checking another
+              country's time or simply counting down to an event, the purpose
+              of TimeCounterPro is to provide a clear and easy-to-use timing
+              experience.
+            </p>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              The project is built around a simple idea: time tools should be
+              easy to understand, quick to access and useful for the specific
+              activity a person is trying to complete.
+            </p>
+
           </header>
 
-          <section className="py-10">
-            <h2 className="text-3xl font-bold text-slate-950">The project at a glance</h2>
-            <div className="mt-6 grid gap-5 md:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <h3 className="font-bold text-slate-900">Browser based</h3>
-                <p className="mt-2 leading-7 text-slate-600">Open a maintained tool in a modern browser and use it without treating the website as a replacement for specialized software.</p>
+          {/* WHY */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Why TimeCounterPro Exists
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              Time is involved in almost every part of everyday life. Students
+              use time limits when preparing for examinations. Developers
+              divide work into focused sessions. Teachers plan classroom
+              activities. Speakers practice presentations within a fixed
+              duration. Cooks measure preparation and cooking periods.
+              Athletes and fitness enthusiasts work with intervals. Remote
+              teams coordinate across different time zones.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Although these activities are different, they share a common
+              requirement: people need to understand how much time has passed,
+              how much time remains or what the current time is somewhere else.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              TimeCounterPro was created around this common need. Instead of
+              treating a timer as a single-purpose tool, the project brings
+              together different timing experiences for different situations.
+              The intention is not simply to display numbers on a screen.
+              Each tool is designed around a particular use case so that users
+              can understand why the tool exists and how it can help them.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              The project also aims to keep the experience straightforward.
+              A visitor should be able to open a useful timing tool without
+              going through a complicated registration process or learning a
+              complicated interface before starting.
+            </p>
+
+          </section>
+
+          {/* WHO */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Who Can Use TimeCounterPro?
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro is intended for general users who need browser
+              based timing tools. It is not limited to one profession, age
+              group or activity.
+            </p>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+
+              {[
+                [
+                  "Students",
+                  "Students can use countdowns, Pomodoro sessions and mock-test timers for revision, practice and focused study.",
+                ],
+                [
+                  "Developers",
+                  "Developers can use focused timing sessions while coding, debugging, reading documentation or taking planned breaks.",
+                ],
+                [
+                  "Teachers",
+                  "Teachers can use timers for classroom activities, quizzes, presentations, exercises and structured learning sessions.",
+                ],
+                [
+                  "Professionals",
+                  "Professionals can use timers for meetings, presentations, focused work sessions and time-zone coordination.",
+                ],
+                [
+                  "Content Creators",
+                  "Creators can use presentation, stream and countdown tools while preparing videos, livestreams and other content.",
+                ],
+                [
+                  "Gamers",
+                  "Gamers can use stopwatch and speedrun-related timing tools for practice, challenges and timed attempts.",
+                ],
+                [
+                  "Fitness Users",
+                  "Users can use interval-based timing tools during personal exercise sessions where a visible work and rest structure is useful.",
+                ],
+                [
+                  "Everyday Users",
+                  "Anyone who needs a simple countdown, stopwatch or clock can use the website for ordinary timing tasks.",
+                ],
+              ].map(([title, description]) => (
+                <div
+                  key={title}
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                >
+                  <h3 className="text-sm font-bold">{title}</h3>
+                  <p className="mt-1 text-xs leading-5 text-slate-600">
+                    {description}
+                  </p>
+                </div>
+              ))}
+
+            </div>
+
+          </section>
+
+          {/* HOW */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              How TimeCounterPro Works
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro is primarily a browser-based web application.
+              When a user opens a timing tool, the website loads the
+              application interface in the user's browser. The browser then
+              handles much of the interactive timing experience.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              This approach means that normal use does not require creating a
+              traditional user account. Users can visit the website, select
+              the tool they need and begin using it.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Some features can use browser storage to remember preferences or
+              settings. Browser storage is controlled by the browser and
+              device being used. Clearing site data from the browser can
+              remove locally stored preferences.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Like other web applications, the experience can also be
+              influenced by the device, browser, operating system, internet
+              connection and background-tab behavior.
+            </p>
+
+          </section>
+
+          {/* TOOLS */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Our Timing Tools
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro contains several types of timing tools. Each tool
+              is intended to serve a particular timing need. The purpose of
+              having separate tools is to provide an experience that matches
+              the activity instead of presenting every user with the same
+              generic timer.
+            </p>
+
+            <div className="mt-6 space-y-3">
+
+              {tools.map((tool, index) => (
+                <section
+                  key={tool.name}
+                  className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="flex items-start gap-3">
+
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-xs font-bold text-indigo-700">
+                      {index + 1}
+                    </div>
+
+                    <div className="min-w-0">
+
+                      <h3 className="text-base font-bold">
+                        {tool.name}
+                      </h3>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {tool.description}
+                      </p>
+
+                      <div className="mt-3">
+                        <p className="text-xs font-semibold text-slate-900">
+                          Common uses:
+                        </p>
+
+                        <ul className="mt-1 grid gap-0.5 sm:grid-cols-2">
+                          {tool.useCases.map((useCase) => (
+                            <li
+                              key={useCase}
+                              className="text-xs leading-5 text-slate-600"
+                            >
+                              • {useCase}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </section>
+              ))}
+
+            </div>
+
+          </section>
+
+          {/* STUDY */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              TimeCounterPro for Study and Productivity
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              One of the most common reasons people use timing tools is to
+              create structure around focused work. A timer does not
+              automatically make a person productive, but it can provide a
+              visible boundary around a task.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              For example, a student can choose a focused study period and
+              work until the countdown finishes. After the session, the
+              student can take a planned break and then begin another session.
+              This can make a long study period feel more manageable because
+              the learner is working with a defined time block instead of an
+              open-ended task.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              The same principle can be applied to coding, writing, reading,
+              research and other activities. The timer is simply a tool that
+              helps make the intended time period visible.
+            </p>
+
+          </section>
+
+          {/* PRESENTATIONS */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              TimeCounterPro for Presentations
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              Presentations often have a fixed time limit. A speaker may have
+              five minutes, ten minutes, twenty minutes or another defined
+              amount of time to communicate an idea.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Practicing with a presentation timer can help a speaker discover
+              whether the prepared material fits within the available time.
+              It can also help identify sections that consistently take longer
+              than expected.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              TimeCounterPro does not judge presentation quality. It simply
+              provides the timing component so that the user can focus on
+              preparing and delivering the content.
+            </p>
+
+          </section>
+
+          {/* WORLD CLOCK */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Time Zones and World Clocks
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              Modern communication frequently crosses time zones. A person
+              working with a remote team may need to know whether it is morning
+              or evening for a colleague in another country. A student may
+              attend an international online class. A traveler may want to
+              compare local time with the time at home.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              TimeCounterPro's world-clock tools are designed to make these
+              comparisons easier by presenting times for selected locations in
+              a single interface.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Time-zone information can be affected by daylight-saving rules
+              and changes maintained by operating systems and time-zone
+              databases. Users should verify critical scheduling information
+              when an exact appointment or regulated deadline is involved.
+            </p>
+
+          </section>
+
+          {/* FITNESS */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Timing for Exercise and Personal Activities
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              Timing can also be useful during personal exercise routines.
+              Interval-based tools can provide a visible structure for periods
+              of activity and rest.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              TimeCounterPro includes timing experiences that may be useful
+              for HIIT-style sessions, Tabata-style intervals and other
+              personal workout routines.
+            </p>
+
+            <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <h3 className="text-sm font-bold text-amber-900">
+                Important health notice
+              </h3>
+
+              <p className="mt-2 text-xs leading-5 text-amber-900">
+                TimeCounterPro provides timing functionality only. It does not
+                provide medical diagnosis, treatment, personalized exercise
+                prescriptions or medical advice. If you have a health
+                condition or concern, seek advice from an appropriately
+                qualified healthcare professional.
+              </p>
+            </div>
+
+          </section>
+
+          {/* DESIGN PRINCIPLES */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              How We Approach the User Experience
+            </h2>
+
+            <div className="mt-5 space-y-4">
+
+              <div>
+                <h3 className="text-base font-bold">
+                  1. Keep the main task clear
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  A timer should make the remaining or elapsed time easy to
+                  understand. The interface should not make users search
+                  through unnecessary controls before they can start a basic
+                  timing task.
+                </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <h3 className="font-bold text-slate-900">Purpose focused</h3>
-                <p className="mt-2 leading-7 text-slate-600">Different activities have different timing needs, so the site provides separate pages with explanations for common use cases.</p>
+
+              <div>
+                <h3 className="text-base font-bold">
+                  2. Build around real use cases
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Separate tools exist because different activities have
+                  different timing requirements. A presentation timer and a
+                  world clock, for example, solve different problems.
+                </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <h3 className="font-bold text-slate-900">Practical information</h3>
-                <p className="mt-2 leading-7 text-slate-600">The site explains both what a tool can do and the situations where a visitor should use another source or a specialized device.</p>
+
+              <div>
+                <h3 className="text-base font-bold">
+                  3. Make tools accessible from the browser
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Browser-based tools can be convenient because users can open
+                  them from supported devices without installing dedicated
+                  software for every timing task.
+                </p>
               </div>
+
+              <div>
+                <h3 className="text-base font-bold">
+                  4. Explain limitations honestly
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  A browser timer has technical limitations. We believe users
+                  should understand those limitations rather than being given
+                  unrealistic claims about precision or reliability.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-base font-bold">
+                  5. Improve based on actual problems
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Feedback and real-world use can reveal problems that are not
+                  obvious during development. Bug reports and feature
+                  suggestions can therefore help guide future improvements.
+                </p>
+              </div>
+
             </div>
+
           </section>
 
-          <section className="border-y border-slate-200 py-10">
-            <h2 className="text-3xl font-bold text-slate-950">Current tools</h2>
-            <p className="mt-3 leading-8 text-slate-600">These are the maintained tool pages currently described by the project. Each destination is a real application route rather than an automatically generated duration page.</p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <Link to="/create" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Custom Countdown</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Set a duration for a task, event, meeting, practice session, cooking task, study block or any other activity that needs a clear end point.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
+          {/* PRIVACY */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Privacy and Data Approach
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro is designed so that normal use of its core timing
+              tools does not require creating an account. This means users can
+              use the main functionality without submitting registration
+              information.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Some browser-based features may use local storage to remember
+              preferences or configurations. This information is stored by
+              the browser on the user's device.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              The website also uses third-party services for purposes such as
+              hosting, analytics and advertising. These services may process
+              technical or advertising-related information according to their
+              own policies.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              We provide more detailed information about these technologies,
+              browser storage, analytics and advertising in our Privacy
+              Policy.
+            </p>
+
+            <Link
+              to="/privacy"
+              className="mt-4 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+            >
+              Read the complete Privacy Policy →
             </Link>
-            <Link to="/pomodoro" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Pomodoro</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Use repeating focus and break periods for study, coding, reading, writing and other work where structured sessions are useful.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/stopwatch" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Stopwatch</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Measure elapsed time upward and use the timing result when you need to understand how long an activity takes.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/world-clock" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">World Clock</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Compare the current local time in different cities when arranging calls, meetings, travel plans or remote collaboration.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/hiit-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">HIIT and Tabata</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Create work and rest intervals for structured interval exercise. The tool measures time and does not provide medical advice.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/mock-test-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Mock Test</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Practice an examination under a chosen time limit so you can become familiar with pacing and time awareness.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/group-study-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Group Study</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Coordinate shared study periods when several people want the same start and end timing.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/presentation-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Presentation</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Keep a presentation, speech, lesson or rehearsal inside a planned duration.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/stream-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Stream Countdown</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Prepare a visible countdown for livestreams, broadcasts and stream preparation.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/jungle-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Esports Jungle</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Track game-related timing events during practice and gameplay. It is a general timing utility, not a source of game-policy information.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/online-rubiks-cube-stopwatch-with-milliseconds" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Speedrun Split</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Measure elapsed attempts and splits when practicing routes or comparing personal runs.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/gameplay-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Gameplay</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Use a simple timing tool for gaming sessions, challenges and practice activities.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/fasting-tracker-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Fasting Tracker</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Measure the elapsed duration of a fasting interval. It does not determine whether fasting is suitable for a person.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
-            <Link to="/world-clock-board-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
-              <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">World Clock Board</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-6">Keep several cities visible together when working with people in different time zones.</p>
-              <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
-            </Link>
+
+          </section>
+
+          {/* ADVERTISING */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Advertising and Keeping the Website Available
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro may display advertisements through third-party
+              advertising services such as Google AdSense. Advertising can
+              help support the ongoing hosting, development, maintenance and
+              improvement of a free web service.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Advertising is separate from the core purpose of the website.
+              The purpose of the timing tools is to provide useful timing
+              functionality, while advertising can help support the operation
+              of the project.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Third-party advertising providers may use cookies or similar
+              technologies according to their own policies and applicable user
+              settings. Details about advertising and cookies are explained in
+              the Privacy Policy.
+            </p>
+
+          </section>
+
+          {/* ANALYTICS */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Website Analytics
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro uses Vercel Web Analytics to understand general
+              website usage and performance. Analytics can provide useful
+              information about how pages are being used and can help identify
+              technical or usability problems.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Analytics information is useful for improving the project
+              because development decisions should ideally be based on actual
+              website behavior rather than assumptions alone.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              The use of analytics does not mean that TimeCounterPro requires
+              users to create an account. The core tools remain available
+              without traditional registration.
+            </p>
+
+          </section>
+
+          {/* ACCURACY */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Understanding Timer Accuracy
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              It is important to understand that TimeCounterPro is a web
+              application rather than a certified hardware timing instrument.
+              Modern browsers perform many tasks simultaneously, and the
+              operating system may change how background browser tabs,
+              inactive windows or resource-intensive applications are handled.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Device performance, browser behavior, battery-saving modes,
+              background activity and operating-system scheduling can all
+              influence when visual updates occur.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              For normal activities such as studying, cooking, presentations,
+              meetings, personal productivity and general practice, a browser
+              timer can be convenient. However, users should not depend on it
+              as the sole timing source for safety-critical, medical,
+              industrial, laboratory, competition-regulated or legally
+              sensitive activities.
+            </p>
+
+          </section>
+
+          {/* MOBILE */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Using TimeCounterPro on Different Devices
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro is designed as a responsive website so that timing
+              tools can be accessed from different screen sizes. Depending on
+              the specific tool and device, the layout may adapt to provide
+              controls suitable for smaller or larger displays.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              On mobile devices, browser and operating-system behavior can
+              affect timers when the browser is placed in the background or
+              when the device enters a power-saving state. For important
+              timing requirements, users should keep these limitations in mind.
+            </p>
+
+          </section>
+
+          {/* ACCESSIBILITY */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Accessibility and Simplicity
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              A useful timing tool should not require advanced technical
+              knowledge. TimeCounterPro aims to keep the main interactions
+              understandable so that users can focus on the activity they are
+              timing rather than learning complicated software.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              The project continues to improve layouts, controls and
+              information so that the website can be easier to use across
+              supported devices and browsing environments.
+            </p>
+
+          </section>
+
+          {/* CONTENT */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Our Approach to Content
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro is not intended to be a collection of pages that
+              exist only to attract search traffic. Each useful tool should
+              have a clear purpose, and supporting content should help visitors
+              understand when and how that tool can be used.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              We aim to provide explanations that are practical and
+              understandable rather than filling pages with unnecessary
+              repetition. When information changes, content should be reviewed
+              and updated so that it remains relevant to users.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              This approach also means that some pages may be changed, merged
+              or removed when they no longer provide a meaningful experience.
+            </p>
+
+          </section>
+
+          {/* FUTURE */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Future Development
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro is an evolving project. Future development may
+              focus on improving existing timers, refining the interface,
+              improving accessibility, expanding useful timing workflows and
+              fixing issues reported by users.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              New features should be added when they solve a genuine user
+              problem rather than simply increasing the number of pages or
+              controls on the website.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              The long-term goal is to make TimeCounterPro a dependable
+              collection of practical web-based timing utilities that people
+              can return to whenever they need a simple way to work with time.
+            </p>
+
+          </section>
+
+          {/* RESPONSIBLE USE */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Responsible Use
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              TimeCounterPro is designed to support everyday timing tasks, but
+              users are responsible for deciding whether a browser-based tool
+              is appropriate for their particular situation.
+            </p>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              If a task has serious safety, medical, legal, industrial or
+              professional consequences, use an appropriate certified system
+              or professional procedure rather than relying only on a general
+              web timer.
+            </p>
+
+          </section>
+
+          {/* FAQ */}
+
+          <section className="border-t border-slate-200 py-10">
+
+            <h2 className="text-2xl font-bold">
+              Frequently Asked Questions
+            </h2>
+
+            <div className="mt-5 space-y-2">
+
+              {faqs.map((faq) => (
+                <details
+                  key={faq.question}
+                  className="group rounded-xl border border-slate-200 bg-slate-50 p-4"
+                >
+                  <summary className="cursor-pointer list-none text-sm font-bold text-slate-900">
+                    <span className="flex items-center justify-between gap-3">
+                      {faq.question}
+
+                      <span className="text-indigo-600 transition group-open:rotate-45">
+                        +
+                      </span>
+                    </span>
+                  </summary>
+
+                  <p className="mt-3 text-xs leading-5 text-slate-600">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
+
             </div>
+
           </section>
 
-          <section className="mt-10 rounded-2xl border border-indigo-100 bg-indigo-50 p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-slate-950">A note about timing accuracy</h2>
-            <p className="mt-3 leading-8 text-slate-700">TimeCounterPro is a general web utility. Browser timers depend on the device clock, browser scheduling, operating-system power management and page visibility. For ordinary study, cooking, practice or presentation timing this can be convenient, but specialized scientific, industrial, legal or safety-critical measurement should use appropriate equipment and procedures.</p>
-          </section>
+          {/* LINKS */}
 
-          <div className="mt-10">
-          <section key="section-1" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Project purpose</h2>
-            <p className="mt-3 text-slate-700 leading-8">TimeCounterPro is organized around one simple problem: people often need to measure or plan time without installing a separate application. The website collects practical browser-based timing tools in one place.</p>
-            <p className="mt-3 text-slate-600 leading-8">The project is not intended to replace professional software, medical guidance, financial advice, academic supervision or specialist equipment. Its purpose is narrower and clearer: provide accessible timing interfaces for ordinary activities.</p>
-          </section>
-          <section key="section-2" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">What a time tool does</h2>
-            <p className="mt-3 text-slate-700 leading-8">A timing tool gives you a way to define or observe a period. A countdown begins from a selected duration and moves toward zero. A stopwatch begins at zero and measures elapsed time upward. A world clock shows local clock time in selected places.</p>
-            <p className="mt-3 text-slate-600 leading-8">These are simple concepts, but the useful part is matching the interface to the activity. A student may need a focus cycle, a speaker may need a presentation limit, and a remote worker may need a time-zone comparison. The site separates these use cases so visitors can understand what each page is for.</p>
-          </section>
-          <section key="section-3" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Browser-first design</h2>
-            <p className="mt-3 text-slate-700 leading-8">The tools are designed to run in a modern web browser. This makes them convenient when a visitor is using a desktop computer, laptop, tablet or phone and does not want to install another application for a small timing task.</p>
-            <p className="mt-3 text-slate-600 leading-8">Browser behavior can still vary by device and operating system. Sound playback, background behavior, screen locking, notifications and power-saving rules can affect how a web timer behaves. Users should test important timing tasks on their own device before relying on them for critical events.</p>
-          </section>
-          <section key="section-4" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Simple interfaces</h2>
-            <p className="mt-3 text-slate-700 leading-8">A timer is most useful when its controls are understandable. TimeCounterPro aims to keep the main action visible: choose a duration or mode, start the tool, pause or reset when appropriate, and observe the result.</p>
-            <p className="mt-3 text-slate-600 leading-8">Simple does not mean every tool has identical controls. A Pomodoro session needs work and break phases, a stopwatch needs elapsed-time controls, and a world clock needs city or time-zone information. Each page therefore focuses on the controls that make sense for that task.</p>
-          </section>
-          <section key="section-5" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Who can use the site</h2>
-            <p className="mt-3 text-slate-700 leading-8">The tools can be useful to students, teachers, remote workers, developers, writers, presenters, streamers, athletes, hobbyists, gamers, travelers and anyone who needs a visible time reference.</p>
-            <p className="mt-3 text-slate-600 leading-8">The examples on this page are use cases rather than promises that a particular tool will improve performance. Results depend on how the tool is used, the device, the task and the user's own routine.</p>
-          </section>
-          <section key="section-6" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Students</h2>
-            <p className="mt-3 text-slate-700 leading-8">Students can use timing tools to divide study into manageable sessions, practice mock examinations, coordinate group revision and monitor how long a task takes.</p>
-            <p className="mt-3 text-slate-600 leading-8">A timer can help make a study session concrete, but it does not replace learning methods, subject knowledge or teacher guidance. For exam practice, users should follow the time rules and conditions that apply to their own course or examination.</p>
-          </section>
-          <section key="section-7" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Teachers and presenters</h2>
-            <p className="mt-3 text-slate-700 leading-8">A presentation timer can help speakers rehearse a lesson, speech, class activity or demonstration. The purpose is to make elapsed time visible while practicing.</p>
-            <p className="mt-3 text-slate-600 leading-8">The final timing requirement should always come from the event organizer, institution or assignment instructions. A browser timer is a convenience tool, not an authority on the permitted duration.</p>
-          </section>
-          <section key="section-8" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Remote teams</h2>
-            <p className="mt-3 text-slate-700 leading-8">Remote teams often work across cities and countries. A world clock can make local-time differences easier to see before someone proposes a meeting time.</p>
-            <p className="mt-3 text-slate-600 leading-8">Time-zone rules can change because of daylight-saving policies and local government decisions. For important meetings, users should confirm the local time with their calendar or communication platform as well.</p>
-          </section>
-          <section key="section-9" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Fitness and intervals</h2>
-            <p className="mt-3 text-slate-700 leading-8">Interval tools can provide a sequence of work and rest periods for general workouts. They can make a planned interval structure easier to follow without manually checking a clock.</p>
-            <p className="mt-3 text-slate-600 leading-8">The site does not assess fitness level, injury risk, exercise safety or medical suitability. Anyone with health concerns should follow appropriate professional advice and should stop an activity if it feels unsafe.</p>
-          </section>
-          <section key="section-10" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Gaming and esports</h2>
-            <p className="mt-3 text-slate-700 leading-8">Gaming-focused timing pages are designed around practical timing during practice or play. They can help a player observe intervals, splits or session duration without leaving the game workflow for a separate clock.</p>
-            <p className="mt-3 text-slate-600 leading-8">Game mechanics, rules and timing values can change between games and versions. Users should verify game-specific information from the official game or competition source when accuracy about a game rule matters.</p>
-          </section>
-          <section key="section-11" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Streaming and broadcasting</h2>
-            <p className="mt-3 text-slate-700 leading-8">A stream countdown can help creators prepare an audience-facing start or other scheduled moment. It is useful when a clear visual countdown is part of a broadcast workflow.</p>
-            <p className="mt-3 text-slate-600 leading-8">The website cannot control the streaming platform itself. Streamers should verify the platform's own stream status, scheduling information and moderation controls separately.</p>
-          </section>
-          <section key="section-12" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Personal routines</h2>
-            <p className="mt-3 text-slate-700 leading-8">A countdown can be useful for cooking, cleaning, reading, breaks, practice, meetings and other everyday activities. The value comes from making the intended duration visible.</p>
-            <p className="mt-3 text-slate-600 leading-8">For safety-critical activities such as cooking with heat or machinery, a browser timer should not be the only safeguard. Follow the relevant safety instructions and remain attentive to the activity itself.</p>
-          </section>
-          <section key="section-13" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Accessibility and readability</h2>
-            <p className="mt-3 text-slate-700 leading-8">Clear headings, descriptive labels, readable text and predictable controls help visitors understand a tool before they use it. Responsive layouts also allow the interface to adapt to different screen sizes.</p>
-            <p className="mt-3 text-slate-600 leading-8">Accessibility is an ongoing project rather than a claim of perfect compatibility. Browser zoom, screen readers, keyboard behavior, contrast settings and device-specific accessibility features can affect the experience. Feedback about barriers is useful for future improvements.</p>
-          </section>
-          <section key="section-14" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Mobile use</h2>
-            <p className="mt-3 text-slate-700 leading-8">On a phone, a timer is often used while the device is being held or placed nearby. Large controls and responsive layout can make a timing page easier to operate on a smaller screen.</p>
-            <p className="mt-3 text-slate-600 leading-8">Mobile operating systems may suspend background browser activity, restrict autoplay audio or reduce power use. For a critical deadline, keep the page active and confirm that the chosen sound or alert behavior works on the device.</p>
-          </section>
-          <section key="section-15" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Desktop use</h2>
-            <p className="mt-3 text-slate-700 leading-8">Desktop browsers provide more screen space for controls, instructions and multi-city displays. They can be convenient for study, work, streaming and remote collaboration.</p>
-            <p className="mt-3 text-slate-600 leading-8">Browser tabs can be suspended or affected by system power settings. If a timer matters for a live event, users should test the page and device configuration before the event starts.</p>
-          </section>
-          <section key="section-16" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Privacy approach</h2>
-            <p className="mt-3 text-slate-700 leading-8">Privacy information should be specific rather than absolute. A modern website may use local browser storage, hosting infrastructure, analytics, advertising technology or other third-party services depending on its configuration.</p>
-            <p className="mt-3 text-slate-600 leading-8">TimeCounterPro's Privacy Policy is the authoritative page for current data practices. Visitors should read it when they want details about cookies, local storage, analytics, advertising, contact information and third-party processing.</p>
-          </section>
-          <section key="section-17" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Local browser storage</h2>
-            <p className="mt-3 text-slate-700 leading-8">Some web features may save preferences or history locally in the browser so the interface can remember a setting between visits. Local storage is controlled by the browser and can be cleared by the user.</p>
-            <p className="mt-3 text-slate-600 leading-8">Clearing browser data, using private browsing or changing device settings can remove locally stored information. The availability and exact behavior of a feature may therefore differ between devices.</p>
-          </section>
-          <section key="section-18" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Advertising</h2>
-            <p className="mt-3 text-slate-700 leading-8">If advertising is displayed on the website, ads are provided separately from the timing function. Advertising availability, placement and eligibility can change as the site evolves.</p>
-            <p className="mt-3 text-slate-600 leading-8">Advertising should never be treated as part of a timer's measurement result. Users should evaluate advertisements independently and use the site's tools for their intended timing purpose.</p>
-          </section>
-          <section key="section-19" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">No unnecessary account</h2>
-            <p className="mt-3 text-slate-700 leading-8">Many basic timing tasks do not require an account. This reduces friction for visitors who simply want to open a tool and use it.</p>
-            <p className="mt-3 text-slate-600 leading-8">Features that require or benefit from stored information should be explained by the relevant page and privacy documentation. Users should not assume that every browser feature behaves identically when they are signed in, signed out or using private browsing.</p>
-          </section>
-          <section key="section-20" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Accuracy of time</h2>
-            <p className="mt-3 text-slate-700 leading-8">A countdown or stopwatch depends on browser and device timing mechanisms. For ordinary activities, this is usually sufficient, but web timing is not the same as laboratory-grade instrumentation.</p>
-            <p className="mt-3 text-slate-600 leading-8">For high-precision scientific, industrial, legal or safety-critical measurement, use equipment and procedures designed for that purpose. TimeCounterPro is a general web utility.</p>
-          </section>
-          <section key="section-21" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Time zones</h2>
-            <p className="mt-3 text-slate-700 leading-8">World-clock tools help users compare local clock times, but time-zone information is a living area of data. Local rules can change and different systems can update their time-zone databases at different times.</p>
-            <p className="mt-3 text-slate-600 leading-8">When a meeting has financial, legal, travel or operational consequences, confirm the final time with an authoritative calendar, organizer or official local source.</p>
-          </section>
-          <section key="section-22" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Why purpose-specific pages matter</h2>
-            <p className="mt-3 text-slate-700 leading-8">A general timer can technically measure many activities, but a purpose-specific page can explain the relevant workflow before the user starts. That makes the tool easier to understand for someone who is unfamiliar with it.</p>
-            <p className="mt-3 text-slate-600 leading-8">Purpose-specific pages should still avoid pretending that a timer is a complete solution. The site describes what each page does and leaves the actual decision about how to use it to the visitor.</p>
-          </section>
-          <section key="section-23" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Choosing a countdown</h2>
-            <p className="mt-3 text-slate-700 leading-8">Choose a countdown when you know the amount of time you want to spend. Examples include a ten-minute break, a study block, a cooking interval or a presentation rehearsal.</p>
-            <p className="mt-3 text-slate-600 leading-8">If the activity must finish at a real-world deadline, also consider the time needed for setup, transitions and device delays. The countdown only measures the interval you give it.</p>
-          </section>
-          <section key="section-24" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Choosing a stopwatch</h2>
-            <p className="mt-3 text-slate-700 leading-8">Choose a stopwatch when you want to discover how long an activity takes rather than starting with a fixed limit. It can be useful for sports practice, cooking experiments, reading speed or task measurement.</p>
-            <p className="mt-3 text-slate-600 leading-8">A stopwatch result is descriptive. It tells you the elapsed interval recorded by the page; it does not automatically explain why the activity took that long or whether the result is good.</p>
-          </section>
-          <section key="section-25" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Choosing Pomodoro</h2>
-            <p className="mt-3 text-slate-700 leading-8">Choose the Pomodoro page when repeated work and break cycles match your routine. It can be useful for study, coding, writing, reading and other tasks where regular breaks are part of the plan.</p>
-            <p className="mt-3 text-slate-600 leading-8">Pomodoro is a time-management technique, not a guarantee of productivity. Users can adjust their routine to their own task, environment and schedule.</p>
-          </section>
-          <section key="section-26" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Choosing a mock-test timer</h2>
-            <p className="mt-3 text-slate-700 leading-8">Choose the mock-test page when you want to practice answering questions under a defined time limit. This can make pacing part of the practice session.</p>
-            <p className="mt-3 text-slate-600 leading-8">Practice conditions should match the actual examination rules when possible. The timer does not know the official time limit unless the user sets it correctly.</p>
-          </section>
-          <section key="section-27" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Choosing group study</h2>
-            <p className="mt-3 text-slate-700 leading-8">A group study timer can provide a shared timing reference when several people agree on the same start and stop times. It can reduce the need for one person to repeatedly announce the schedule.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool cannot guarantee that every participant sees or hears the same event at the same instant because networks and devices vary. Group members should confirm the session plan in their normal communication channel.</p>
-          </section>
-          <section key="section-28" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Choosing a presentation timer</h2>
-            <p className="mt-3 text-slate-700 leading-8">A presentation timer is useful during rehearsal when a speaker needs to know whether a talk fits within the planned duration. It can also provide a simple visual reference during practice.</p>
-            <p className="mt-3 text-slate-600 leading-8">The speaker should still use the event organizer's official time limit. Rehearsal timing can change when questions, demonstrations or audience interaction are included.</p>
-          </section>
-          <section key="section-29" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Choosing a world clock</h2>
-            <p className="mt-3 text-slate-700 leading-8">Choose a world clock when the question is 'What time is it there?' or 'What is the difference between these cities?'. It is especially useful for international communication.</p>
-            <p className="mt-3 text-slate-600 leading-8">A city label represents a time zone, not necessarily a single geographic point. For travel or legal appointments, confirm the final local time with the destination's official information.</p>
-          </section>
-          <section key="section-30" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Using a timer responsibly</h2>
-            <p className="mt-3 text-slate-700 leading-8">A timer is a support tool. It should make a plan visible rather than becoming the only thing you pay attention to. When the task itself has safety requirements, those requirements remain more important than the countdown.</p>
-            <p className="mt-3 text-slate-600 leading-8">Users should also account for device volume, browser permissions, power state and connectivity where relevant. A tool cannot compensate for a muted device or an operating system that has suspended the browser.</p>
-          </section>
-          <section key="section-31" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Feedback and improvements</h2>
-            <p className="mt-3 text-slate-700 leading-8">A useful web project changes over time. Visitors may discover confusing labels, broken links, layout issues, device-specific behavior or missing explanations that were not obvious during development.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Contact page is the appropriate place to report a problem or suggest an improvement. Specific information such as the page, device, browser and steps that caused the issue can make troubleshooting easier.</p>
-          </section>
-          <section key="section-32" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Content standards</h2>
-            <p className="mt-3 text-slate-700 leading-8">The informational text on TimeCounterPro is intended to explain the tools and their practical use. It should not make unsupported promises about health, productivity, performance, income or guaranteed outcomes.</p>
-            <p className="mt-3 text-slate-600 leading-8">Where a topic involves safety, health, privacy or another specialist area, the site should distinguish general timing information from professional guidance. Visitors should use authoritative sources for decisions that require specialist expertise.</p>
-          </section>
-          <section key="section-33" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Maintenance</h2>
-            <p className="mt-3 text-slate-700 leading-8">Maintaining a smaller set of useful pages makes it easier to review links, descriptions, metadata and functionality. Removing obsolete generated pages can also reduce confusion when a visitor encounters an old bookmark.</p>
-            <p className="mt-3 text-slate-600 leading-8">The project may change its tools, interface or navigation as it is maintained. A current page should be treated as more reliable than an old screenshot, cached page or third-party description.</p>
-          </section>
-          <section key="section-34" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Why old generated pages were removed</h2>
-            <p className="mt-3 text-slate-700 leading-8">The project previously used many duration-specific URLs. A large collection of near-identical pages can make navigation harder and can provide little additional value when the underlying function is the same.</p>
-            <p className="mt-3 text-slate-600 leading-8">The current structure focuses on maintained tools and explanatory pages. The goal is to make each indexed page understandable and useful rather than creating a separate page for every possible duration.</p>
-          </section>
-          <section key="section-35" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Navigation philosophy</h2>
-            <p className="mt-3 text-slate-700 leading-8">A visitor should be able to understand the site's main purpose from the home page and move to important informational pages such as About, Contact, Privacy and Terms without encountering dead navigation.</p>
-            <p className="mt-3 text-slate-600 leading-8">Tool pages are linked where the destination is a real, maintained route. Obsolete generated paths are not presented as current features.</p>
-          </section>
-          <section key="section-36" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">About this page</h2>
-            <p className="mt-3 text-slate-700 leading-8">This About page explains what TimeCounterPro is, what its tools are designed to do, who may find them useful, how browser timing behaves and where visitors can learn about privacy and support.</p>
-            <p className="mt-3 text-slate-600 leading-8">It is intentionally more detailed than a short marketing introduction. The aim is to give a visitor enough context to understand the project before using its tools.</p>
-          </section>
-          <section key="section-37" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Custom Countdown overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Set a duration for a task, event, meeting, practice session, cooking task, study block or any other activity that needs a clear end point.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Custom Countdown page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-38" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Custom Countdown practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Custom Countdown is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-39" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Custom Countdown limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Custom Countdown tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-40" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Pomodoro overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Use repeating focus and break periods for study, coding, reading, writing and other work where structured sessions are useful.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Pomodoro page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-41" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Pomodoro practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Pomodoro is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-42" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Pomodoro limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Pomodoro tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-43" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Stopwatch overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Measure elapsed time upward and use the timing result when you need to understand how long an activity takes.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Stopwatch page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-44" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Stopwatch practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Stopwatch is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-45" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Stopwatch limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Stopwatch tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-46" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">World Clock overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Compare the current local time in different cities when arranging calls, meetings, travel plans or remote collaboration.</p>
-            <p className="mt-3 text-slate-600 leading-8">The World Clock page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-47" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">World Clock practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for World Clock is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-48" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">World Clock limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The World Clock tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-49" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">HIIT and Tabata overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Create work and rest intervals for structured interval exercise. The tool measures time and does not provide medical advice.</p>
-            <p className="mt-3 text-slate-600 leading-8">The HIIT and Tabata page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-50" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">HIIT and Tabata practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for HIIT and Tabata is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-51" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">HIIT and Tabata limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The HIIT and Tabata tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-52" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Mock Test overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Practice an examination under a chosen time limit so you can become familiar with pacing and time awareness.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Mock Test page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-53" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Mock Test practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Mock Test is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-54" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Mock Test limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Mock Test tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-55" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Group Study overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Coordinate shared study periods when several people want the same start and end timing.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Group Study page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-56" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Group Study practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Group Study is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-57" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Group Study limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Group Study tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-58" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Presentation overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Keep a presentation, speech, lesson or rehearsal inside a planned duration.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Presentation page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-59" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Presentation practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Presentation is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-60" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Presentation limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Presentation tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-61" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Stream Countdown overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Prepare a visible countdown for livestreams, broadcasts and stream preparation.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Stream Countdown page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-62" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Stream Countdown practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Stream Countdown is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-63" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Stream Countdown limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Stream Countdown tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-64" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Esports Jungle overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Track game-related timing events during practice and gameplay. It is a general timing utility, not a source of game-policy information.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Esports Jungle page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-65" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Esports Jungle practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Esports Jungle is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-66" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Esports Jungle limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Esports Jungle tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-67" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Speedrun Split overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Measure elapsed attempts and splits when practicing routes or comparing personal runs.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Speedrun Split page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-68" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Speedrun Split practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Speedrun Split is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-69" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Speedrun Split limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Speedrun Split tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-70" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Gameplay overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Use a simple timing tool for gaming sessions, challenges and practice activities.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Gameplay page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-71" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Gameplay practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Gameplay is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-72" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Gameplay limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Gameplay tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-73" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Fasting Tracker overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Measure the elapsed duration of a fasting interval. It does not determine whether fasting is suitable for a person.</p>
-            <p className="mt-3 text-slate-600 leading-8">The Fasting Tracker page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-74" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Fasting Tracker practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for Fasting Tracker is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-75" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">Fasting Tracker limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The Fasting Tracker tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          <section key="section-76" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">World Clock Board overview</h2>
-            <p className="mt-3 text-slate-700 leading-8">Keep several cities visible together when working with people in different time zones.</p>
-            <p className="mt-3 text-slate-600 leading-8">The World Clock Board page is intended to be used directly in a browser. Read the instructions on that page before starting an important session, and verify that the controls and alerts behave as expected on your device.</p>
-          </section>
-          <section key="section-77" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">World Clock Board practical workflow</h2>
-            <p className="mt-3 text-slate-700 leading-8">A practical workflow for World Clock Board is to first identify the activity, decide what timing information you need, open the relevant tool, choose the settings, and start only when you are ready to measure the intended interval.</p>
-            <p className="mt-3 text-slate-600 leading-8">When the session ends, use the result as a reference for the activity rather than as a professional assessment. If the timing affects a deadline, appointment or safety-sensitive task, confirm the relevant external requirement as well.</p>
-          </section>
-          <section key="section-78" className="border-b border-slate-200 py-8">
-            <h2 className="text-2xl font-bold text-slate-900">World Clock Board limitations</h2>
-            <p className="mt-3 text-slate-700 leading-8">The World Clock Board tool is a browser utility and therefore depends on the browser, operating system and device on which it is running. Audio, visibility, background execution and power-management behavior may vary.</p>
-            <p className="mt-3 text-slate-600 leading-8">The tool does not know the full context of the user's activity. It measures or displays the time requested by the user; it does not independently validate the task, event rules, medical suitability or expected outcome.</p>
-          </section>
-          </div>
+          <section className="border-t border-slate-200 py-10">
 
-          <section className="mt-12 border-t border-slate-200 pt-10">
-            <h2 className="text-3xl font-bold text-slate-950">Frequently asked questions</h2>
-            <p className="mt-3 max-w-3xl leading-8 text-slate-600">The answers below cover common questions about the project, browser behavior, privacy, timing limitations and the different use cases described above.</p>
-            <div className="mt-6 grid gap-4">
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">What is TimeCounterPro?</summary>
-            <p className="mt-3 text-slate-600 leading-7">TimeCounterPro is a collection of browser-based timing tools for countdowns, elapsed time, focused sessions, time-zone comparison and purpose-specific activities.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Do I need an account?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Most basic tools are designed to be usable without an account. Check the relevant page and Privacy Policy for current feature behavior.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Is the website free?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Core tools are provided for free at the time of writing. Features and site configuration can change over time.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I use it on a phone?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Yes, the site is designed to adapt to common mobile screen sizes, although browser and operating-system behavior can affect audio and background execution.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I use it on a computer?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Yes. A modern desktop browser is a suitable environment for the site's browser-based tools.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">What is a countdown?</summary>
-            <p className="mt-3 text-slate-600 leading-7">A countdown begins with a chosen duration and decreases toward zero.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">What is a stopwatch?</summary>
-            <p className="mt-3 text-slate-600 leading-7">A stopwatch starts from zero and measures elapsed time upward.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Which tool is useful for study?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Pomodoro can structure focus and break periods, while the Mock Test Timer can be used for exam-style practice.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Which tool is useful for presentations?</summary>
-            <p className="mt-3 text-slate-600 leading-7">The Presentation Timer is designed for rehearsing or monitoring a planned presentation duration.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Which tool is useful for international meetings?</summary>
-            <p className="mt-3 text-slate-600 leading-7">The World Clock and World Clock Board are designed to compare local times in multiple places.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Does the site give medical advice?</summary>
-            <p className="mt-3 text-slate-600 leading-7">No. Timing pages are general utilities. Health-related decisions should be based on appropriate professional guidance.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Is the fasting tracker medical software?</summary>
-            <p className="mt-3 text-slate-600 leading-7">No. It measures the duration of a user-defined interval and does not determine whether fasting is appropriate.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Are workout timers medical advice?</summary>
-            <p className="mt-3 text-slate-600 leading-7">No. Interval timers measure the schedule chosen by the user and do not assess health, fitness or injury risk.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can a browser timer be laboratory-grade?</summary>
-            <p className="mt-3 text-slate-600 leading-7">No. General web timing should not be treated as laboratory or industrial measurement equipment.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Why can audio behave differently?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Browsers and operating systems can restrict autoplay, background activity or audio when a page is inactive or a device is in a power-saving state.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Why should I test a timer before an important event?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Testing confirms that the chosen duration, sound, screen behavior and device settings work as expected before the real session.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Does the site store preferences?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Some browser features may use local storage. The Privacy Policy describes current storage and data practices in more detail.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I clear local data?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Browser settings normally allow users to clear site data. Clearing it may reset preferences or local history.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">What happens in private browsing?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Private browsing can change or remove local storage and other browser behavior after the session ends.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Why were many old pages removed?</summary>
-            <p className="mt-3 text-slate-600 leading-7">The project was reorganized to focus on a smaller set of maintained tools instead of many near-duplicate duration pages.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Will an old bookmarked page always work?</summary>
-            <p className="mt-3 text-slate-600 leading-7">No. A page that was removed or renamed may no longer exist. Current navigation should point to maintained pages.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I request a new feature?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Yes. Use the Contact page and describe the proposed feature and the problem it would solve.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">How do I report a broken page?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Use the Contact page and include the page address, browser or device and the steps that reproduce the issue when possible.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I rely on the timer for a safety-critical task?</summary>
-            <p className="mt-3 text-slate-600 leading-7">A general web timer should not be the only safeguard for a safety-critical task. Follow the relevant safety procedures and use appropriate equipment.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I use it while cooking?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Yes for ordinary timing, but remain attentive to the cooking process and follow appliance and food-safety instructions.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I use it for exams?</summary>
-            <p className="mt-3 text-slate-600 leading-7">You can use the Mock Test Timer for practice, but official examinations should follow the organizer's approved timing system and rules.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I use it for live streaming?</summary>
-            <p className="mt-3 text-slate-600 leading-7">The Stream Countdown can provide a browser-based countdown, while the streaming platform remains responsible for the actual broadcast state.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I use it for gaming?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Yes, the gaming-focused pages are designed for timing practice and sessions, but game-specific rules should be checked from the relevant official source.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Can I compare two cities?</summary>
-            <p className="mt-3 text-slate-600 leading-7">World-clock tools can help compare local times, but important appointments should be confirmed with an authoritative calendar or organizer.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Why can time-zone differences change during the year?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Some regions use daylight-saving rules while others do not, so the difference between two places can change depending on the date.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Does the site replace a calendar?</summary>
-            <p className="mt-3 text-slate-600 leading-7">No. A timer measures a duration or displays time; a calendar is better for scheduling dates and appointments.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Does the site replace a stopwatch device?</summary>
-            <p className="mt-3 text-slate-600 leading-7">For ordinary timing a browser stopwatch can be convenient, but specialized measurement tasks may require dedicated equipment.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Does the site work offline?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Some browser behavior may continue after a page is loaded, but users should not assume every feature works offline unless the page explicitly supports it.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">What if my device goes to sleep?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Power-saving behavior can affect web timers. Keep the device awake for important sessions and test the behavior first.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">What if the browser tab is backgrounded?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Browsers may throttle background pages. For important timing, keep the page visible and verify its behavior on your device.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Why is clear labeling important?</summary>
-            <p className="mt-3 text-slate-600 leading-7">A visitor should know what a tool does before starting it. Clear labels reduce confusion and make the site easier to use.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Why is a smaller tool library useful?</summary>
-            <p className="mt-3 text-slate-600 leading-7">A focused library is easier to maintain, review and navigate than hundreds of nearly identical generated pages.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Where can I read privacy information?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Use the site's Privacy page for current information about cookies, local storage, analytics, advertising and related processing.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Where can I read terms?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Use the Terms page for the site's current terms and conditions.</p>
-          </details>
-          <details className="border border-slate-200 rounded-xl p-5 bg-white">
-            <summary className="cursor-pointer font-semibold text-slate-900">Where can I contact the site?</summary>
-            <p className="mt-3 text-slate-600 leading-7">Use the Contact page for questions, problem reports and feature suggestions.</p>
-          </details>
+            <h2 className="text-2xl font-bold">
+              Learn More About the Website
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              Transparency is important when operating a web service. If you
+              want to understand how information is handled, what third-party
+              services may be involved or what rules apply when using the
+              website, please review the dedicated legal pages.
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+
+              <Link
+                to="/privacy"
+                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:border-indigo-400 hover:text-indigo-700"
+              >
+                Privacy Policy
+              </Link>
+
+              <Link
+                to="/terms"
+                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:border-indigo-400 hover:text-indigo-700"
+              >
+                Terms of Service
+              </Link>
+
+              <Link
+                to="/contact"
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+              >
+                Contact Us
+              </Link>
+
             </div>
+
           </section>
 
-          <section className="mt-12 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-slate-950">Important limitations</h2>
-            <ul className="mt-4 space-y-3 text-slate-700 leading-7">
-              <li>TimeCounterPro is a general browser utility and is not specialized measurement equipment.</li>
-              <li>Health, fitness and fasting pages do not provide medical diagnosis, treatment or individualized professional advice.</li>
-              <li>Important deadlines, appointments and examination rules should be confirmed with the responsible organizer or authoritative source.</li>
-              <li>Browser, device, audio and power-management behavior can affect how a web timer behaves.</li>
-              <li>Privacy practices can change as services and site configuration change; the Privacy Policy is the current reference.</li>
-            </ul>
-          </section>
+          {/* CONTACT */}
 
-          <section className="mt-10 border-t border-slate-200 pt-10">
-            <h2 className="text-2xl font-bold text-slate-950">Need help?</h2>
-            <p className="mt-3 leading-8 text-slate-600">For a problem report or feature suggestion, use the Contact page. For data and privacy questions, read the Privacy Policy. For site-use conditions, read the Terms page.</p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link to="/contact" className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">Contact</Link>
-              <Link to="/privacy" className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white">Privacy Policy</Link>
-              <Link to="/terms" className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-white">Terms</Link>
+          <section className="border-t border-slate-200 py-10">
+
+            <div className="rounded-2xl bg-slate-950 p-6 text-white sm:p-8">
+
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">
+                Have feedback?
+              </p>
+
+              <h2 className="mt-2 text-2xl font-bold">
+                Help Us Improve TimeCounterPro
+              </h2>
+
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                If you discover a bug, experience a problem with a timing
+                tool, have a useful feature suggestion or notice information
+                that should be corrected, we welcome your feedback. Clear
+                reports help us understand what needs improvement.
+              </p>
+
+              <Link
+                to="/contact"
+                className="mt-5 inline-block rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
+              >
+                Contact TimeCounterPro
+              </Link>
+
             </div>
+
           </section>
 
-          <footer className="mt-12 border-t border-slate-200 pt-8 text-sm leading-7 text-slate-500">
-            <p>TimeCounterPro provides general-purpose timing tools and informational content. The site does not replace professional, medical, legal, financial, safety or official event guidance.</p>
+          {/* PURPOSE SECTION — SEPARATE, CLEAN SIDE LAYOUT */}
+
+          <section className="mt-16 border-t-2 border-indigo-100 pt-12">
+
+            {/* PURPOSE HEADER */}
+
+            <div className="rounded-2xl bg-gradient-to-br from-indigo-50 via-white to-slate-50 p-6 sm:p-8">
+
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
+                Our Purpose
+              </p>
+
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+                Why We Built TimeCounterPro
+              </h2>
+
+              <p className="mt-5 text-base leading-7 text-slate-700">
+                TimeCounterPro was created with a simple purpose: to make useful
+                time-based tools easy to access, easy to understand and practical for
+                everyday activities. Time is something people work with every day, but
+                the way people need to measure or manage time can be very different.
+                A student may need a study countdown, a developer may want a focused
+                work session, a speaker may need to practice a presentation, a person
+                in another country may want to compare time zones, and someone preparing
+                a workout may need repeating work and rest intervals.
+              </p>
+
+              <p className="mt-4 text-sm leading-6 text-slate-600">
+                These activities all involve time, but a single generic stopwatch or
+                countdown does not always provide the most useful experience. This is
+                one of the main reasons TimeCounterPro is organized around different
+                timing tools and different real-world use cases.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                The goal is not simply to put a large number on a screen and call it a
+                timer. The goal is to create tools that help people understand and
+                manage a specific period of time while they are doing something
+                meaningful.
+              </p>
+
+            </div>
+
+            {/* PURPOSE CARDS — 2 COLUMN GRID */}
+
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+
+              {/* 01 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    01
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Make Time Tools Easy to Access
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  One purpose of TimeCounterPro is accessibility. Many everyday timing
+                  tasks do not require complicated software, yet people often have to
+                  search for a suitable application, install software or use a tool that
+                  contains many features they do not need.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  TimeCounterPro provides browser-based timing tools that can be opened
+                  directly from a supported web browser. The intention is to reduce the
+                  unnecessary steps between identifying a timing need and starting the
+                  timer.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Users can choose the type of tool that matches their activity and
+                  begin using it without needing to create a traditional account for
+                  normal use of the core tools.
+                </p>
+              </div>
+
+              {/* 02 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    02
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Help People Structure Their Time
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  A timer can provide a simple boundary around an activity. Instead of
+                  working without a clear endpoint, a person can decide how much time
+                  they want to spend and use a countdown to make that period visible.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  This can be useful for studying, reading, writing, coding, practicing
+                  a presentation, completing a mock test or working through another
+                  focused task.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  TimeCounterPro does not claim that a timer automatically makes a
+                  person productive. Its purpose is more practical: to provide a clear
+                  time boundary that users can incorporate into their own routines.
+                </p>
+              </div>
+
+              {/* 03 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    03
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Support Students and Learning
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  Students are one of the important groups that can benefit from
+                  practical timing tools. Studying often involves activities with
+                  different time requirements, such as revision, reading, practice
+                  questions, mock examinations and focused study sessions.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  A student can use a countdown to create a defined study period, a
+                  Pomodoro timer to organize focused sessions and breaks, or a mock-test
+                  timer to practice completing questions within a fixed duration.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  The purpose is not to replace a student's study method or teacher.
+                  Instead, TimeCounterPro provides a simple supporting tool that can
+                  help make the planned time visible.
+                </p>
+              </div>
+
+              {/* 04 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    04
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Support Focused Work
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  Modern work often requires people to divide their attention between
+                  many tasks. A clearly defined work period can sometimes make it
+                  easier to concentrate on one activity before moving to another.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Developers can use a timer during coding sessions. Writers can use
+                  one while drafting. Readers can create a reading period. Professionals
+                  can use a timer while preparing a document or practicing a
+                  presentation.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  TimeCounterPro provides the timing component while leaving the actual
+                  productivity method to the individual user.
+                </p>
+              </div>
+
+              {/* 05 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    05
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Make Presentations Easier to Practice
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  Presentations often have a fixed time limit. A speaker may know the
+                  subject well but still need to practice how long the complete
+                  presentation takes.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  A presentation timer allows users to rehearse while watching the
+                  available time. This can reveal whether the introduction is too long,
+                  whether a particular section takes more time than expected or whether
+                  the entire presentation fits within the planned duration.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  The tool does not evaluate the quality of a presentation. It simply
+                  provides a clear timing reference so the speaker can focus on the
+                  content and delivery.
+                </p>
+              </div>
+
+              {/* 06 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    06
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Help With Time-Zone Differences
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  People increasingly communicate and work with others who live in
+                  different cities and countries. A meeting that is convenient for one
+                  person may happen very early in the morning or late at night for
+                  another person.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  TimeCounterPro's world-clock tools are intended to make these
+                  differences easier to understand by allowing users to compare
+                  locations in one place.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  This can be useful for remote teams, international communication,
+                  online classes, travel planning, friends and families living in
+                  different countries and anyone who regularly works across time zones.
+                </p>
+              </div>
+
+              {/* 07 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    07
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Provide Practical Tools for Activities
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  Different activities require different types of timing. An online
+                  stopwatch is useful when measuring elapsed time, while a countdown is
+                  useful when working toward a deadline. An interval timer is useful
+                  when repeating work and rest periods, and a world clock is useful
+                  when comparing locations.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  TimeCounterPro's purpose is therefore to organize timing tools around
+                  these practical differences rather than treating every timing
+                  situation as exactly the same.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  This makes it easier for visitors to identify the tool that matches
+                  the task they are actually trying to complete.
+                </p>
+              </div>
+
+              {/* 08 */}
+              <div className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-200 hover:shadow-md">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-xs font-bold text-indigo-600">
+                    08
+                  </span>
+                  <h3 className="text-base font-bold text-slate-950">
+                    Keep the Experience Simple
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  A timing tool should not become more complicated than the activity it
+                  is helping with. For many users, the most important requirements are
+                  simply seeing the time clearly, controlling the timer and knowing when
+                  the selected period has finished.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  TimeCounterPro aims to keep the primary task understandable while
+                  still providing useful controls for users who need additional
+                  functionality.
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  This balance between simplicity and usefulness is an important part of
+                  the project's purpose.
+                </p>
+              </div>
+
+            </div>
+
+            {/* DEEPER PURPOSE */}
+
+            <div className="mt-10 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-6 sm:p-8">
+
+              <h3 className="text-xl font-bold text-slate-950">
+                Our Broader Purpose
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                The broader purpose of TimeCounterPro is to make working with time feel
+                less complicated. People already have enough things to think about when
+                they are studying, working, presenting, practicing, exercising or
+                coordinating with others. A timing tool should support the activity
+                rather than become another problem to solve.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                This is why the project focuses on clear timing experiences and
+                activity-based tools. Instead of assuming that every visitor has the
+                same need, the website provides different ways to work with time.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                The project also aims to be honest about what a browser timer can and
+                cannot do. A web timer can be convenient for ordinary activities, but it
+                should not be presented as a certified precision instrument. Browser
+                performance, background tabs, device behavior and operating-system
+                restrictions can affect timing behavior. Explaining these limitations is
+                part of providing a responsible user experience.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-700">
+                In the same way, TimeCounterPro does not claim that a timer will
+                automatically improve productivity, guarantee better exam performance
+                or replace professional advice. The website provides tools; users
+                decide how those tools fit into their own activities and routines.
+              </p>
+
+            </div>
+
+            {/* REAL-WORLD VALUE */}
+
+            <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+
+              <h3 className="text-xl font-bold text-slate-950">
+                How TimeCounterPro Can Fit Into Everyday Life
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                A useful timing tool can become part of many small everyday routines.
+                Someone preparing breakfast may use a countdown while cooking. A
+                student may use a twenty-five-minute focus session before taking a
+                break. A developer may set a work interval while solving a programming
+                problem. A speaker may rehearse a presentation several times to
+                understand its actual duration. A remote worker may check the current
+                time in another country before scheduling a meeting.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                These are simple examples, but they represent the practical role that
+                timing tools can play. The purpose of TimeCounterPro is to make these
+                small timing tasks easier to perform without requiring a complicated
+                workflow.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Because different people have different routines, the project continues
+                to develop different tools instead of assuming that one timer can serve
+                every situation equally well.
+              </p>
+
+            </div>
+
+            {/* WHAT WE DO NOT CLAIM — YELLOW CONTAINER */}
+
+            <div className="mt-8 rounded-2xl border-l-4 border-amber-400 bg-amber-50 p-6 sm:p-8">
+
+              <h3 className="text-xl font-bold text-amber-950">
+                What TimeCounterPro Does Not Claim
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-amber-900">
+                Being transparent about limitations is an important part of the
+                project's purpose. TimeCounterPro does not claim to be a replacement
+                for certified timing equipment, professional medical services,
+                specialized industrial systems or regulated timing equipment.
+              </p>
+
+              <ul className="mt-4 space-y-2 text-sm leading-6 text-amber-900">
+
+                <li>• It is not a certified precision timing instrument.</li>
+
+                <li>• It does not provide medical diagnosis or treatment.</li>
+
+                <li>• It does not guarantee that a user will become more productive.</li>
+
+                <li>
+                  • It does not guarantee a particular academic, fitness or professional
+                  result.
+                </li>
+
+                <li>
+                  • It should not be the only timing source for safety-critical
+                  activities.
+                </li>
+
+                <li>
+                  • Third-party services used by the website operate under their own
+                  policies.
+                </li>
+
+              </ul>
+
+            </div>
+
+            {/* LONG-TERM PURPOSE */}
+
+            <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+
+              <h3 className="text-xl font-bold text-slate-950">
+                Our Long-Term Purpose
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                The long-term purpose of TimeCounterPro is to build a useful collection
+                of dependable web-based timing utilities that people can return to when
+                they need them. That means improving existing tools instead of simply
+                creating more pages, fixing problems when they are discovered, making
+                interfaces easier to understand and adding features only when they
+                provide meaningful value.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                A growing website is not useful simply because it has more URLs. The
+                more important question is whether each page helps a real person
+                accomplish something. TimeCounterPro therefore aims to focus on
+                practical tools and useful explanations rather than creating unnecessary
+                variations of the same functionality.
+              </p>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                As the project develops, user feedback, technical improvements and
+                changing web standards can influence how the tools are designed. The
+                objective remains the same: provide clear, practical and accessible
+                ways to work with time through the web.
+              </p>
+
+            </div>
+
+          </section>
+
+          {/* FINAL */}
+
+          <footer className="mt-12 border-t border-slate-200 pt-6">
+
+            <p className="text-xs leading-5 text-slate-500">
+              TimeCounterPro is a browser-based timing utility project created
+              to make everyday time measurement, countdowns, focused sessions
+              and time-zone comparison more accessible from the web.
+            </p>
+
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              Last reviewed: September 28, 2026
+            </p>
+
           </footer>
+
         </article>
       </main>
     </>

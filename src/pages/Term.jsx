@@ -1,312 +1,296 @@
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { 
-  FiFileText, FiCheckCircle, FiAlertCircle, FiShield, 
-  FiUserX, FiMail, FiLock, FiInfo, FiExternalLink
-} from 'react-icons/fi';
+import React from "react";
+import { Helmet } from "react-helmet-async";
 
-function Terms() {
+const SITE_URL = "https://timecounterpro.com";
+const CONTACT_EMAIL = "timecounterpro@gmail.com";
+
+function Term() {
   return (
     <>
       <Helmet>
         <title>Terms of Service | TimeCounterPro</title>
-        <meta name="description" content="Read the TimeCounterPro Terms of Service for using our online countdown, Pomodoro and stopwatch tools." />
-        <link rel="canonical" href="https://timecounterpro.com/terms" />
+        <meta
+          name="description"
+          content="Read the TimeCounterPro Terms of Service covering acceptable use, website availability, intellectual property, advertising and limitations."
+        />
+        <link rel="canonical" href={`${SITE_URL}/terms`} />
+        <meta name="robots" content="index,follow" />
       </Helmet>
 
-      <div className="min-h-screen bg-slate-50 w-full">
+      <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+        <article className="mx-auto max-w-4xl">
 
-        {/* Header */}
-        <div className="text-center py-6 sm:py-10 px-4">
-          <div className="inline-flex items-center justify-center p-3 sm:p-4 bg-indigo-50 border border-indigo-100 mb-4 shadow-sm">
-            <FiFileText size={32} className="text-indigo-600 sm:w-10 sm:h-10" />
+          <header className="mb-10">
+            <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
+              Legal Information
+            </p>
+
+            <h1 className="mt-2 text-4xl font-bold text-slate-900">
+              Terms of Service
+            </h1>
+
+            <p className="mt-4 leading-7 text-slate-600">
+              These Terms of Service explain the conditions for using
+              TimeCounterPro and its browser-based timing tools.
+            </p>
+
+            <p className="mt-3 text-sm text-slate-500">
+              Last updated: September 28, 2026
+            </p>
+          </header>
+
+          <div className="space-y-6">
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                1. Acceptance of These Terms
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                By accessing or using TimeCounterPro, you agree to follow
+                these Terms of Service. If you do not agree with these terms,
+                please do not use the website.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                2. About the Service
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                TimeCounterPro provides browser-based timing utilities such as
+                countdown timers, Pomodoro timers, stopwatches, world clocks,
+                interval timers and other timing-related tools.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                The tools are provided for general informational,
+                productivity, educational, entertainment and timing purposes.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                3. No Account Required
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Normal use of TimeCounterPro does not require registration,
+                login or a user account.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Some preferences or timer settings may be stored locally in
+                your browser.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                4. Acceptable Use
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                You agree to use the website in a lawful and reasonable manner.
+              </p>
+
+              <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-600 leading-7">
+                <li>Do not attempt to damage or disrupt the website.</li>
+                <li>Do not attempt to gain unauthorized access to systems.</li>
+                <li>Do not use automated methods to abuse the service.</li>
+                <li>Do not interfere with website security.</li>
+                <li>Do not use the website for unlawful activities.</li>
+                <li>Do not intentionally generate fraudulent advertising activity.</li>
+              </ul>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                5. Timer Accuracy and Limitations
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                TimeCounterPro is a browser-based timing service. Timer
+                behavior can be affected by browser performance, device
+                performance, background tabs, operating-system restrictions,
+                power-saving features and other technical conditions.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Therefore, TimeCounterPro should not be treated as a certified
+                precision timing instrument.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                For safety-critical, medical, laboratory, industrial,
+                professional competition or legally regulated timing
+                requirements, use equipment and procedures specifically
+                designed and certified for that purpose.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                6. Health and Fitness Information
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Some tools may be useful for exercise intervals or fasting
+                duration tracking. These tools are timing utilities only.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                TimeCounterPro does not provide medical diagnosis, treatment,
+                medical supervision or individualized medical advice.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Consult an appropriately qualified healthcare professional
+                before making health-related decisions.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                7. Availability and Changes
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                We aim to keep TimeCounterPro available and useful, but we do
+                not guarantee uninterrupted operation.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                We may modify, improve, remove or temporarily disable a tool,
+                page or feature when necessary.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                8. Intellectual Property
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Unless otherwise stated, the TimeCounterPro website,
+                original interface design, written content, branding and
+                original application code are protected by applicable
+                intellectual-property laws.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                You may use the website for normal personal or professional
+                purposes, but you may not copy, reproduce, republish or
+                redistribute substantial portions of the website without
+                appropriate permission.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                9. Third-Party Services and Advertising
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                TimeCounterPro may use third-party services such as hosting,
+                analytics, advertising and externally hosted resources.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Third-party services operate according to their own terms and
+                privacy policies. TimeCounterPro is not responsible for the
+                independent practices of third-party providers.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Advertising may be displayed through Google AdSense or other
+                authorized advertising technology where applicable.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                10. External Links
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                TimeCounterPro may contain links to third-party websites.
+                These links are provided for convenience or additional
+                information.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                We do not control third-party websites and are not responsible
+                for their content, availability, security or privacy practices.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                11. Disclaimer
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                TimeCounterPro is provided on an "as available" and
+                "as is" basis to the extent permitted by applicable law.
+              </p>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                We make reasonable efforts to maintain accurate and useful
+                tools, but we do not guarantee that every feature will always
+                be error-free, uninterrupted or suitable for every purpose.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                12. Limitation of Liability
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                To the extent permitted by applicable law, TimeCounterPro and
+                its operators shall not be responsible for losses arising from
+                reliance on a browser-based timer, temporary website
+                unavailability, device or browser problems, or third-party
+                services.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                13. Changes to These Terms
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                These Terms may be updated when the service, features or legal
+                requirements change. The latest version will always be
+                published on this page.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6">
+              <h2 className="text-2xl font-bold text-slate-900">
+                14. Contact
+              </h2>
+
+              <p className="mt-3 leading-7 text-slate-600">
+                Questions about these Terms can be sent to:
+              </p>
+
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="mt-3 inline-block font-semibold text-indigo-600 hover:text-indigo-700"
+              >
+                {CONTACT_EMAIL}
+              </a>
+            </section>
+
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-800">
-            Terms & Conditions
-          </h1>
-          <p className="text-slate-500 mt-2 text-xs sm:text-sm">
-            Last Updated: {new Date().toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
-          <p className="text-slate-400 text-[10px] sm:text-xs mt-1">
-            Effective from: {new Date().toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
-        </div>
-
-        <div className="space-y-3 sm:space-y-4">
-
-          {/* Section 1 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-indigo-50 border border-indigo-100 flex-shrink-0">
-                <FiCheckCircle size={18} className="text-indigo-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">1. Acceptance of Terms</h2>
-                <p className="text-slate-600 leading-relaxed text-sm">
-                  By accessing or using TimeCounterPro, you agree to be bound by these Terms & Conditions. 
-                  If you do not agree to these terms, please do not use our website or services.
-                </p>
-                <p className="text-slate-500 text-sm mt-2">
-                  These terms apply to all visitors, users, and others who access or use the service.
-                </p>
-                <div className="mt-3 flex items-start gap-2 p-3 bg-indigo-50 border border-indigo-200">
-                  <FiInfo size={14} className="text-indigo-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-indigo-700 text-xs">
-                    <span className="font-semibold">Important:</span> By using this service, you confirm that you have 
-                    read, understood, and agree to these terms.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 2 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-blue-50 border border-blue-100 flex-shrink-0">
-                <FiShield size={18} className="text-blue-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">2. Use of Service</h2>
-                <p className="text-slate-600 text-sm mb-3">
-                  By using TimeCounterPro, you agree to the following conditions:
-                </p>
-                <ul className="text-slate-600 space-y-1.5 list-disc pl-5 text-sm">
-                  <li>You must be at least 13 years old to use this service</li>
-                  <li>You agree not to misuse, abuse, or exploit the service</li>
-                  <li>All countdowns and data are stored locally in your browser</li>
-                  <li>We reserve the right to modify, suspend, or discontinue the service at any time</li>
-                  <li>You are responsible for maintaining the security of your device</li>
-                </ul>
-                <div className="mt-3 p-3 bg-amber-50 border border-amber-200">
-                  <p className="text-amber-700 text-xs flex items-start gap-2">
-                    <FiAlertCircle size={14} className="flex-shrink-0 mt-0.5" />
-                    <span>
-                      <span className="font-semibold">Data Storage:</span> All timers and countdowns are stored locally 
-                      on your device. We do not store your data on our servers.
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 3 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-emerald-50 border border-emerald-100 flex-shrink-0">
-                <FiLock size={18} className="text-emerald-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">3. User Responsibilities</h2>
-                <p className="text-slate-600 text-sm mb-3">As a user of TimeCounterPro, you are responsible for:</p>
-                <ul className="text-slate-600 space-y-1.5 list-disc pl-5 text-sm">
-                  <li>Ensuring the accuracy of your timer and countdown settings</li>
-                  <li>Maintaining the confidentiality of your device and browser</li>
-                  <li>Using the service in compliance with all applicable laws</li>
-                  <li>Not interfering with or disrupting the service</li>
-                  <li>Reporting any issues or bugs to us</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 4 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-rose-50 border border-rose-100 flex-shrink-0">
-                <FiUserX size={18} className="text-rose-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">4. Prohibited Activities</h2>
-                <p className="text-slate-600 text-sm mb-3">The following activities are strictly prohibited:</p>
-                <ul className="text-slate-600 space-y-1.5 list-disc pl-5 text-sm">
-                  <li><span className="font-medium">Click Fraud:</span> Clicking your own ads or engaging in fraudulent activity</li>
-                  <li><span className="font-medium">Automated Access:</span> Using bots, crawlers, or automated scripts</li>
-                  <li><span className="font-medium">Security Violations:</span> Attempting to hack, disrupt, or compromise the service</li>
-                  <li><span className="font-medium">Misuse:</span> Using the countdown functionality for illegal purposes</li>
-                  <li><span className="font-medium">Content Abuse:</span> Creating offensive or inappropriate timer names</li>
-                  <li><span className="font-medium">Service Interference:</span> Overloading or disrupting the service</li>
-                </ul>
-                <div className="mt-3 p-3 bg-rose-50 border border-rose-200">
-                  <p className="text-rose-700 text-xs flex items-start gap-2">
-                    <FiAlertCircle size={14} className="flex-shrink-0 mt-0.5" />
-                    <span>
-                      <span className="font-semibold">Violation:</span> Any violation of these prohibited activities may 
-                      result in immediate termination of access to the service.
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 5 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-purple-50 border border-purple-100 flex-shrink-0">
-                <FiFileText size={18} className="text-purple-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">5. Intellectual Property</h2>
-                <p className="text-slate-600 text-sm">
-                  All content, features, and functionality on TimeCounterPro are owned by us and are protected by 
-                  copyright, trademark, and other intellectual property laws.
-                </p>
-                <ul className="text-slate-600 space-y-1.5 list-disc pl-5 text-sm mt-3">
-                  <li>You may not copy, modify, or distribute our content without permission</li>
-                  <li>All timers and countdowns created by you remain your property</li>
-                  <li>We reserve all rights not expressly granted</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 6 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-amber-50 border border-amber-100 flex-shrink-0">
-                <FiAlertCircle size={18} className="text-amber-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">6. Disclaimer of Warranties</h2>
-                <p className="text-slate-600 leading-relaxed text-sm">
-                  TimeCounterPro is provided on an "as is" and "as available" basis without any warranties of any kind.
-                </p>
-                <ul className="text-slate-600 space-y-1.5 list-disc pl-5 text-sm mt-3">
-                  <li>We do not warrant that the service will be uninterrupted or error-free</li>
-                  <li>We are not responsible for any data loss or damages</li>
-                  <li>All data is stored locally on your device</li>
-                  <li>We make no guarantees about the accuracy of timers</li>
-                  <li>Use of the service is at your own risk</li>
-                </ul>
-                <div className="mt-3 p-3 bg-amber-50 border border-amber-200">
-                  <p className="text-amber-700 text-xs flex items-start gap-2">
-                    <FiInfo size={14} className="flex-shrink-0 mt-0.5" />
-                    <span>
-                      <span className="font-semibold">Important:</span> We are not liable for any loss or damage 
-                      arising from your use of the service.
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 7 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-slate-50 border border-slate-200 flex-shrink-0">
-                <FiShield size={18} className="text-slate-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">7. Limitation of Liability</h2>
-                <p className="text-slate-600 leading-relaxed text-sm">
-                  To the maximum extent permitted by law, TimeCounterPro and its affiliates shall not be liable for any 
-                  indirect, incidental, special, consequential, or punitive damages.
-                </p>
-                <ul className="text-slate-600 space-y-1.5 list-disc pl-5 text-sm mt-3">
-                  <li>Loss of data or content</li>
-                  <li>Loss of profits or business</li>
-                  <li>Service interruptions or downtime</li>
-                  <li>Any other damages arising from your use of the service</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 8 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-teal-50 border border-teal-100 flex-shrink-0">
-                <FiCheckCircle size={18} className="text-teal-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">8. Termination</h2>
-                <p className="text-slate-600 leading-relaxed text-sm">
-                  We reserve the right to terminate or suspend your access to the service at any time, 
-                  without prior notice, for any reason, including but not limited to:
-                </p>
-                <ul className="text-slate-600 space-y-1.5 list-disc pl-5 text-sm mt-3">
-                  <li>Violation of these Terms & Conditions</li>
-                  <li>Engaging in prohibited activities</li>
-                  <li>Misuse or abuse of the service</li>
-                  <li>At our sole discretion</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 9 */}
-          <div className="bg-white border-y border-slate-200 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-indigo-50 border border-indigo-100 flex-shrink-0">
-                <FiExternalLink size={18} className="text-indigo-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">9. Governing Law</h2>
-                <p className="text-slate-600 leading-relaxed text-sm">
-                  These Terms & Conditions are governed by the applicable laws and regulations that apply to the service and your use of it.
-                </p>
-                <p className="text-slate-500 text-sm mt-2">
-                  Any dispute will be handled through the appropriate legal process and jurisdiction required by applicable law.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 10 */}
-          <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border-y border-indigo-100 p-4 sm:p-6">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="p-2 bg-white border border-indigo-200 flex-shrink-0">
-                <FiMail size={18} className="text-indigo-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-2">10. Contact Us</h2>
-                <p className="text-slate-600 text-sm">
-                  If you have any questions about these Terms & Conditions, please contact us:
-                </p>
-                <div className="mt-3 p-3 bg-white border border-indigo-200 inline-block max-w-full">
-                  <a 
-                    href="mailto:timecounterpro@gmail.com" 
-                    className="text-indigo-600 hover:text-indigo-700 font-medium text-xs sm:text-sm flex items-center gap-2 break-all"
-                  >
-                    <FiMail size={14} className="flex-shrink-0" />
-                    timecounterpro@gmail.com
-                  </a>
-                </div>
-                <p className="text-slate-400 text-xs mt-3">
-                  We aim to respond to all inquiries within 48 hours.
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center text-[10px] text-slate-400 border-t border-slate-200 pt-4 pb-6 px-4">
-          <p>TimeCounterPro · Terms & Conditions</p>
-          <p className="mt-1 flex flex-wrap justify-center items-center gap-x-2 gap-y-1">
-            <a href="/" className="hover:text-slate-600 transition-colors">Home</a>
-            <span>·</span>
-            <a href="/privacy" className="hover:text-slate-600 transition-colors">Privacy Policy</a>
-            <span>·</span>
-            <a href="/terms" className="hover:text-slate-600 transition-colors">Terms & Conditions</a>
-          </p>
-        </div>
-
-      </div>
+        </article>
+      </main>
     </>
   );
 }
 
-export default Terms;
+export default Term;
