@@ -326,7 +326,7 @@ const Birat = () => {
               </div>
             </div>
 
-            {/* Card 2: Top Performers */}
+            {/* Card 2: Top Performers (Cricket Only) */}
             <div className="bg-[#111820] rounded-xl border border-gray-800/60 p-4">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
@@ -339,10 +339,10 @@ const Birat = () => {
 
               <div className="space-y-3">
                 {[
-                  { name: 'Virat Kohli', role: 'Cricket · IND', stat: '81 100s', color: '#00e676' },
-                  { name: 'Kyren Williams', role: 'NFL · Rams RB', stat: '1,144 Yds', color: '#00b0ff' },
-                  { name: 'Patrick Surtain II', role: 'NFL · Broncos CB', stat: '4 INTs', color: '#00e676' },
-                  { name: 'Jaylen Waddle', role: 'NFL · Dolphins WR', stat: '1,014 Yds', color: '#ff9100' },
+                  { name: 'Virat Kohli', role: 'Batter · IND', stat: '81 100s', color: '#00e676' },
+                  { name: 'Rohit Sharma', role: 'Batter · IND', stat: '48 100s', color: '#00b0ff' },
+                  { name: 'Keacy Carty', role: 'Batter · WI', stat: 'In Form', color: '#ff9100' },
+                  { name: 'Roston Chase', role: 'All-rounder · WI', stat: 'In Form', color: '#00e676' },
                 ].map((p, i) => (
                   <div key={i} className="flex items-center gap-3 group cursor-pointer">
                     <div
@@ -398,7 +398,7 @@ const Birat = () => {
               </div>
             </div>
 
-            {/* Card 4: Quick Facts */}
+            {/* Card 4: Quick Facts (Cricket Only) */}
             <div className="bg-gradient-to-br from-green-500/10 to-transparent rounded-xl border border-green-500/20 p-4">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-green-400">⚡</span>
@@ -422,7 +422,7 @@ const Birat = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">▸</span>
-                  <span>Rams lead Broncos all-time: <strong className="text-white">9-6</strong></span>
+                  <span>Most Test 100s: <strong className="text-white">Sachin (51)</strong></span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">▸</span>
@@ -431,15 +431,15 @@ const Birat = () => {
               </ul>
             </div>
 
-            {/* Trending Tags */}
+            {/* Trending Tags (Cricket Only) */}
             <div className="bg-[#111820] rounded-xl border border-gray-800/60 p-4">
               <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-2">Trending Now</p>
               <div className="flex flex-wrap gap-1.5">
                 {[
-                  'Rams vs Broncos', 'IND vs WI', 'Kohli Centuries',
-                  'Sunday Night Football', 'Toss Time', 'Kyren Williams',
-                  'Patrick Surtain II', 'Live Score', 'Sachin Tendulkar',
-                  'Lakers Celtics', 'NBA Tonight', 'Guwahati ODI',
+                  'IND vs WI', 'Kohli Centuries', 'Toss Time',
+                  'Live Score', 'Sachin Tendulkar', 'Guwahati ODI',
+                  'India vs West Indies', 'Rohit Sharma', 'Roston Chase',
+                  'Keacy Carty', 'Total Centuries', 'IND vs WI Schedule',
                 ].map((tag) => (
                   <span
                     key={tag}
@@ -500,12 +500,7 @@ const Birat = () => {
               A deep dive into the King's century journey, career numbers, the complete 3-ODI & 5-T20I schedule, and what to expect when India faces West Indies this October.
             </p>
 
-            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-4 pb-6 sm:pb-8 mb-8 sm:mb-10 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-               
-              </div>
-            </div>
-
+            
             <figure className="mb-8 sm:mb-10">
               <img
                 src={virat}
@@ -629,11 +624,11 @@ const Birat = () => {
               </div>
 
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 pt-5 sm:pt-6 tracking-tight">
-                NFL & NBA Highlights This Week
+                Other Cricket Series to Watch
               </h2>
 
               <p>
-                Sports fans have plenty to look forward to beyond cricket. The NFL is heating up with the <strong className="text-gray-900">Rams taking on the Broncos</strong> at SoFi Stadium — a Sunday Night Football thriller with <strong className="text-gray-900">Kyren Williams</strong> and <strong className="text-gray-900">Patrick Surtain II</strong> in action. And the <strong className="text-gray-900">Lakers vs Celtics NBA</strong> rivalry continues — as old as the league itself.
+                Beyond the IND vs WI series, cricket fans have plenty to look forward to this season. The Border-Gavaskar Trophy, the Ashes, and the ICC Champions Trophy are all lined up in the coming months. With players like <strong className="text-gray-900">Rohit Sharma</strong>, <strong className="text-gray-900">Steve Smith</strong>, and <strong className="text-gray-900">Joe Root</strong> in action, it's going to be a packed cricket calendar.
               </p>
 
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 pt-5 sm:pt-6 tracking-tight">
@@ -657,8 +652,8 @@ const Birat = () => {
                   { q: "How many international centuries does Virat Kohli have?", a: "Virat Kohli currently has 81 international centuries — 29 in Tests, 50 in ODIs, and 2 in T20Is. He holds the record for most ODI centuries." },
                   { q: "When does IND vs WI 2026 series start?", a: "The series starts on September 27, 2026 with the 1st ODI at Thiruvananthapuram. It ends on October 17 with the 5th T20I in Bengaluru." },
                   { q: "How many matches in IND vs WI 2026?", a: "There are 8 matches total — 3 ODIs and 5 T20Is, spread across September 27 to October 17, 2026." },
-                  { q: "When is the Rams vs Broncos NFL game?", a: "The Rams vs Broncos Sunday Night Football game will be played at SoFi Stadium. Kickoff is scheduled for 8:20 PM ET." },
-                  { q: "Who has the most ODI centuries — Kohli or Sachin?", a: "Virat Kohli has the most ODI centuries with 50, surpassing Sachin Tendulkar's 49. Sachin still holds the overall record with 100 international centuries." }
+                  { q: "Who has the most centuries in ODI cricket?", a: "Virat Kohli holds the record for most ODI centuries with 50, surpassing Sachin Tendulkar's 49." },
+                  { q: "Who has the most international centuries overall?", a: "Sachin Tendulkar holds the overall record with 100 international centuries. Virat Kohli is second with 81." }
                 ].map((faq, i) => (
                   <details key={i} className="group bg-gray-50 rounded-xl p-4 sm:p-5 cursor-pointer hover:bg-gray-100 transition">
                     <summary className="font-bold text-sm sm:text-base text-gray-900 list-none flex items-center justify-between gap-3">
@@ -671,16 +666,16 @@ const Birat = () => {
               </div>
             </div>
 
-            {/* Tags */}
+            {/* Tags (Cricket Only) */}
             <div className="mt-10 sm:mt-14 pt-6 sm:pt-8 border-t border-gray-200">
               <p className="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Related Topics</p>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {[
-                  'Virat Kohli', 'IND vs WI', 'Rams vs Broncos', 'Sunday Night Football',
-                  'Kohli Centuries', 'Kyren Williams', 'Patrick Surtain II', 'Jaylen Waddle',
+                  'Virat Kohli', 'IND vs WI', 'Kohli Centuries', 'Rohit Sharma',
                   'Live Score', 'Sachin Tendulkar', 'Thiruvananthapuram', 'Toss Time',
-                  'India vs West Indies', 'NFL Tonight', 'Total Centuries',
-                  'IND vs WI Schedule', 'Guwahati ODI', 'New Chandigarh'
+                  'India vs West Indies', 'Total Centuries', 'IND vs WI Schedule',
+                  'Guwahati ODI', 'New Chandigarh', 'Keacy Carty', 'Roston Chase',
+                  'Cricket Schedule 2026', 'Most ODI Runs', 'Test Cricket'
                 ].map((tag) => (
                   <span key={tag} className="text-xs sm:text-sm text-gray-700 bg-gray-100 hover:bg-green-100 hover:text-green-700 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition cursor-pointer border border-gray-200">
                     #{tag}
@@ -688,8 +683,10 @@ const Birat = () => {
                 ))}
               </div>
             </div>
+
           </div>
         </section>
+
       </div>
 
       <Footer />

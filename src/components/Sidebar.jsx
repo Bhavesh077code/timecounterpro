@@ -19,6 +19,7 @@ const SECTIONS = [
     title: "Timers",
     hint: "T01–T05",
     items: [
+      { to: "/time-card-calculator-online", code: "T01", label: "Card Calculator" },
       { to: "/hiit-timer", code: "T01", label: "HIIT / Tabata" },
       { to: "/stream-timer",     code: "T02", label: "stream-overlay" },
       { to: "/jungle-timer",  code: "T03", label: "Esports Jungle" },

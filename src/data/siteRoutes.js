@@ -218,6 +218,15 @@ export const staticRoutes = [
     priority: "1.0",
     changefreq: "always"
   },
+  {
+    path: "/time-card-calculator-online",
+    title: "Free Online Time Card Calculator - Employee Hours & Timesheet Clock",
+    description: "Free online time card calculator to track daily employee hours. Accurate timesheet calculator with breaks, clock in clock out logs, and automatic overtime calculation for payroll management.",
+    priority: "0.9",
+    changefreq: "weekly"
+
+  },
+
 ];
 
 export const routeCategories = {
@@ -226,7 +235,7 @@ export const routeCategories = {
   fitness: ["/hiit-timer", "/fasting-tracker-timer"],
   gaming: ["/jungle-timer", "/online-rubiks-cube-stopwatch-with-milliseconds", "/gameplay-timer"],
   streaming: ["/stream-timer"],
-  professional: ["/presentation-timer", "/world-clock-board-timer"],
+  professional: ["/presentation-timer", "/world-clock-board-timer", "/time-card-calculator-online"],
   info: ["/about", "/contact", "/privacy", "/terms"],
   animation: ["/focus-timer-plant-growing-animation-10-minutes", "/orbital-launch-focus-timer"],
   cricket: ["/virat-kohli-century-tracker-live-countdown"],

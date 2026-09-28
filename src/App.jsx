@@ -44,6 +44,7 @@ import MeditationTimer from "./Tools/MeditationTimer";
 import Animation from "./Tools/Animation";
 import Animation2 from "./Tools/Animation2";
 import Birat from "./Tools/Birat";
+import TimeCardCalculator from "./Tools/TimeCardCalculator";
 
 function SharedCountdownWrapper() {
   const { shareData, setShareData } = useContext(TimerContext);
@@ -113,6 +114,8 @@ const router = createBrowserRouter([
   { path: "/orbital-launch-focus-timer", element: <Animation2 /> },
 
   { path: "/virat-kohli-century-tracker-live-countdown", element: <Birat /> },
+
+  { path: "/time-card-calculator-online", element: <TimeCardCalculator /> },
 
   { path: "*", element: withLayout(<NotFound />) },
 ]);
