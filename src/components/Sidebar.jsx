@@ -8,6 +8,14 @@ import { NavLink } from "react-router-dom";
 const SECTIONS = [
   {
     key: "timers",
+    title: "Cricket",
+    hint: "W01–W05",
+    items: [
+    { to: "/virat-kohli-century-tracker-live-countdown", code: "W01", label: "Virat Kohli Timer" },
+    ],
+  },
+  {
+    key: "timers",
     title: "Timers",
     hint: "T01–T05",
     items: [

@@ -211,16 +211,25 @@ export const staticRoutes = [
     priority: "0.9",
     changefreq: "weekly"
   },
+  {
+    path: "/virat-kohli-century-tracker-live-countdown",
+    title: "Virat Kohli Total Centuries Tracker & Next Match Live Countdown",
+    description: "Track Virat Kohli's 81 international centuries, real-time ODI stats, and live match countdown overlays. Fast arcade sports timing engine by TimeCounterPro.",
+    priority: "1.0",
+    changefreq: "always"
+  },
 ];
 
 export const routeCategories = {
   core: ["/", "/create", "/pomodoro", "/meditation-timer-with-sound", "/stopwatch", "/world-clock"],
   study: ["/pomodoro", "/meditation-timer-with-sound", "/mock-test-timer", "/group-study-timer"],
   fitness: ["/hiit-timer", "/fasting-tracker-timer"],
-  gaming: ["/jungle-timer", "/speed-timer", "/gameplay-timer"],
+  gaming: ["/jungle-timer", "/online-rubiks-cube-stopwatch-with-milliseconds", "/gameplay-timer"],
   streaming: ["/stream-timer"],
   professional: ["/presentation-timer", "/world-clock-board-timer"],
   info: ["/about", "/contact", "/privacy", "/terms"],
+  animation: ["/focus-timer-plant-growing-animation-10-minutes", "/orbital-launch-focus-timer"],
+  cricket: ["/virat-kohli-century-tracker-live-countdown"],
 };
 
 export const allRoutes = staticRoutes;

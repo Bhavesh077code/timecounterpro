@@ -122,7 +122,7 @@ function About() {
               <p className="mt-2 text-sm text-slate-600 leading-6">Track game-related timing events during practice and gameplay. It is a general timing utility, not a source of game-policy information.</p>
               <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>
             </Link>
-            <Link to="/speed-timer" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
+            <Link to="/online-rubiks-cube-stopwatch-with-milliseconds" className="group border border-slate-200 rounded-2xl p-5 bg-white hover:border-indigo-300 hover:shadow-sm transition">
               <h3 className="font-bold text-slate-900 group-hover:text-indigo-700">Speedrun Split</h3>
               <p className="mt-2 text-sm text-slate-600 leading-6">Measure elapsed attempts and splits when practicing routes or comparing personal runs.</p>
               <span className="inline-block mt-4 text-sm font-semibold text-indigo-600">Open tool →</span>

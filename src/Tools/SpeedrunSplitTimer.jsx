@@ -1,944 +1,884 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Layout/Footer';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Layout/Footer";
 
 // ============================================
-// DEFAULT BASELINE SPLITS (for comparison)
-// Each segment has a baseline time in milliseconds
+// RUBIK'S CUBE STOPWATCH WITH MILLISECONDS
 // ============================================
-const DEFAULT_BASELINE = [
-  { id: 1, name: 'Prologue', baseline: 45000 },
-  { id: 2, name: 'Forest Temple', baseline: 132000 },
-  { id: 3, name: 'Water Temple', baseline: 210000 },
-  { id: 4, name: 'Fire Temple', baseline: 178000 },
-  { id: 5, name: 'Shadow Temple', baseline: 165000 },
-  { id: 6, name: 'Final Boss', baseline: 240000 },
-];
 
-const SpeedrunSplitTimer = () => {
-  // --- State ---
+const RubiksCubeStopwatch = () => {
   const [isRunning, setIsRunning] = useState(false);
-  const [elapsed, setElapsed] = useState(0); // milliseconds
-  const [splits, setSplits] = useState([]); // { id, name, time, delta, splitTotal }
-  const [currentSplitIndex, setCurrentSplitIndex] = useState(0);
-  const [baseline, setBaseline] = useState(DEFAULT_BASELINE);
+  const [elapsed, setElapsed] = useState(0); // ms
+  const [solves, setSolves] = useState([]); // { id, time, scramble }
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showEditor, setShowEditor] = useState(false);
+  const [inspection, setInspection] = useState(false);
+  const [inspectionLeft, setInspectionLeft] = useState(15); // seconds
+  const [penalty, setPenalty] = useState(null); // null | '+2' | 'DNF'
+  const [scramble, setScramble] = useState("");
 
   const rafRef = useRef(null);
   const startTimeRef = useRef(null);
-  const lastSplitTimeRef = useRef(0);
   const pageRef = useRef(null);
-  const splitListRef = useRef(null);
+  const solveListRef = useRef(null);
 
-  // --- Format time as MM:SS.mmm ---
+  // ---------- Scramble generator (3x3 WCA-ish) ----------
+  const FACES = ["R", "L", "U", "D", "F", "B"];
+  const MODS = ["", "'", "2"];
+
+  const generateScramble = useCallback(() => {
+    const moves = [];
+    let lastFace = "";
+    let secondLastFace = "";
+    for (let i = 0; i < 20; i++) {
+      let face;
+      do {
+        face = FACES[Math.floor(Math.random() * FACES.length)];
+      } while (
+        face === lastFace ||
+        (face === secondLastFace && isOpposite(face, lastFace))
+      );
+      const mod = MODS[Math.floor(Math.random() * MODS.length)];
+      moves.push(face + mod);
+      secondLastFace = lastFace;
+      lastFace = face;
+    }
+    return moves.join(" ");
+  }, []);
+
+  const isOpposite = (a, b) => {
+    const pairs = { R: "L", L: "R", U: "D", D: "U", F: "B", B: "F" };
+    return pairs[a] === b;
+  };
+
+  useEffect(() => {
+    setScramble(generateScramble());
+  }, [generateScramble]);
+
+  // ---------- Format ----------
   const formatTime = useCallback((ms) => {
     if (ms < 0) ms = 0;
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     const millis = Math.floor(ms % 1000);
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
-      2,
-      '0'
-    )}.${String(millis).padStart(3, '0')}`;
+    if (minutes > 0) {
+      return `${minutes}:${String(seconds).padStart(2, "0")}.${String(
+        millis,
+      ).padStart(3, "0")}`;
+    }
+    return `${seconds}.${String(millis).padStart(3, "0")}`;
   }, []);
 
-  // --- Format delta as +SS.mmm or -SS.mmm ---
-  const formatDelta = useCallback((ms) => {
-    const sign = ms >= 0 ? '+' : '-';
-    const abs = Math.abs(ms);
-    const seconds = Math.floor(abs / 1000);
-    const millis = Math.floor(abs % 1000);
-    return `${sign}${seconds}.${String(millis).padStart(3, '0')}`;
-  }, []);
-
-  // --- High-precision tick using requestAnimationFrame ---
+  // ---------- RAF tick ----------
   useEffect(() => {
     if (!isRunning) return;
-
     const tick = () => {
       if (startTimeRef.current !== null) {
-        const now = performance.now();
-        setElapsed(now - startTimeRef.current);
+        setElapsed(performance.now() - startTimeRef.current);
       }
       rafRef.current = requestAnimationFrame(tick);
     };
-
     rafRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    return () => rafRef.current && cancelAnimationFrame(rafRef.current);
   }, [isRunning]);
 
-  // --- Start / Pause ---
-  const handleStartPause = useCallback(() => {
-    if (isRunning) {
-      // Pause
-      setIsRunning(false);
-    } else {
-      // Start or resume
-      startTimeRef.current = performance.now() - elapsed;
+  // ---------- Inspection countdown ----------
+  useEffect(() => {
+    if (!inspection) return;
+    if (inspectionLeft <= 0) {
+      setInspection(false);
+      // auto-start
+      startTimeRef.current = performance.now();
+      setElapsed(0);
       setIsRunning(true);
+      return;
     }
-  }, [isRunning, elapsed]);
+    const t = setTimeout(() => setInspectionLeft((v) => v - 1), 1000);
+    return () => clearTimeout(t);
+  }, [inspection, inspectionLeft]);
 
-  // --- Split ---
-  const handleSplit = useCallback(() => {
-    if (!isRunning && elapsed === 0) return;
+  // ---------- Start / Stop ----------
+  const startTimer = useCallback(() => {
+    startTimeRef.current = performance.now();
+    setElapsed(0);
+    setPenalty(null);
+    setIsRunning(true);
+  }, []);
 
-    const currentTotal = elapsed;
-    const segmentIndex = currentSplitIndex;
-    const segment = baseline[segmentIndex];
-    const prevTotal = lastSplitTimeRef.current;
-    const segmentTime = currentTotal - prevTotal;
+  const stopTimer = useCallback(() => {
+    if (!isRunning) return;
+    const finalTime = performance.now() - (startTimeRef.current || 0);
+    setElapsed(finalTime);
+    setIsRunning(false);
 
-    // Delta = how much slower/faster than baseline segment
-    const delta = segment ? segmentTime - segment.baseline : 0;
-
-    const newSplit = {
-      id: segment ? segment.id : splits.length + 1,
-      name: segment ? segment.name : `Split ${splits.length + 1}`,
-      time: segmentTime,
-      total: currentTotal,
-      delta: delta,
-      isGold: delta < 0,
-      timestamp: Date.now(),
-    };
-
-    setSplits((prev) => [...prev, newSplit]);
-    lastSplitTimeRef.current = currentTotal;
-    setCurrentSplitIndex((prev) => prev + 1);
-
-    // Auto-scroll split list to bottom
+    const effective = penalty === "+2" ? finalTime + 2000 : finalTime;
+    if (penalty !== "DNF") {
+      const newSolve = {
+        id: Date.now(),
+        time: effective,
+        raw: finalTime,
+        penalty,
+        scramble,
+      };
+      setSolves((prev) => [...prev, newSolve]);
+    }
+    setPenalty(null);
+    setScramble(generateScramble());
     setTimeout(() => {
-      if (splitListRef.current) {
-        splitListRef.current.scrollTop = splitListRef.current.scrollHeight;
+      if (solveListRef.current) {
+        solveListRef.current.scrollTop = solveListRef.current.scrollHeight;
       }
     }, 50);
-  }, [isRunning, elapsed, currentSplitIndex, baseline, splits.length]);
+  }, [isRunning, penalty, scramble, generateScramble]);
 
-  // --- Reset ---
+  // ---------- Reset ----------
   const handleReset = useCallback(() => {
     setIsRunning(false);
     setElapsed(0);
-    setSplits([]);
-    setCurrentSplitIndex(0);
+    setSolves([]);
+    setPenalty(null);
+    setInspection(false);
+    setInspectionLeft(15);
     startTimeRef.current = null;
-    lastSplitTimeRef.current = 0;
-  }, []);
+    setScramble(generateScramble());
+  }, [generateScramble]);
 
-  // --- Fullscreen ---
+  // ---------- Fullscreen ----------
   const toggleFullscreen = useCallback(() => {
     const el = pageRef.current;
     if (!el) return;
-
     if (!document.fullscreenElement) {
-      if (el.requestFullscreen) {
-        el.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
-      } else if (el.webkitRequestFullscreen) {
-        el.webkitRequestFullscreen();
-        setIsFullscreen(true);
-      }
+      (el.requestFullscreen?.() || el.webkitRequestFullscreen?.())?.then?.(() =>
+        setIsFullscreen(true),
+      );
+      setIsFullscreen(true);
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
-      }
+      (
+        document.exitFullscreen?.() || document.webkitExitFullscreen?.()
+      )?.then?.(() => setIsFullscreen(false));
     }
   }, []);
 
   useEffect(() => {
     const handler = () => setIsFullscreen(!!document.fullscreenElement);
-    document.addEventListener('fullscreenchange', handler);
-    document.addEventListener('webkitfullscreenchange', handler);
+    document.addEventListener("fullscreenchange", handler);
+    document.addEventListener("webkitfullscreenchange", handler);
     return () => {
-      document.removeEventListener('fullscreenchange', handler);
-      document.removeEventListener('webkitfullscreenchange', handler);
+      document.removeEventListener("fullscreenchange", handler);
+      document.removeEventListener("webkitfullscreenchange", handler);
     };
   }, []);
 
-  // --- Keyboard shortcuts ---
+  // ---------- Keyboard ----------
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")
+        return;
 
-      // Space → Split (or Start if not running)
-      if (e.code === 'Space') {
+      if (e.code === "Space") {
         e.preventDefault();
-        if (elapsed === 0 && !isRunning) {
-          handleStartPause();
+        if (isRunning) {
+          stopTimer();
+        } else if (elapsed > 0) {
+          startTimer();
         } else {
-          handleSplit();
+          // start inspection
+          setInspection(true);
+          setInspectionLeft(15);
         }
       }
-
-      // Enter → Start/Pause toggle
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         e.preventDefault();
-        handleStartPause();
+        if (isRunning) stopTimer();
+        else startTimer();
       }
-
-      // R → Reset
-      if (e.key === 'r' || e.key === 'R') {
+      if (e.key === "r" || e.key === "R") {
         e.preventDefault();
         handleReset();
       }
-
-      // F → Fullscreen
-      if (e.key === 'f' || e.key === 'F') {
+      if (e.key === "f" || e.key === "F") {
         e.preventDefault();
         toggleFullscreen();
       }
+      if (e.key === "2" && !isRunning) {
+        setPenalty((p) => (p === "+2" ? null : "+2"));
+      }
+      if (e.key === "d" || e.key === "D") {
+        if (!isRunning) setPenalty((p) => (p === "DNF" ? null : "DNF"));
+      }
     };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [elapsed, isRunning, handleStartPause, handleSplit, handleReset, toggleFullscreen]);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [
+    isRunning,
+    elapsed,
+    startTimer,
+    stopTimer,
+    handleReset,
+    toggleFullscreen,
+  ]);
 
-  // --- Computed ---
-  const currentSegment = baseline[currentSplitIndex] || null;
+  // ---------- Stats ----------
+  const validSolves = solves.filter((s) => s.penalty !== "DNF");
+  const best = validSolves.length
+    ? Math.min(...validSolves.map((s) => s.time))
+    : 0;
+  const worst = validSolves.length
+    ? Math.max(...validSolves.map((s) => s.time))
+    : 0;
+  const mean = validSolves.length
+    ? validSolves.reduce((a, s) => a + s.time, 0) / validSolves.length
+    : 0;
 
-  // Total time vs baseline total
-  const baselineTotal = baseline.reduce((acc, s) => acc + s.baseline, 0);
-  const cumulativeDelta =
-    splits.length > 0 ? splits[splits.length - 1].total - baselineTotal : 0;
+  const ao5 = (() => {
+    if (validSolves.length < 5) return null;
+    const last5 = validSolves.slice(-5).map((s) => s.time);
+    const sorted = [...last5].sort((a, b) => a - b);
+    const trimmed = sorted.slice(1, 4);
+    return trimmed.reduce((a, b) => a + b, 0) / 3;
+  })();
 
-  // Best / worst split delta
-  const bestDelta =
-    splits.length > 0 ? Math.min(...splits.map((s) => s.delta)) : 0;
-  const worstDelta =
-    splits.length > 0 ? Math.max(...splits.map((s) => s.delta)) : 0;
+  const ao12 = (() => {
+    if (validSolves.length < 12) return null;
+    const last12 = validSolves.slice(-12).map((s) => s.time);
+    const sorted = [...last12].sort((a, b) => a - b);
+    const trimmed = sorted.slice(1, 11);
+    return trimmed.reduce((a, b) => a + b, 0) / 10;
+  })();
 
   return (
     <div>
-    <div className="min-h-screen bg-[#0d0f12] text-white">
-      {/* Global scrollbar hide */}
-      <style>{`
-        html, body {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        html::-webkit-scrollbar, body::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; width: 0; }
-        .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-      `}</style>
+      <div className="min-h-screen bg-[#0d0f12] text-white">
+        <style>{`
+          html, body { scrollbar-width: none; -ms-overflow-style: none; }
+          html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+          .no-scrollbar::-webkit-scrollbar { display: none; width: 0; }
+          .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+        `}</style>
 
-      {!isFullscreen && <Navbar />}
+        {!isFullscreen && <Navbar />}
 
-      <div
-        ref={pageRef}
-        className="relative w-full no-scrollbar"
-        style={{
-          minHeight: isFullscreen ? '100vh' : 'calc(100vh - 64px)',
-          overflowY: 'auto',
-          background: '#0d0f12',
-        }}
-      >
-        {/* ===== SUBTLE INDUSTRIAL GRID ===== */}
         <div
-          className="fixed inset-0 pointer-events-none opacity-[0.025] z-0"
+          ref={pageRef}
+          className="relative w-full no-scrollbar"
           style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-            backgroundSize: '32px 32px',
+            minHeight: isFullscreen ? "100vh" : "calc(100vh - 64px)",
+            overflowY: "auto",
+            background: "#0d0f12",
           }}
-        ></div>
-
-        {/* ===== FULLSCREEN BUTTON (moved below navbar, larger, black bg) ===== */}
-        {!isFullscreen && (
-          <button
-            onClick={toggleFullscreen}
-            className="fixed top-20 right-4 md:right-8 z-50 w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+        >
+          {/* grid bg */}
+          <div
+            className="fixed inset-0 pointer-events-none opacity-[0.025] z-0"
             style={{
-              background: '#000000',
-              border: '1px solid rgba(255,255,255,0.18)',
-              color: 'rgba(255,255,255,0.9)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,0,0,0.5)',
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
             }}
-            title="Fullscreen (F)"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-            </svg>
-          </button>
-        )}
+          ></div>
 
-        {/* Fullscreen exit button (visible in fullscreen mode) */}
-        {isFullscreen && (
-          <button
-            onClick={toggleFullscreen}
-            className="fixed top-4 right-4 z-50 w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-            style={{
-              background: '#000000',
-              border: '1px solid rgba(255,255,255,0.18)',
-              color: 'rgba(255,255,255,0.9)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.7)',
-            }}
-            title="Exit Fullscreen (F)"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
-            </svg>
-          </button>
-        )}
-
-        <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
-          {/* ===== HEADER ===== */}
-          <div className="mb-6">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-md flex items-center justify-center text-base font-black"
-                style={{
-                  background: 'linear-gradient(135deg, #475569, #1e293b)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  color: '#fbbf24',
-                }}
+          {/* Fullscreen btn */}
+          {!isFullscreen && (
+            <button
+              onClick={toggleFullscreen}
+              className="fixed top-20 right-4 md:right-8 z-50 w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+              style={{
+                background: "#000",
+                border: "1px solid rgba(255,255,255,0.18)",
+                color: "rgba(255,255,255,0.9)",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.7)",
+              }}
+              title="Fullscreen (F)"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                ⏱
-              </div>
-              <div>
-                <p
-                  className="text-[10px] tracking-[0.3em] uppercase font-bold"
-                  style={{ color: 'rgba(255,255,255,0.4)' }}
-                >
-                  Speedrun · Segment Timer
-                </p>
-                <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white">
-                  Split Stopwatch
-                </h1>
-              </div>
-            </div>
-          </div>
-
-          {/* ===== MAIN LAYOUT: Sidebar + Content ===== */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-
-            {/* ===== LEFT SIDEBAR (main timer + controls) ===== */}
-            <div className="lg:col-span-7">
-              {/* MAIN TIMER CARD */}
-              <div
-                className="rounded-lg overflow-hidden"
-                style={{
-                  background: 'linear-gradient(180deg, #14171c 0%, #0f1216 100%)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
-                }}
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+              </svg>
+            </button>
+          )}
+          {isFullscreen && (
+            <button
+              onClick={toggleFullscreen}
+              className="fixed top-4 right-4 z-50 w-12 h-12 rounded-lg flex items-center justify-center"
+              style={{
+                background: "#000",
+                border: "1px solid rgba(255,255,255,0.18)",
+                color: "rgba(255,255,255,0.9)",
+              }}
+              title="Exit Fullscreen (F)"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                {/* Top strip */}
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+              </svg>
+            </button>
+          )}
+
+          <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
+            {/* HEADER */}
+            <div className="mb-6">
+              <div className="flex items-center gap-3">
                 <div
-                  className="px-4 py-2.5 flex items-center justify-between"
+                  className="w-10 h-10 rounded-md flex items-center justify-center text-base font-black"
                   style={{
-                    background: 'rgba(0,0,0,0.3)',
-                    borderBottom: '1px solid rgba(255,255,255,0.06)',
+                    background: "linear-gradient(135deg, #475569, #1e293b)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    color: "#fbbf24",
                   }}
                 >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        isRunning ? 'animate-pulse' : ''
-                      }`}
-                      style={{
-                        background: isRunning ? '#22c55e' : 'rgba(255,255,255,0.2)',
-                        boxShadow: isRunning ? '0 0 8px #22c55e' : 'none',
-                      }}
-                    ></span>
-                    <span
-                      className="text-[10px] tracking-[0.2em] uppercase font-bold"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {isRunning ? 'Running' : elapsed > 0 ? 'Paused' : 'Ready'}
-                    </span>
-                  </div>
-                  <span
-                    className="text-[10px] tracking-[0.2em] uppercase font-bold"
-                    style={{ color: 'rgba(255,255,255,0.35)' }}
-                  >
-                    Split {splits.length} / {baseline.length}
-                  </span>
+                  ⏱
                 </div>
-
-                {/* Timer display */}
-                <div className="px-6 py-8 md:py-10 text-center">
-                  <div
-                    className="font-mono font-bold tabular-nums leading-none"
-                    style={{
-                      fontSize: 'clamp(2.5rem, 9vw, 5.5rem)',
-                      color: '#ffffff',
-                      letterSpacing: '-0.03em',
-                      textShadow: isRunning
-                        ? '0 0 30px rgba(34, 197, 94, 0.3)'
-                        : 'none',
-                    }}
+                <div>
+                  <p
+                    className="text-[10px] tracking-[0.3em] uppercase font-bold"
+                    style={{ color: "rgba(255,255,255,0.4)" }}
                   >
-                    {formatTime(elapsed)}
-                  </div>
-
-                  {/* Cumulative delta below timer */}
-                  {splits.length > 0 && (
-                    <div className="mt-4 flex items-center justify-center gap-4">
-                      <div className="text-center">
-                        <p
-                          className="text-[9px] tracking-[0.2em] uppercase font-bold mb-0.5"
-                          style={{ color: 'rgba(255,255,255,0.35)' }}
-                        >
-                          vs Baseline
-                        </p>
-                        <p
-                          className="text-lg md:text-xl font-bold tabular-nums"
-                          style={{
-                            color:
-                              cumulativeDelta <= 0 ? '#22c55e' : '#ef4444',
-                          }}
-                        >
-                          {formatDelta(cumulativeDelta)}
-                        </p>
-                      </div>
-                      {bestDelta < 0 && (
-                        <div className="text-center">
-                          <p
-                            className="text-[9px] tracking-[0.2em] uppercase font-bold mb-0.5"
-                            style={{ color: 'rgba(255,255,255,0.35)' }}
-                          >
-                            Best
-                          </p>
-                          <p
-                            className="text-lg md:text-xl font-bold tabular-nums"
-                            style={{ color: '#22c55e' }}
-                          >
-                            {formatDelta(bestDelta)}
-                          </p>
-                        </div>
-                      )}
-                      {worstDelta > 0 && (
-                        <div className="text-center">
-                          <p
-                            className="text-[9px] tracking-[0.2em] uppercase font-bold mb-0.5"
-                            style={{ color: 'rgba(255,255,255,0.35)' }}
-                          >
-                            Worst
-                          </p>
-                          <p
-                            className="text-lg md:text-xl font-bold tabular-nums"
-                            style={{ color: '#ef4444' }}
-                          >
-                            {formatDelta(worstDelta)}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                    Rubik's Cube · Online Timer
+                  </p>
+                  <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white">
+                    Speedcube Stopwatch with Milliseconds
+                  </h1>
                 </div>
+              </div>
+            </div>
 
-                {/* Next segment indicator */}
-                {currentSegment && (
+            {/* MAIN GRID */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+              {/* LEFT: timer */}
+              <div className="lg:col-span-7">
+                <div
+                  className="rounded-lg overflow-hidden"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, #14171c 0%, #0f1216 100%)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  {/* top strip */}
                   <div
-                    className="px-6 py-3 flex items-center justify-between"
+                    className="px-4 py-2.5 flex items-center justify-between"
                     style={{
-                      background: 'rgba(251, 191, 36, 0.05)',
-                      borderTop: '1px solid rgba(251, 191, 36, 0.15)',
-                      borderBottom: '1px solid rgba(255,255,255,0.06)',
+                      background: "rgba(0,0,0,0.3)",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
                     }}
                   >
                     <div className="flex items-center gap-2">
                       <span
+                        className={`w-2 h-2 rounded-full ${isRunning ? "animate-pulse" : ""}`}
+                        style={{
+                          background: isRunning
+                            ? "#22c55e"
+                            : inspection
+                              ? "#fbbf24"
+                              : "rgba(255,255,255,0.2)",
+                          boxShadow: isRunning ? "0 0 8px #22c55e" : "none",
+                        }}
+                      ></span>
+                      <span
                         className="text-[10px] tracking-[0.2em] uppercase font-bold"
-                        style={{ color: '#fbbf24' }}
+                        style={{ color: "rgba(255,255,255,0.5)" }}
                       >
-                        ▸ Next
-                      </span>
-                      <span className="text-sm font-bold text-white">
-                        {currentSegment.name}
+                        {isRunning
+                          ? "Solving"
+                          : inspection
+                            ? `Inspection ${inspectionLeft}s`
+                            : elapsed > 0
+                              ? "Stopped"
+                              : "Ready"}
                       </span>
                     </div>
                     <span
-                      className="text-[11px] font-bold tabular-nums tracking-wide"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
+                      className="text-[10px] tracking-[0.2em] uppercase font-bold"
+                      style={{ color: "rgba(255,255,255,0.35)" }}
                     >
-                      Target {formatTime(currentSegment.baseline)}
+                      Solve {solves.length}
                     </span>
                   </div>
-                )}
 
-                {/* Action buttons */}
-                <div className="p-4 md:p-5 grid grid-cols-2 gap-2.5">
-                  <button
-                    onClick={handleStartPause}
-                    className="py-4 rounded-md font-bold text-sm tracking-widest uppercase transition-all duration-150 active:scale-[0.98]"
+                  {/* Scramble */}
+                  <div
+                    className="px-5 py-4 text-center"
                     style={{
-                      background: isRunning
-                        ? 'rgba(234, 179, 8, 0.15)'
-                        : elapsed > 0
-                        ? 'rgba(59, 130, 246, 0.15)'
-                        : 'linear-gradient(135deg, #22c55e, #16a34a)',
-                      color: isRunning ? '#eab308' : elapsed > 0 ? '#60a5fa' : '#ffffff',
-                      border: isRunning
-                        ? '1px solid rgba(234, 179, 8, 0.4)'
-                        : elapsed > 0
-                        ? '1px solid rgba(59, 130, 246, 0.4)'
-                        : '1px solid rgba(34, 197, 94, 0.5)',
-                      boxShadow:
-                        !isRunning && elapsed === 0
-                          ? '0 0 24px rgba(34, 197, 94, 0.3)'
-                          : 'none',
+                      background: "rgba(0,0,0,0.2)",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
                     }}
                   >
-                    {isRunning ? '⏸ Pause' : elapsed > 0 ? '▶ Resume' : '▶ Start'}
-                  </button>
-                  <button
-                    onClick={handleSplit}
-                    disabled={elapsed === 0}
-                    className="py-4 rounded-md font-bold text-sm tracking-widest uppercase transition-all duration-150 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed"
-                    style={{
-                      background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-                      color: '#ffffff',
-                      border: '1px solid rgba(59, 130, 246, 0.5)',
-                      boxShadow:
-                        elapsed > 0 ? '0 0 24px rgba(59, 130, 246, 0.3)' : 'none',
-                    }}
-                  >
-                    ⚑ Split
-                  </button>
-                  <button
-                    onClick={handleReset}
-                    className="col-span-2 py-3 rounded-md font-semibold text-xs tracking-widest uppercase transition-all duration-150 active:scale-[0.98]"
-                    style={{
-                      background: 'rgba(255,255,255,0.03)',
-                      color: 'rgba(255,255,255,0.6)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                    }}
-                  >
-                    ↺ Reset Run
-                  </button>
-                </div>
+                    <p
+                      className="text-[9px] tracking-[0.25em] uppercase font-bold mb-1.5"
+                      style={{ color: "rgba(255,255,255,0.4)" }}
+                    >
+                      Scramble
+                    </p>
+                    <p className="font-mono text-sm md:text-base text-white/90 leading-relaxed break-words">
+                      {scramble}
+                    </p>
+                  </div>
 
-                {/* Keyboard hints */}
-                <div
-                  className="px-4 py-3 flex items-center justify-between flex-wrap gap-2 text-[10px]"
-                  style={{
-                    background: 'rgba(0,0,0,0.25)',
-                    borderTop: '1px solid rgba(255,255,255,0.06)',
-                    color: 'rgba(255,255,255,0.4)',
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span>
-                      <kbd
-                        className="px-1.5 py-0.5 rounded"
-                        style={{
-                          background: 'rgba(255,255,255,0.08)',
-                          color: 'rgba(255,255,255,0.7)',
-                          fontFamily: 'monospace',
-                        }}
-                      >
-                        Space
-                      </kbd>{' '}
-                      Split
-                    </span>
-                    <span>
-                      <kbd
-                        className="px-1.5 py-0.5 rounded"
-                        style={{
-                          background: 'rgba(255,255,255,0.08)',
-                          color: 'rgba(255,255,255,0.7)',
-                          fontFamily: 'monospace',
-                        }}
-                      >
-                        Enter
-                      </kbd>{' '}
-                      Start/Pause
-                    </span>
-                    <span>
-                      <kbd
-                        className="px-1.5 py-0.5 rounded"
-                        style={{
-                          background: 'rgba(255,255,255,0.08)',
-                          color: 'rgba(255,255,255,0.7)',
-                          fontFamily: 'monospace',
-                        }}
-                      >
-                        R
-                      </kbd>{' '}
-                      Reset
-                    </span>
-                    <span>
-                      <kbd
-                        className="px-1.5 py-0.5 rounded"
-                        style={{
-                          background: 'rgba(255,255,255,0.08)',
-                          color: 'rgba(255,255,255,0.7)',
-                          fontFamily: 'monospace',
-                        }}
-                      >
-                        F
-                      </kbd>{' '}
-                      Fullscreen
-                    </span>
+                  {/* Timer */}
+                  <div className="px-6 py-8 md:py-10 text-center">
+                    <div
+                      className="font-mono font-bold tabular-nums leading-none"
+                      style={{
+                        fontSize: "clamp(2.5rem, 9vw, 5.5rem)",
+                        color: penalty === "DNF" ? "#ef4444" : "#ffffff",
+                        letterSpacing: "-0.03em",
+                        textShadow: isRunning
+                          ? "0 0 30px rgba(34, 197, 94, 0.3)"
+                          : inspection
+                            ? "0 0 30px rgba(251, 191, 36, 0.3)"
+                            : "none",
+                      }}
+                    >
+                      {inspection
+                        ? `00:${String(inspectionLeft).padStart(2, "0")}`
+                        : formatTime(elapsed)}
+                      {penalty === "+2" && (
+                        <span className="text-red-400 text-2xl ml-2">+2</span>
+                      )}
+                      {penalty === "DNF" && (
+                        <span className="text-red-400 text-2xl ml-2">DNF</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="p-4 md:p-5 grid grid-cols-2 gap-2.5">
+                    <button
+                      onClick={() => {
+                        if (isRunning) stopTimer();
+                        else if (elapsed > 0) startTimer();
+                        else {
+                          setInspection(true);
+                          setInspectionLeft(15);
+                        }
+                      }}
+                      className="py-4 rounded-md font-bold text-sm tracking-widest uppercase transition-all duration-150 active:scale-[0.98]"
+                      style={{
+                        background: isRunning
+                          ? "rgba(234, 179, 8, 0.15)"
+                          : elapsed > 0
+                            ? "rgba(59, 130, 246, 0.15)"
+                            : "linear-gradient(135deg, #22c55e, #16a34a)",
+                        color: isRunning
+                          ? "#eab308"
+                          : elapsed > 0
+                            ? "#60a5fa"
+                            : "#fff",
+                        border: isRunning
+                          ? "1px solid rgba(234, 179, 8, 0.4)"
+                          : elapsed > 0
+                            ? "1px solid rgba(59, 130, 246, 0.4)"
+                            : "1px solid rgba(34, 197, 94, 0.5)",
+                      }}
+                    >
+                      {isRunning
+                        ? "■ Stop"
+                        : inspection
+                          ? "⏳ Inspecting"
+                          : elapsed > 0
+                            ? "▶ Solve Again"
+                            : "▶ Start (Space)"}
+                    </button>
+                    <button
+                      onClick={() => setScramble(generateScramble())}
+                      disabled={isRunning || inspection}
+                      className="py-4 rounded-md font-bold text-sm tracking-widest uppercase transition-all duration-150 active:scale-[0.98] disabled:opacity-30"
+                      style={{
+                        background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+                        color: "#fff",
+                        border: "1px solid rgba(59, 130, 246, 0.5)",
+                      }}
+                    >
+                      ⟳ New Scramble
+                    </button>
+                    <button
+                      onClick={handleReset}
+                      className="col-span-2 py-3 rounded-md font-semibold text-xs tracking-widest uppercase"
+                      style={{
+                        background: "rgba(255,255,255,0.03)",
+                        color: "rgba(255,255,255,0.6)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                    >
+                      ↺ Reset All
+                    </button>
+                  </div>
+
+                  {/* Penalty buttons */}
+                  <div
+                    className="px-4 py-3 grid grid-cols-2 gap-2"
+                    style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+                  >
+                    <button
+                      onClick={() =>
+                        setPenalty((p) => (p === "+2" ? null : "+2"))
+                      }
+                      className="py-2 rounded text-[11px] font-bold tracking-wider uppercase"
+                      style={{
+                        background:
+                          penalty === "+2"
+                            ? "rgba(239,68,68,0.2)"
+                            : "rgba(255,255,255,0.03)",
+                        color:
+                          penalty === "+2"
+                            ? "#ef4444"
+                            : "rgba(255,255,255,0.6)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                    >
+                      +2 Penalty
+                    </button>
+                    <button
+                      onClick={() =>
+                        setPenalty((p) => (p === "DNF" ? null : "DNF"))
+                      }
+                      className="py-2 rounded text-[11px] font-bold tracking-wider uppercase"
+                      style={{
+                        background:
+                          penalty === "DNF"
+                            ? "rgba(239,68,68,0.2)"
+                            : "rgba(255,255,255,0.03)",
+                        color:
+                          penalty === "DNF"
+                            ? "#ef4444"
+                            : "rgba(255,255,255,0.6)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                    >
+                      DNF
+                    </button>
+                  </div>
+
+                  {/* Hints */}
+                  <div
+                    className="px-4 py-3 flex items-center justify-between flex-wrap gap-2 text-[10px]"
+                    style={{
+                      background: "rgba(0,0,0,0.25)",
+                      borderTop: "1px solid rgba(255,255,255,0.06)",
+                      color: "rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    <div className="flex items-center gap-3 flex-wrap">
+                      {[
+                        ["Space", "Start/Stop"],
+                        ["Enter", "Start"],
+                        ["2", "+2"],
+                        ["D", "DNF"],
+                        ["R", "Reset"],
+                        ["F", "Fullscreen"],
+                      ].map(([k, label]) => (
+                        <span key={k}>
+                          <kbd
+                            className="px-1.5 py-0.5 rounded"
+                            style={{
+                              background: "rgba(255,255,255,0.08)",
+                              color: "rgba(255,255,255,0.7)",
+                              fontFamily: "monospace",
+                            }}
+                          >
+                            {k}
+                          </kbd>{" "}
+                          {label}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* ===== RIGHT SIDEBAR (splits table) ===== */}
-            <div className="lg:col-span-5">
-              <div
-                className="rounded-lg overflow-hidden h-full flex flex-col"
-                style={{
-                  background: 'linear-gradient(180deg, #14171c 0%, #0f1216 100%)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
-                  maxHeight: 'calc(100vh - 200px)',
-                  minHeight: '420px',
-                }}
-              >
-                {/* Table header */}
+              {/* RIGHT: solves list */}
+              <div className="lg:col-span-5">
                 <div
-                  className="px-4 py-3 flex items-center justify-between flex-shrink-0"
+                  className="rounded-lg overflow-hidden h-full flex flex-col"
                   style={{
-                    background: 'rgba(0,0,0,0.3)',
-                    borderBottom: '1px solid rgba(255,255,255,0.06)',
+                    background:
+                      "linear-gradient(180deg, #14171c 0%, #0f1216 100%)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+                    maxHeight: "calc(100vh - 200px)",
+                    minHeight: "420px",
                   }}
                 >
-                  <span
-                    className="text-[10px] tracking-[0.2em] uppercase font-bold"
-                    style={{ color: 'rgba(255,255,255,0.5)' }}
-                  >
-                    Segments
-                  </span>
-                  <button
-                    onClick={() => setShowEditor((v) => !v)}
-                    className="text-[10px] tracking-wider uppercase font-bold transition-opacity"
-                    style={{ color: showEditor ? '#fbbf24' : 'rgba(255,255,255,0.4)' }}
-                  >
-                    {showEditor ? 'Close Editor' : 'Edit'}
-                  </button>
-                </div>
-
-                {/* Column headers */}
-                <div
-                  className="grid grid-cols-12 gap-2 px-4 py-2 text-[9px] tracking-[0.15em] uppercase font-bold flex-shrink-0"
-                  style={{
-                    color: 'rgba(255,255,255,0.35)',
-                    borderBottom: '1px solid rgba(255,255,255,0.06)',
-                  }}
-                >
-                  <div className="col-span-1">#</div>
-                  <div className="col-span-5">Segment</div>
-                  <div className="col-span-3 text-right">Split</div>
-                  <div className="col-span-3 text-right">Delta</div>
-                </div>
-
-                {/* Splits list */}
-                <div
-                  ref={splitListRef}
-                  className="overflow-y-auto no-scrollbar flex-1"
-                >
-                  {/* Completed splits */}
-                  {splits.map((split, i) => (
-                    <div
-                      key={split.id + '-' + i}
-                      className="grid grid-cols-12 gap-2 px-4 py-2.5 items-center text-[13px] border-b"
-                      style={{
-                        borderColor: 'rgba(255,255,255,0.04)',
-                        background:
-                          i === splits.length - 1
-                            ? 'rgba(59, 130, 246, 0.06)'
-                            : 'transparent',
-                      }}
-                    >
-                      <div
-                        className="col-span-1 font-bold tabular-nums"
-                        style={{ color: 'rgba(255,255,255,0.4)' }}
-                      >
-                        {i + 1}
-                      </div>
-                      <div className="col-span-5 text-white font-medium truncate">
-                        {split.name}
-                      </div>
-                      <div
-                        className="col-span-3 text-right font-mono tabular-nums font-bold"
-                        style={{ color: 'rgba(255,255,255,0.85)' }}
-                      >
-                        {formatTime(split.time)}
-                      </div>
-                      <div
-                        className="col-span-3 text-right font-mono tabular-nums font-bold"
-                        style={{
-                          color: split.delta < 0 ? '#22c55e' : '#ef4444',
-                          textShadow:
-                            split.delta < 0
-                              ? '0 0 12px rgba(34, 197, 94, 0.4)'
-                              : '0 0 12px rgba(239, 68, 68, 0.4)',
-                        }}
-                      >
-                        {split.delta < 0 ? '−' : '+'}
-                        {formatDelta(Math.abs(split.delta)).slice(1)}
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Upcoming splits (grayed out) */}
-                  {baseline
-                    .slice(splits.length)
-                    .map((seg, i) => (
-                      <div
-                        key={'upcoming-' + seg.id}
-                        className="grid grid-cols-12 gap-2 px-4 py-2.5 items-center text-[13px] border-b"
-                        style={{
-                          borderColor: 'rgba(255,255,255,0.04)',
-                          opacity: i === 0 ? 0.85 : 0.4,
-                        }}
-                      >
-                        <div
-                          className="col-span-1 font-bold tabular-nums"
-                          style={{ color: 'rgba(255,255,255,0.3)' }}
-                        >
-                          {splits.length + i + 1}
-                        </div>
-                        <div
-                          className="col-span-5 font-medium truncate"
-                          style={{
-                            color:
-                              i === 0
-                                ? '#fbbf24'
-                                : 'rgba(255,255,255,0.55)',
-                          }}
-                        >
-                          {seg.name}
-                        </div>
-                        <div
-                          className="col-span-3 text-right font-mono tabular-nums"
-                          style={{ color: 'rgba(255,255,255,0.4)' }}
-                        >
-                          {formatTime(seg.baseline)}
-                        </div>
-                        <div
-                          className="col-span-3 text-right font-mono tabular-nums"
-                          style={{ color: 'rgba(255,255,255,0.25)' }}
-                        >
-                          —
-                        </div>
-                      </div>
-                    ))}
-
-                  {/* Empty state */}
-                  {splits.length === 0 && (
-                    <div
-                      className="px-4 py-8 text-center text-xs"
-                      style={{ color: 'rgba(255,255,255,0.35)' }}
-                    >
-                      Press <strong style={{ color: '#60a5fa' }}>Space</strong> or
-                      click <strong style={{ color: '#60a5fa' }}>Split</strong> to
-                      log your first segment.
-                    </div>
-                  )}
-                </div>
-
-                {/* Summary footer */}
-                {splits.length > 0 && (
                   <div
                     className="px-4 py-3 flex items-center justify-between flex-shrink-0"
                     style={{
-                      background: 'rgba(0,0,0,0.3)',
-                      borderTop: '1px solid rgba(255,255,255,0.06)',
+                      background: "rgba(0,0,0,0.3)",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
                     }}
                   >
-                    <div>
-                      <p
-                        className="text-[9px] tracking-[0.2em] uppercase font-bold"
-                        style={{ color: 'rgba(255,255,255,0.35)' }}
-                      >
-                        Total
-                      </p>
-                      <p className="text-sm font-bold font-mono tabular-nums text-white">
-                        {formatTime(splits[splits.length - 1].total)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p
-                        className="text-[9px] tracking-[0.2em] uppercase font-bold"
-                        style={{ color: 'rgba(255,255,255,0.35)' }}
-                      >
-                        vs Baseline
-                      </p>
-                      <p
-                        className="text-sm font-bold font-mono tabular-nums"
-                        style={{
-                          color: cumulativeDelta <= 0 ? '#22c55e' : '#ef4444',
-                        }}
-                      >
-                        {formatDelta(cumulativeDelta)}
-                      </p>
-                    </div>
+                    <span
+                      className="text-[10px] tracking-[0.2em] uppercase font-bold"
+                      style={{ color: "rgba(255,255,255,0.5)" }}
+                    >
+                      Solves ({solves.length})
+                    </span>
                   </div>
-                )}
-              </div>
 
-              {/* Editor panel */}
-              {showEditor && (
-                <div
-                  className="mt-4 rounded-lg p-4"
-                  style={{
-                    background: 'rgba(20, 22, 28, 0.9)',
-                    border: '1px solid rgba(251, 191, 36, 0.2)',
-                  }}
-                >
-                  <p
-                    className="text-[10px] tracking-[0.2em] uppercase font-bold mb-3"
-                    style={{ color: '#fbbf24' }}
+                  {/* Stats */}
+                  <div
+                    className="grid grid-cols-3 gap-2 px-4 py-3 flex-shrink-0"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
                   >
-                    Baseline Editor (seconds)
-                  </p>
-                  <div className="space-y-2 max-h-[240px] overflow-y-auto no-scrollbar">
-                    {baseline.map((seg, i) => (
-                      <div key={seg.id} className="flex items-center gap-2">
-                        <span
-                          className="text-[11px] font-bold w-6 tabular-nums"
-                          style={{ color: 'rgba(255,255,255,0.4)' }}
+                    {[
+                      ["Best", best],
+                      ["Mean", mean],
+                      ["Worst", worst],
+                    ].map(([label, val]) => (
+                      <div key={label} className="text-center">
+                        <p
+                          className="text-[9px] tracking-[0.2em] uppercase font-bold"
+                          style={{ color: "rgba(255,255,255,0.35)" }}
                         >
-                          {i + 1}
-                        </span>
-                        <input
-                          type="text"
-                          value={seg.name}
-                          onChange={(e) => {
-                            const next = [...baseline];
-                            next[i] = { ...next[i], name: e.target.value };
-                            setBaseline(next);
-                          }}
-                          className="flex-1 bg-black/40 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-400"
-                        />
-                        <input
-                          type="number"
-                          value={(seg.baseline / 1000).toFixed(2)}
-                          step="0.1"
-                          onChange={(e) => {
-                            const next = [...baseline];
-                            next[i] = {
-                              ...next[i],
-                              baseline: Math.max(0, parseFloat(e.target.value) * 1000 || 0),
-                            };
-                            setBaseline(next);
-                          }}
-                          className="w-20 bg-black/40 border border-white/10 rounded px-2 py-1 text-xs text-white tabular-nums focus:outline-none focus:border-amber-400"
-                        />
+                          {label}
+                        </p>
+                        <p className="text-xs font-bold font-mono tabular-nums text-white mt-0.5">
+                          {val ? formatTime(val) : "—"}
+                        </p>
                       </div>
                     ))}
                   </div>
-                  <button
-                    onClick={() => setBaseline(DEFAULT_BASELINE)}
-                    className="mt-3 w-full py-2 rounded text-[10px] tracking-widest uppercase font-bold"
-                    style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      color: 'rgba(255,255,255,0.6)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                    }}
+                  <div
+                    className="grid grid-cols-2 gap-2 px-4 py-2.5 flex-shrink-0"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
                   >
-                    Reset to Default
-                  </button>
+                    {[
+                      ["Ao5", ao5],
+                      ["Ao12", ao12],
+                    ].map(([label, val]) => (
+                      <div key={label} className="text-center">
+                        <p
+                          className="text-[9px] tracking-[0.2em] uppercase font-bold"
+                          style={{ color: "rgba(255,255,255,0.35)" }}
+                        >
+                          {label}
+                        </p>
+                        <p
+                          className="text-xs font-bold font-mono tabular-nums mt-0.5"
+                          style={{
+                            color: val ? "#fbbf24" : "rgba(255,255,255,0.3)",
+                          }}
+                        >
+                          {val ? formatTime(val) : "—"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* List */}
+                  <div
+                    ref={solveListRef}
+                    className="overflow-y-auto no-scrollbar flex-1"
+                  >
+                    {solves.length === 0 && (
+                      <div
+                        className="px-4 py-8 text-center text-xs"
+                        style={{ color: "rgba(255,255,255,0.35)" }}
+                      >
+                        Press{" "}
+                        <strong style={{ color: "#60a5fa" }}>Space</strong> to
+                        start inspection, then solve. Your times will appear
+                        here.
+                      </div>
+                    )}
+                    {[...solves].reverse().map((s, idx) => {
+                      const i = solves.length - idx;
+                      return (
+                        <div
+                          key={s.id}
+                          className="grid grid-cols-12 gap-2 px-4 py-2.5 items-center text-[13px] border-b"
+                          style={{
+                            borderColor: "rgba(255,255,255,0.04)",
+                            background:
+                              i === solves.length
+                                ? "rgba(59, 130, 246, 0.06)"
+                                : "transparent",
+                          }}
+                        >
+                          <div
+                            className="col-span-1 font-bold tabular-nums"
+                            style={{ color: "rgba(255,255,255,0.4)" }}
+                          >
+                            {i}
+                          </div>
+                          <div className="col-span-8 text-white/70 text-[11px] font-mono truncate">
+                            {s.scramble}
+                          </div>
+                          <div
+                            className="col-span-3 text-right font-mono tabular-nums font-bold"
+                            style={{
+                              color:
+                                s.time === best
+                                  ? "#22c55e"
+                                  : s.penalty === "+2"
+                                    ? "#fbbf24"
+                                    : "rgba(255,255,255,0.9)",
+                            }}
+                          >
+                            {formatTime(s.time)}
+                            {s.penalty === "+2" && (
+                              <span className="text-[9px] ml-1 text-amber-400">
+                                +2
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* ===== SEO SECTION ===== */}
-          <div
-            className="mt-12 md:mt-16 rounded-lg p-6 md:p-10"
-            style={{
-              background: 'linear-gradient(180deg, #14171c 0%, #0f1216 100%)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="flex items-center gap-3 mb-5">
-              <span
-                className="text-[10px] tracking-[0.3em] uppercase font-black px-3 py-1.5 rounded"
-                style={{
-                  background: 'rgba(251, 191, 36, 0.12)',
-                  border: '1px solid rgba(251, 191, 36, 0.35)',
-                  color: '#fbbf24',
-                }}
-              >
-                Manual
-              </span>
+              </div>
             </div>
 
-            <h2 className="text-xl md:text-3xl font-bold tracking-tight text-white mb-6 max-w-3xl">
-              An Introduction to Timing Segments and Splits in Online Speedrunning
-            </h2>
-
+            {/* SEO SECTION */}
             <div
-              className="space-y-4 text-sm md:text-[15px] leading-relaxed max-w-4xl"
-              style={{ color: 'rgba(255,255,255,0.7)' }}
+              className="mt-12 md:mt-16 rounded-lg p-6 md:p-10"
+              style={{
+                background: "linear-gradient(180deg, #14171c 0%, #0f1216 100%)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+              }}
             >
-              <p>
-                Speedrunning is the art of completing a video game as quickly as
-                possible, and at its heart lies a simple but powerful tool: the
-                split timer. Unlike a regular stopwatch, a speedrun timer breaks a
-                full playthrough into segments called splits. Each split represents
-                a milestone — a boss defeated, a level cleared, an item collected.
-                By timing each segment independently, runners can see exactly where
-                they gained or lost time, rather than just watching a total clock
-                tick upward.
-              </p>
-              <p>
-                <span className="text-white font-bold">What is a split?</span>{' '}
-                A split is the moment you press the split key during a run, usually
-                as you pass through a loading screen, defeat a boss, or collect a
-                critical item. The timer records both your segment time (how long
-                this section took) and your cumulative time (total elapsed since
-                the run began). These two numbers form the backbone of speedrun
-                analysis.
-              </p>
-              <p>
-                <span className="text-white font-bold">
-                  Why compare against a baseline?
-                </span>{' '}
-                Every runner has a personal best or a target time for each segment,
-                called a baseline. When your timer shows a delta — the difference
-                between your current segment and the baseline — it tells you in
-                real time whether you're ahead (green) or behind (red). This
-                instant feedback lets you adjust on the fly: play riskier if you're
-                behind, or play safe if you're comfortably ahead.
-              </p>
-              <p>
-                <span className="text-white font-bold">
-                  The psychology of splits.
-                </span>{' '}
-                Research on competitive gaming shows that real-time feedback
-                dramatically improves performance. Split timers create a rhythm
-                that keeps runners focused and motivated. When a runner sees green
-                numbers flashing, they push harder. When red appears, they
-                refocus. Over hundreds of attempts, this feedback loop sharpens
-                execution and builds muscle memory that's impossible to develop
-                without precise timing data.
-              </p>
-              <p>
-                <span className="text-white font-bold">
-                  Precision matters.
-                </span>{' '}
-                At the top level of speedrunning, races are won by milliseconds.
-                Professional timers like this one use
-                high-precision <code>requestAnimationFrame</code> timing rather
-                than a standard setInterval, ensuring millisecond accuracy that
-                matches the standards set by communities like Speedrun.com.
-              </p>
-              <p>
-                Whether you're chasing a world record or just trying to beat your
-                own PB, a split timer transforms a casual playthrough into a
-                measurable, improvable skill. Track every segment. Learn from
-                every delta. Run faster.
-              </p>
+              <div className="flex items-center gap-3 mb-5">
+                <span
+                  className="text-[10px] tracking-[0.3em] uppercase font-black px-3 py-1.5 rounded"
+                  style={{
+                    background: "rgba(251, 191, 36, 0.12)",
+                    border: "1px solid rgba(251, 191, 36, 0.35)",
+                    color: "#fbbf24",
+                  }}
+                >
+                  Guide
+                </span>
+              </div>
+
+              <h2 className="text-xl md:text-3xl font-bold tracking-tight text-white mb-6 max-w-3xl">
+                Online Rubik's Cube Stopwatch with Milliseconds — Why It Helps
+                You Improve
+              </h2>
+
+              <div
+                className="space-y-4 text-sm md:text-[15px] leading-relaxed max-w-4xl"
+                style={{ color: "rgba(255,255,255,0.7)" }}
+              >
+                <p>
+                  If you have ever used your phone's stopwatch to time a Rubik's
+                  Cube solve, you probably know how limited it can feel. You
+                  might see a time like 23.4 seconds, but you don't know whether
+                  the actual solve was 23.41 or 23.49. That small difference may
+                  not seem important at first, but when you're trying to improve
+                  your speed, those extra milliseconds can tell you a lot about
+                  your performance.
+                </p>
+
+                <p>
+                  <span className="text-white font-bold">
+                    Milliseconds give you a clearer picture.
+                  </span>{" "}
+                  A timer that only shows tenths of a second can hide small
+                  differences between your solves. For example, two solves might
+                  both appear as 9.8 seconds, even though one was 9.847 and the
+                  other was 9.912. Seeing the exact time helps you understand
+                  which solve was actually faster and can make it easier to
+                  notice small improvements over time.
+                </p>
+
+                <p>
+                  <span className="text-white font-bold">
+                    Why we use requestAnimationFrame.
+                  </span>{" "}
+                  Many simple browser timers rely on setInterval to update the
+                  display. Depending on what your computer or browser is doing,
+                  those updates can sometimes become less consistent. This timer
+                  uses requestAnimationFrame, which is designed to update
+                  content along with the browser's screen refresh. This helps
+                  keep the timer display smooth and responsive while you're
+                  solving.
+                </p>
+
+                <p>
+                  <span className="text-white font-bold">
+                    Practice with 15-second inspection.
+                  </span>{" "}
+                  Inspection is an important part of speedcubing. Before
+                  starting a solve, you normally have up to 15 seconds to look
+                  at the cube and plan your first moves. Using an inspection
+                  countdown during practice can help you get comfortable making
+                  decisions within that limited time. You can use the inspection
+                  period to plan your cross and think about your first pair
+                  before starting the solve.
+                </p>
+
+                <p>
+                  <span className="text-white font-bold">
+                    Ao5 and Ao12 help you track consistency.
+                  </span>{" "}
+                  One very fast solve does not always mean that your overall
+                  speed has improved. Looking at an average of several solves
+                  gives you a better idea of how consistently you are
+                  performing. Ao5 and Ao12 are useful ways to review a session
+                  because they reduce the effect of one unusually fast or slow
+                  solve. If your averages gradually improve, that is a useful
+                  sign that your practice is paying off.
+                </p>
+
+                <p>
+                  <span className="text-white font-bold">
+                    Keyboard controls keep things simple.
+                  </span>{" "}
+                  When you're solving a cube, you don't want to keep reaching
+                  for your mouse. That's why the timer is designed around
+                  keyboard controls. Use Space to start or stop the timer, 2 to
+                  add a +2 penalty, D to mark a solve as DNF, R to reset, and F
+                  to enter fullscreen mode. Once you get used to the shortcuts,
+                  you can focus more on solving and less on controlling the
+                  timer.
+                </p>
+
+                <p>
+                  <span className="text-white font-bold">
+                    Keep your solves and scrambles together.
+                  </span>{" "}
+                  Each solve can be saved along with its scramble, making it
+                  easier to look back at your previous sessions. The scramble is
+                  generated for each new solve so you can practice with
+                  different cube positions instead of repeatedly solving the
+                  same pattern. Reviewing your times and scrambles can also help
+                  you notice where you tend to make mistakes or lose time.
+                </p>
+
+                <p>
+                  Whether you're currently around 30 seconds and trying to reach
+                  25, or you're already working toward sub-10 solves, having a
+                  precise and easy timer can make practice more useful. You
+                  don't need to install an app or create an account. Open the
+                  timer, start your inspection, solve the cube, and review your
+                  results. Over time, those small improvements can add up.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-     <Footer />
+      <Footer />
     </div>
   );
 };
 
-export default SpeedrunSplitTimer;
+export default RubiksCubeStopwatch;
