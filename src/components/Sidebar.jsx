@@ -11,7 +11,7 @@ const SECTIONS = [
     title: "Cricket",
     hint: "W01–W05",
     items: [
-    { to: "/virat-kohli-century-tracker-live-countdown", code: "W01", label: "Virat Kohli Timer" },
+    { to: "/virat-kohli-century-tracker-live-countdown", code: "W01", label: "Cricket Timer" },
     ],
   },
   {

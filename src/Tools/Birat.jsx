@@ -11,12 +11,6 @@ const CricketIcon = () => (
   </svg>
 );
 
-const TrophyIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z" />
-  </svg>
-);
-
 const ClockIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
@@ -118,22 +112,6 @@ const MatchCountdownCard = ({ matchNo, format, teams, venue, date, time, targetD
 
 // --- Main Component ---
 const Birat = () => {
-  const kohliStats = {
-    totalCenturies: 81,
-    formats: [
-      { name: 'TEST', value: 29, color: '#00e676' },
-      { name: 'ODI', value: 50, color: '#00b0ff' },
-      { name: 'T20I', value: 2, color: '#ff9100' },
-    ],
-    runs: { test: 8848, odi: 13906, t20i: 4188 },
-    matches: { test: 113, odi: 295, t20i: 125 },
-    average: { test: 48.9, odi: 58.7, t20i: 48.7 },
-    fifties: { test: 30, odi: 72, t20i: 38 },
-    highest: { test: 254, odi: 183, t20i: 122 },
-  };
-
-  const heroTarget = '2026-09-30T13:30:00+05:30';
-  const hero = useCountdown(heroTarget);
   const pad = (n) => String(n).padStart(2, '0');
 
   const indWiSchedule = [
@@ -147,6 +125,14 @@ const Birat = () => {
     { id: 8, matchNo: '5th T20I', format: 'T20I', teams: 'India vs West Indies', venue: 'Bengaluru', date: 'Oct 17, 2026', time: '7:00 PM IST', targetDate: '2026-10-17T19:00:00+05:30', accent: '#00b0ff' },
   ];
 
+  // Auto-detect next upcoming match
+  const nextMatch = indWiSchedule.find((m) => new Date(m.targetDate) > new Date()) || indWiSchedule[indWiSchedule.length - 1];
+  const hero = useCountdown(nextMatch.targetDate);
+
+  // Ahan Timer — 1 hour countdown
+  const ahanTarget = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+  const ahan = useCountdown(ahanTarget);
+
   return (
     <div className="min-h-screen bg-[#0a0f14]">
       <Navbar />
@@ -157,85 +143,58 @@ const Birat = () => {
         {/* ===== DASHBOARD SECTION ===== */}
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 p-3 sm:p-4 lg:p-6">
 
-          {/* LEFT: Kohli Stats */}
+          {/* LEFT: Upcoming Match Timer */}
           <div className="md:col-span-6 lg:col-span-3 bg-[#111820] rounded-xl border border-gray-800/60 p-4 sm:p-5 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider">
-                Virat Kohli Stats Tracker
+                Upcoming Match
               </h2>
               <span className="text-green-400"><CricketIcon /></span>
             </div>
 
             <div className="bg-[#0a0f14] rounded-lg p-4 border border-gray-800/40">
               <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mb-1">
-                Total International Centuries
+                Next Match
               </p>
-              <p className="text-4xl sm:text-5xl font-black text-green-400">{kohliStats.totalCenturies}</p>
-              <p className="text-[10px] text-gray-500 mt-1">Most by any active cricketer</p>
+              <p className="text-sm font-black text-white">{nextMatch.teams}</p>
+              <p className="text-[10px] text-gray-500 mt-1">{nextMatch.matchNo} · {nextMatch.venue}</p>
             </div>
 
             <div className="flex flex-col gap-3">
-              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider">Format Breakdown</p>
-              {kohliStats.formats.map((format) => (
-                <div key={format.name} className="flex flex-col gap-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-300 font-medium">{format.name}</span>
-                    <span className="text-gray-400">{format.value} centuries</span>
-                  </div>
-                  <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-1000"
-                      style={{
-                        width: `${(format.value / kohliStats.totalCenturies) * 100}%`,
-                        backgroundColor: format.color,
-                        boxShadow: `0 0 10px ${format.color}40`,
-                      }}
-                    />
-                  </div>
+              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider">Time Remaining</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-[#0a0f14] rounded-lg py-3 text-center border border-gray-800/40">
+                  <p className="text-2xl font-black text-green-400 tabular-nums">{pad(hero.days)}</p>
+                  <p className="text-[9px] text-gray-500 uppercase mt-1">Days</p>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider">Career Statistics</p>
-              <div className="bg-[#0a0f14] rounded-lg border border-gray-800/40 overflow-hidden">
-                <div className="grid grid-cols-4 text-[10px] text-gray-500 uppercase bg-gray-900/60 px-2 py-1.5">
-                  <span>Format</span><span>M</span><span>Runs</span><span>Avg</span>
+                <div className="bg-[#0a0f14] rounded-lg py-3 text-center border border-gray-800/40">
+                  <p className="text-2xl font-black text-blue-400 tabular-nums">{pad(hero.hours)}</p>
+                  <p className="text-[9px] text-gray-500 uppercase mt-1">Hours</p>
                 </div>
-                {[
-                  { f: 'TEST', m: kohliStats.matches.test, r: kohliStats.runs.test, a: kohliStats.average.test },
-                  { f: 'ODI', m: kohliStats.matches.odi, r: kohliStats.runs.odi, a: kohliStats.average.odi },
-                  { f: 'T20I', m: kohliStats.matches.t20i, r: kohliStats.runs.t20i, a: kohliStats.average.t20i },
-                ].map((row) => (
-                  <div key={row.f} className="grid grid-cols-4 text-[11px] px-2 py-1.5 border-t border-gray-800/40">
-                    <span className="text-green-400 font-semibold">{row.f}</span>
-                    <span className="text-gray-300">{row.m}</span>
-                    <span className="text-gray-300">{row.r.toLocaleString()}</span>
-                    <span className="text-gray-300">{row.a}</span>
-                  </div>
-                ))}
+                <div className="bg-[#0a0f14] rounded-lg py-3 text-center border border-gray-800/40">
+                  <p className="text-2xl font-black text-orange-400 tabular-nums">{pad(hero.minutes)}</p>
+                  <p className="text-[9px] text-gray-500 uppercase mt-1">Minutes</p>
+                </div>
+                <div className="bg-[#0a0f14] rounded-lg py-3 text-center border border-gray-800/40">
+                  <p className="text-2xl font-black text-purple-400 tabular-nums">{pad(hero.seconds)}</p>
+                  <p className="text-[9px] text-gray-500 uppercase mt-1">Seconds</p>
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-[#0a0f14] rounded-lg p-3 border border-gray-800/40">
-                <p className="text-[10px] text-gray-500 uppercase">Fifties</p>
-                <p className="text-xl font-bold text-blue-400">
-                  {kohliStats.fifties.test + kohliStats.fifties.odi + kohliStats.fifties.t20i}
-                </p>
-              </div>
-              <div className="bg-[#0a0f14] rounded-lg p-3 border border-gray-800/40">
-                <p className="text-[10px] text-gray-500 uppercase">Highest</p>
-                <p className="text-xl font-bold text-orange-400">{kohliStats.highest.odi}</p>
-              </div>
+            <div className="bg-[#0a0f14] rounded-lg p-3 border border-gray-800/40">
+              <p className="text-[10px] text-gray-500 uppercase mb-1">Status</p>
+              <p className={`text-sm font-bold ${hero.ended ? 'text-red-400' : 'text-green-400'}`}>
+                {hero.ended ? 'MATCH STARTED' : 'COUNTING DOWN'}
+              </p>
             </div>
 
             <div className="mt-auto pt-3 border-t border-gray-800/60">
               <div className="flex items-center gap-2 bg-gradient-to-r from-green-500/10 to-transparent p-2 rounded-lg border border-green-500/20">
-                <TrophyIcon />
+                <span className="text-green-400"><CricketIcon /></span>
                 <div>
-                  <p className="text-[10px] text-green-400 font-semibold">KING KOHLI</p>
-                  <p className="text-[9px] text-gray-500">Chase Master · Run Machine</p>
+                  <p className="text-[10px] text-green-400 font-semibold">{nextMatch.matchNo}</p>
+                  <p className="text-[9px] text-gray-500">{nextMatch.date} · {nextMatch.time}</p>
                 </div>
               </div>
             </div>
@@ -252,8 +211,8 @@ const Birat = () => {
                   <p className="text-[10px] sm:text-xs text-green-400 uppercase tracking-[0.3em] mb-2">
                     Next Match Countdown
                   </p>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">Virat Kohli</h2>
-                  <p className="text-xs sm:text-sm text-gray-400 mt-1">India vs West Indies · 2nd ODI 2026</p>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">{nextMatch.teams}</h2>
+                  <p className="text-xs sm:text-sm text-gray-400 mt-1">{nextMatch.matchNo} · {nextMatch.venue}</p>
                 </div>
 
                 <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:gap-4 w-full max-w-lg">
@@ -277,17 +236,62 @@ const Birat = () => {
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-gray-400 bg-[#0a0f14]/60 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-full border border-gray-800/40">
                   <span className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                    Guwahati
+                    {nextMatch.venue}
                   </span>
                   <span className="w-px h-3 bg-gray-700" />
-                  <span>Barsapara Stadium</span>
+                  <span>{nextMatch.date} · {nextMatch.time}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* RIGHT: Live Match Center */}
+          {/* RIGHT: Live Match Center + Ahan Timer */}
           <div className="md:col-span-6 lg:col-span-3 flex flex-col gap-4">
+
+            {/* Ahan Timer — moved to right side */}
+            <div className="bg-[#111820] rounded-xl border border-gray-800/60 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                  Ahan Timer
+                </h2>
+                <span className="text-green-400"><ClockIcon /></span>
+              </div>
+
+              <div className="bg-[#0a0f14] rounded-lg p-3 border border-gray-800/40 text-center">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-[#111820] rounded-lg py-3 border border-gray-800/40">
+                    <p className="text-xl font-black text-green-400 tabular-nums">
+                      {pad(ahan.hours)}
+                    </p>
+                    <p className="text-[9px] text-gray-500 uppercase mt-1">Hours</p>
+                  </div>
+                  <div className="bg-[#111820] rounded-lg py-3 border border-gray-800/40">
+                    <p className="text-xl font-black text-blue-400 tabular-nums">
+                      {pad(ahan.minutes)}
+                    </p>
+                    <p className="text-[9px] text-gray-500 uppercase mt-1">Minutes</p>
+                  </div>
+                  <div className="bg-[#111820] rounded-lg py-3 border border-gray-800/40">
+                    <p className="text-xl font-black text-orange-400 tabular-nums">
+                      {pad(ahan.seconds)}
+                    </p>
+                    <p className="text-[9px] text-gray-500 uppercase mt-1">Seconds</p>
+                  </div>
+                  <div className="bg-[#111820] rounded-lg py-3 border border-gray-800/40">
+                    <p className="text-xl font-black text-purple-400 tabular-nums">
+                      {ahan.ended ? '00' : pad(ahan.days)}
+                    </p>
+                    <p className="text-[9px] text-gray-500 uppercase mt-1">Days</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 bg-[#0a0f14] rounded-lg p-2 border border-gray-800/40">
+                <p className={`text-[10px] font-bold ${ahan.ended ? 'text-red-400' : 'text-green-400'}`}>
+                  {ahan.ended ? 'TIMER ENDED' : 'RUNNING'}
+                </p>
+              </div>
+            </div>
 
             {/* Card 1: Live Match Status */}
             <div className="bg-[#111820] rounded-xl border border-gray-800/60 p-4">
@@ -326,7 +330,7 @@ const Birat = () => {
               </div>
             </div>
 
-            {/* Card 2: Top Performers (Cricket Only) */}
+            {/* Card 2: Top Performers */}
             <div className="bg-[#111820] rounded-xl border border-gray-800/60 p-4">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
@@ -398,7 +402,7 @@ const Birat = () => {
               </div>
             </div>
 
-            {/* Card 4: Quick Facts (Cricket Only) */}
+            {/* Card 4: Quick Facts */}
             <div className="bg-gradient-to-br from-green-500/10 to-transparent rounded-xl border border-green-500/20 p-4">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-green-400">⚡</span>
@@ -431,7 +435,7 @@ const Birat = () => {
               </ul>
             </div>
 
-            {/* Trending Tags (Cricket Only) */}
+            {/* Trending Tags */}
             <div className="bg-[#111820] rounded-xl border border-gray-800/60 p-4">
               <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-2">Trending Now</p>
               <div className="flex flex-wrap gap-1.5">
@@ -500,7 +504,6 @@ const Birat = () => {
               A deep dive into the King's century journey, career numbers, the complete 3-ODI & 5-T20I schedule, and what to expect when India faces West Indies this October.
             </p>
 
-            
             <figure className="mb-8 sm:mb-10">
               <img
                 src={virat}
@@ -666,7 +669,7 @@ const Birat = () => {
               </div>
             </div>
 
-            {/* Tags (Cricket Only) */}
+            {/* Tags */}
             <div className="mt-10 sm:mt-14 pt-6 sm:pt-8 border-t border-gray-200">
               <p className="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Related Topics</p>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">

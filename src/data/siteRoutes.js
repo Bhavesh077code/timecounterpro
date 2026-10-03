@@ -106,15 +106,6 @@ export const staticRoutes = [
     priority: "0.8",
     changefreq: "weekly",
   },
-  {
-    path: "/speed-timer",
-    title: "Speedrun Split Stopwatch - Professional Millisecond Timer",
-    description:
-      "Track your speedrun progress like a pro! High-precision split stopwatch with delta variance calculation, fully compliant with speedrun.com rules.",
-    priority: "0.8",
-    changefreq: "weekly",
-  },
-
   // ============================================
   // GAMING TIMERS
   // ============================================
