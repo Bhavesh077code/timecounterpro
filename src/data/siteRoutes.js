@@ -55,7 +55,7 @@ export const staticRoutes = [
     title: "Exam Sectional Mock Test Timer - Practice CAT, JEE, UPSC Online",
     description:
       "Simulate real exam portals! Free sectional mock test timer with auto-locking screens and warning buzzers for competitive exams like CAT, JEE, GRE, and UPSC.",
-    priority: "0.9",
+    priority: "0.85",
     changefreq: "weekly",
   },
   {
@@ -63,7 +63,7 @@ export const staticRoutes = [
     title: "Group Study Multi-Timer Grid - 4 Clocks on One Screen",
     description:
       "Manage multiple tasks at once! A unique 2x2 multi-timer grid for virtual classrooms and group studies. Run 4 independent countdowns simultaneously.",
-    priority: "0.85",
+    priority: "0.8",
     changefreq: "weekly",
   },
 
@@ -95,7 +95,7 @@ export const staticRoutes = [
     title: "Twitch & OBS Stream Countdown Overlay - Chroma Green Screen",
     description:
       "Upgrade your stream quality! Free countdown overlay for OBS Studio and Twitch. Features hotkey support, black/green background controls, and quick embed codes.",
-    priority: "0.85",
+    priority: "0.8",
     changefreq: "weekly",
   },
   {
@@ -106,6 +106,7 @@ export const staticRoutes = [
     priority: "0.8",
     changefreq: "weekly",
   },
+
   // ============================================
   // GAMING TIMERS
   // ============================================
@@ -114,7 +115,15 @@ export const staticRoutes = [
     title: "Arcade Game Timer - Test Your Reaction Time Online",
     description:
       "Beat the ticking clock! Play 2 interactive mini-games (Tap Target and Simon Says) inside a countdown window to train your focus and hand-eye coordination.",
-    priority: "0.85",
+    priority: "0.8",
+    changefreq: "weekly",
+  },
+  {
+    path: "/online-rubiks-cube-stopwatch-with-milliseconds",
+    title: "Free Online Rubik's Cube Stopwatch with Milliseconds & Scrambles",
+    description:
+      "A minimalist speedcubing stackmat timer for 3x3 solves. Features standard random scramble generators, spacebar triggers, and fluid millisecond split tracking.",
+    priority: "0.8",
     changefreq: "weekly",
   },
 
@@ -126,7 +135,7 @@ export const staticRoutes = [
     title: "Presentation & Speech Timer - Full Screen Color Alert Clock",
     description:
       "Never run out of time on stage! A massive full-screen speech timer that automatically transitions colors (Green → Amber → Red) as your time runs out.",
-    priority: "0.85",
+    priority: "0.8",
     changefreq: "weekly",
   },
   {
@@ -145,6 +154,46 @@ export const staticRoutes = [
     priority: "0.8",
     changefreq: "daily",
   },
+  {
+    path: "/time-card-calculator-online",
+    title: "Free Online Time Card Calculator - Employee Hours & Timesheet Clock",
+    description:
+      "Free online time card calculator to track daily employee hours. Accurate timesheet calculator with breaks, clock in clock out logs, and automatic overtime calculation for payroll management.",
+    priority: "0.9",
+    changefreq: "weekly",
+  },
+
+  // ============================================
+  // ANIMATION / IMMERSIVE TIMERS
+  // ============================================
+  {
+    path: "/focus-timer-plant-growing-animation-10-minutes",
+    title: "10 Minute Study Timer with Virtual Plant Growing Animation",
+    description:
+      "Boost deep focus with a free 10-minute countdown clock. Watch a virtual aesthetic seed fluidly bloom into a living tree as you study. No sign-up required.",
+    priority: "0.75",
+    changefreq: "weekly",
+  },
+  {
+    path: "/orbital-launch-focus-timer",
+    title: "Cyberpunk Orbital Launch Focus Timer - Immersive Space Clock",
+    description:
+      "Experience extreme deep work with a gamified sci-fi rocket blast-off clock. Tracks study sessions with real-time plasma thruster animations and spatial audio.",
+    priority: "0.75",
+    changefreq: "weekly",
+  },
+
+  // ============================================
+  // LIVE / TRENDING PAGES
+  // ============================================
+  {
+    path: "/virat-kohli-century-tracker-live-countdown",
+    title: "Virat Kohli Total Centuries Tracker & Next Match Live Countdown",
+    description:
+      "Track Virat Kohli's 81 international centuries, real-time ODI stats, and live match countdown overlays. Fast arcade sports timing engine by TimeCounterPro.",
+    priority: "0.8",
+    changefreq: "daily",
+  },
 
   // ============================================
   // INFORMATION PAGES
@@ -154,7 +203,7 @@ export const staticRoutes = [
     title: "About Us | TimeCounterPro Productivity Suite",
     description:
       "Discover the story behind TimeCounterPro and find out how our high-performance timing tools assist developers, students, and athletes every day.",
-    priority: "0.6",
+    priority: "0.5",
     changefreq: "monthly",
   },
   {
@@ -162,7 +211,7 @@ export const staticRoutes = [
     title: "Contact TimeCounterPro - Report Bugs & Suggest Features",
     description:
       "Have an idea for a new timing tool or spotted a bug? Drop us a line. The TimeCounterPro team responds within 48 hours.",
-    priority: "0.6",
+    priority: "0.5",
     changefreq: "monthly",
   },
   {
@@ -170,59 +219,22 @@ export const staticRoutes = [
     title: "Privacy Policy | How We Protect Your Timer Data",
     description:
       "Your privacy is our priority. Read how TimeCounterPro safely manages cookies, browser storage, and locally saved countdown configurations.",
-    priority: "0.4",
-    changefreq: "monthly",
+    priority: "0.3",
+    changefreq: "yearly",
   },
   {
     path: "/terms",
     title: "Terms of Service & Usage Agreements | TimeCounterPro",
     description:
       "Review the standard terms, legal conditions, and acceptable use frameworks governing the open-source timers on TimeCounterPro.",
-    priority: "0.4",
-    changefreq: "monthly",
+    priority: "0.3",
+    changefreq: "yearly",
   },
-  {
-    path: "/focus-timer-plant-growing-animation-10-minutes",
-    title: "10 Minute Study Timer with Virtual Plant Growing Animation",
-    description: "Boost deep focus with a free 10-minute countdown clock. Watch a virtual aesthetic seed fluidly bloom into a living tree as you study. No sign-up required.",
-    priority: "0.9",
-    changefreq: "weekly"
-  },
-  {
-    path: "/orbital-launch-focus-timer",
-    title: "Cyberpunk Orbital Launch Focus Timer - Immersive Space Clock",
-    description: "Experience extreme deep work with a gamified sci-fi rocket blast-off clock. Tracks study sessions with real-time plasma thruster animations and spatial audio.",
-    priority: "0.9",
-    changefreq: "weekly"
-  },
-  {
-    path: "/online-rubiks-cube-stopwatch-with-milliseconds",
-    title: "Free Online Rubik's Cube Stopwatch with Milliseconds & Scrambles",
-    description: "A minimalist speedcubing stackmat timer for 3x3 solves. Features standard random scramble generators, spacebar triggers, and fluid millisecond split tracking.",
-    priority: "0.9",
-    changefreq: "weekly"
-  },
-  {
-    path: "/virat-kohli-century-tracker-live-countdown",
-    title: "Virat Kohli Total Centuries Tracker & Next Match Live Countdown",
-    description: "Track Virat Kohli's 81 international centuries, real-time ODI stats, and live match countdown overlays. Fast arcade sports timing engine by TimeCounterPro.",
-    priority: "1.0",
-    changefreq: "always"
-  },
-  {
-    path: "/time-card-calculator-online",
-    title: "Free Online Time Card Calculator - Employee Hours & Timesheet Clock",
-    description: "Free online time card calculator to track daily employee hours. Accurate timesheet calculator with breaks, clock in clock out logs, and automatic overtime calculation for payroll management.",
-    priority: "0.9",
-    changefreq: "weekly"
-
-  },
-
 ];
 
 export const routeCategories = {
   core: ["/", "/create", "/pomodoro", "/meditation-timer-with-sound", "/stopwatch", "/world-clock"],
-  study: ["/pomodoro", "/meditation-timer-with-sound", "/mock-test-timer", "/group-study-timer"],
+  study: ["/mock-test-timer", "/group-study-timer"],
   fitness: ["/hiit-timer", "/fasting-tracker-timer"],
   gaming: ["/jungle-timer", "/online-rubiks-cube-stopwatch-with-milliseconds", "/gameplay-timer"],
   streaming: ["/stream-timer"],
