@@ -1,7 +1,8 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { TimerContext } from '../context/TimerContext';
 import { formatTime, calculateStats } from '../utils/helpers';
-import { FiSearch, FiTrash2, FiClock, FiCalendar, FiBarChart2, FiFilter } from 'react-icons/fi';
+import { FiSearch, FiTrash2, FiClock, FiCalendar, FiBarChart2 } from 'react-icons/fi';
+import { toast } from 'react-hot-toast';
 
 function TimerHistory() {
   const { completedTimers, clearHistory } = useContext(TimerContext);
@@ -104,191 +105,232 @@ function TimerHistory() {
     URL.revokeObjectURL(url);
   };
 
+  /* =========================================================
+     EMPTY STATE — includes H1 so prerender always finds one
+     ========================================================= */
   if (completedTimers.length === 0) {
     return (
-      <div className="text-center py-16">
-        <div className="w-20 h-20 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
-          <FiClock size={32} className="text-slate-400" />
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <header className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+            Timer History
+          </h1>
+          <p className="text-sm sm:text-base text-slate-500 leading-relaxed max-w-2xl">
+            Your completed timers appear here automatically. Track how much time
+            you spend on focused work, study sessions, workouts, and everything
+            else you time — with stats for total hours, average duration, and
+            your most-used timer.
+          </p>
+        </header>
+
+        <div className="text-center py-16 bg-white border border-slate-200 rounded-xl">
+          <div className="w-20 h-20 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
+            <FiClock size={32} className="text-slate-400" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">No history yet</h2>
+          <p className="text-slate-500 text-sm">
+            Complete some timers to see your history here
+          </p>
+          <p className="text-slate-400 text-xs mt-2">
+            Your completed timers will appear here automatically
+          </p>
         </div>
-        <h3 className="text-xl font-bold text-slate-900 mb-2">No History</h3>
-        <p className="text-slate-500 text-sm">Complete some timers to see your history here</p>
-        <p className="text-slate-400 text-xs mt-2">Your completed timers will appear here automatically</p>
       </div>
     );
   }
 
+  /* =========================================================
+     MAIN VIEW — with H1 header
+     ========================================================= */
   return (
-    <div className="space-y-4">
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white  p-4 text-center border border-slate-200 shadow-sm">
-          <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
-          <div className="text-xs text-slate-500 font-medium">Total Timers</div>
-          <div className="text-[10px] text-slate-400 mt-1">Completed</div>
-        </div>
-        <div className="bg-white p-4 text-center border border-slate-200 shadow-sm">
-          <div className="text-2xl font-bold text-indigo-600">{Math.floor(stats.totalTime / 3600)}h</div>
-          <div className="text-xs text-slate-500 font-medium">Total Time</div>
-          <div className="text-[10px] text-slate-400 mt-1">{Math.floor((stats.totalTime % 3600) / 60)}m remaining</div>
-        </div>
-        <div className="bg-white p-4 text-center border border-slate-200 shadow-sm">
-          <div className="text-2xl font-bold text-emerald-600">{Math.floor(stats.averageTime / 60)}m</div>
-          <div className="text-xs text-slate-500 font-medium">Average Duration</div>
-          <div className="text-[10px] text-slate-400 mt-1">per timer</div>
-        </div>
-        <div className="bg-white p-4 text-center border border-slate-200 shadow-sm">
-          <div className="text-2xl font-bold text-amber-600 truncate" title={getMostUsed()}>
-            {getMostUsed().length > 12 ? getMostUsed().slice(0, 12) + '...' : getMostUsed()}
-          </div>
-          <div className="text-xs text-slate-500 font-medium">Most Used</div>
-          <div className="text-[10px] text-slate-400 mt-1">timer name</div>
-        </div>
-      </div>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Page header with H1 */}
+      <header className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+          Timer History
+        </h1>
+        <p className="text-sm sm:text-base text-slate-500 leading-relaxed max-w-2xl">
+          Every timer you complete is saved here with its name, type, duration,
+          and exact completion time. Filter by type, search by name, sort by
+          date or length, and export your history as a CSV file. All data stays
+          in your browser — nothing is uploaded to a server.
+        </p>
+      </header>
 
-      {/* Controls */}
-      <div className="flex flex-col sm:flex-row justify-between gap-3">
-        <div className="flex flex-wrap gap-1.5">
-          {timerTypes.map((type) => (
+      <div className="space-y-4">
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-white p-4 text-center border border-slate-200 shadow-sm rounded-xl">
+            <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
+            <div className="text-xs text-slate-500 font-medium">Total Timers</div>
+            <div className="text-[10px] text-slate-400 mt-1">Completed</div>
+          </div>
+          <div className="bg-white p-4 text-center border border-slate-200 shadow-sm rounded-xl">
+            <div className="text-2xl font-bold text-indigo-600">{Math.floor(stats.totalTime / 3600)}h</div>
+            <div className="text-xs text-slate-500 font-medium">Total Time</div>
+            <div className="text-[10px] text-slate-400 mt-1">
+              {Math.floor((stats.totalTime % 3600) / 60)}m remaining
+            </div>
+          </div>
+          <div className="bg-white p-4 text-center border border-slate-200 shadow-sm rounded-xl">
+            <div className="text-2xl font-bold text-emerald-600">{Math.floor(stats.averageTime / 60)}m</div>
+            <div className="text-xs text-slate-500 font-medium">Average Duration</div>
+            <div className="text-[10px] text-slate-400 mt-1">per timer</div>
+          </div>
+          <div className="bg-white p-4 text-center border border-slate-200 shadow-sm rounded-xl">
+            <div className="text-2xl font-bold text-amber-600 truncate" title={getMostUsed()}>
+              {getMostUsed().length > 12 ? getMostUsed().slice(0, 12) + '...' : getMostUsed()}
+            </div>
+            <div className="text-xs text-slate-500 font-medium">Most Used</div>
+            <div className="text-[10px] text-slate-400 mt-1">timer name</div>
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex flex-col sm:flex-row justify-between gap-3">
+          <div className="flex flex-wrap gap-1.5">
+            {timerTypes.map((type) => (
+              <button
+                key={type}
+                onClick={() => setFilter(type)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  filter === type
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
+                {type === 'all' && (
+                  <span className="ml-1 text-[10px] opacity-70">({completedTimers.length})</span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {/* Search */}
+            <div className="relative">
+              <FiSearch size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search timers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 w-32 sm:w-40 transition-all"
+              />
+            </div>
+
+            {/* Sort */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="longest">Longest First</option>
+              <option value="shortest">Shortest First</option>
+            </select>
+
+            {/* Export */}
             <button
-              key={type}
-              onClick={() => setFilter(type)}
-              className={`px-3 py-1.5  text-xs font-medium transition-all ${
-                filter === type
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
+              onClick={exportHistory}
+              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-all hover:shadow-sm"
+              title="Export history as CSV"
             >
-              {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
-              {type === 'all' && (
-                <span className="ml-1 text-[10px] opacity-70">({completedTimers.length})</span>
-              )}
+              Export
             </button>
-          ))}
-        </div>
 
-        <div className="flex flex-wrap gap-2">
-          {/* Search */}
-          <div className="relative">
-            <FiSearch size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search timers..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 text-slate-700 text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 w-32 sm:w-40 transition-all"
-            />
-          </div>
-
-          {/* Sort */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200  text-slate-700 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="longest">Longest First</option>
-            <option value="shortest">Shortest First</option>
-          </select>
-
-          {/* Export */}
-          <button
-            onClick={exportHistory}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700  text-sm font-medium transition-all hover:shadow-sm"
-            title="Export history as CSV"
-          >
-            Export
-          </button>
-
-          {/* Clear */}
-          <button
-            onClick={handleClearHistory}
-            className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600  text-sm font-medium transition-all flex items-center gap-1.5"
-          >
-            <FiTrash2 size={14} />
-            <span className="hidden sm:inline">Clear</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Timer List */}
-      {filteredTimers.length === 0 ? (
-        <div className="text-center py-8 bg-slate-50  border border-slate-200">
-          <p className="text-slate-500 text-sm">No timers found matching your criteria</p>
-          <button
-            onClick={() => { setFilter('all'); setSearchTerm(''); }}
-            className="mt-2 text-indigo-600 text-sm hover:underline"
-          >
-            Clear filters
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {filteredTimers.map((timer) => (
-            <div
-              key={timer.id}
-              className="bg-white  p-4 border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all duration-200"
+            {/* Clear */}
+            <button
+              onClick={handleClearHistory}
+              className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5"
             >
-              <div className="flex flex-col sm:flex-row justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-slate-900 font-medium text-sm truncate">
-                      {timer.name}
-                    </span>
-                    <span className={`text-[10px] px-2 py-0.5  font-medium ${
-                      timer.type === 'preset'
-                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                        : timer.type === 'countdown'
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : 'bg-amber-50 text-amber-700 border border-amber-200'
-                    }`}>
-                      {timer.type}
-                    </span>
-                    {timer.duration >= 3600 && (
-                      <span className="text-[10px] px-2 py-0.5  bg-blue-50 text-blue-700 border border-blue-200">
-                        Long
+              <FiTrash2 size={14} />
+              <span className="hidden sm:inline">Clear</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Timer List */}
+        {filteredTimers.length === 0 ? (
+          <div className="text-center py-8 bg-slate-50 rounded-xl border border-slate-200">
+            <p className="text-slate-500 text-sm">No timers found matching your criteria</p>
+            <button
+              onClick={() => { setFilter('all'); setSearchTerm(''); }}
+              className="mt-2 text-indigo-600 text-sm hover:underline"
+            >
+              Clear filters
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {filteredTimers.map((timer) => (
+              <div
+                key={timer.id}
+                className="bg-white p-4 rounded-xl border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all duration-200"
+              >
+                <div className="flex flex-col sm:flex-row justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-slate-900 font-medium text-sm truncate">
+                        {timer.name}
                       </span>
-                    )}
+                      <span className={`text-[10px] px-2 py-0.5 rounded font-medium ${
+                        timer.type === 'preset'
+                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                          : timer.type === 'countdown'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-amber-50 text-amber-700 border border-amber-200'
+                      }`}>
+                        {timer.type}
+                      </span>
+                      {timer.duration >= 3600 && (
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                          Long
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-3 text-xs text-slate-500 mt-1.5">
+                      <span className="flex items-center gap-1">
+                        <FiClock size={12} className="text-slate-400" />
+                        {formatTime(timer.duration).short}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <FiCalendar size={12} className="text-slate-400" />
+                        {new Date(timer.completedAt).toLocaleDateString()}
+                      </span>
+                      <span className="text-slate-400">
+                        {new Date(timer.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-3 text-xs text-slate-500 mt-1.5">
-                    <span className="flex items-center gap-1">
-                      <FiClock size={12} className="text-slate-400" />
-                      {formatTime(timer.duration).short}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-medium">
+                      Complete
                     </span>
-                    <span className="flex items-center gap-1">
-                      <FiCalendar size={12} className="text-slate-400" />
-                      {new Date(timer.completedAt).toLocaleDateString()}
-                    </span>
-                    <span className="text-slate-400">
-                      {new Date(timer.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <span className="text-emerald-600">
+                      <FiBarChart2 size={14} />
                     </span>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5  border border-emerald-200 font-medium">
-                    Complete
-                  </span>
-                  <span className="text-emerald-600">
-                    <FiBarChart2 size={14} />
-                  </span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      {/* Footer Summary */}
-      {filteredTimers.length > 0 && (
-        <div className="flex justify-between items-center text-xs text-slate-400 border-t border-slate-200 pt-3 mt-2">
-          <span>
-            Showing {filteredTimers.length} of {completedTimers.length} timers
-          </span>
-          <span>
-            Total time: {Math.floor(stats.totalTime / 3600)}h {Math.floor((stats.totalTime % 3600) / 60)}m
-          </span>
-        </div>
-      )}
+        {/* Footer Summary */}
+        {filteredTimers.length > 0 && (
+          <div className="flex justify-between items-center text-xs text-slate-400 border-t border-slate-200 pt-3 mt-2">
+            <span>
+              Showing {filteredTimers.length} of {completedTimers.length} timers
+            </span>
+            <span>
+              Total time: {Math.floor(stats.totalTime / 3600)}h {Math.floor((stats.totalTime % 3600) / 60)}m
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
