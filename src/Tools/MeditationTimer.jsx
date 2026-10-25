@@ -4,7 +4,7 @@
 //
 // Design notes (senior-dev pass):
 //   • Deep indigo → spiritual violet layered gradient with soft grain
-//   • Central breathing circle pulses at 4s cycles (15 breaths/min)
+//   • Central breathing circle pulses at 4s cycles (about 7.5 breaths/min)
 //   • Elegant tabular-nums timer with subtle letter-spacing
 //   • Minimal control bar: Start / Pause / Reset
 //   • Ambient audio mixer: Zen Bells + Tibetan Bowls (Web Audio API synthesized)
@@ -18,10 +18,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Layout/Footer";
-import Seo from "../components/Seo";
 
-const SITE_URL = "https://timecounterpro.com";
 const SESSION_SECONDS = 5 * 60;
 
 function formatTime(seconds) {
@@ -41,28 +38,9 @@ const relatedTools = [
 // MAIN PAGE
 // ═════════════════════════════════════════════════════════════════════════════
 export default function MeditationPage() {
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        name: "5-Minute Meditation Timer",
-        url: `${SITE_URL}/meditation`,
-        applicationCategory: "HealthApplication",
-        operatingSystem: "All",
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      },
-    ],
-  };
 
   return (
     <>
-      <Seo
-        title="5-Minute Meditation Timer - Free Mindfulness Breathing Guide"
-        description="A free 5-minute guided meditation timer with a breathing circle, Zen bells and Tibetan bowl ambience. Calm your mind in five quiet minutes."
-        path="/meditation"
-        schema={schema}
-      />
 
       {/* ═══════════════ TIMER + NAVBAR (dark, immersive) ═══════════════ */}
       <MeditationTimer />
@@ -109,8 +87,8 @@ export default function MeditationPage() {
             </h3>
             <p className="text-[15px] sm:text-base leading-7 sm:leading-8 text-slate-600">
               The glowing circle on this page breathes with you — expanding for
-              four seconds, contracting for four. That's roughly fifteen breaths
-              per minute, the rhythm most commonly associated with calm,
+              four seconds, contracting for four. That's roughly seven to eight breaths
+              per minute, a slow rhythm often used to settle into calm,
               focused states. Inhale as the circle grows. Exhale as it shrinks.
               Don't force it. Your breath will find the rhythm on its own, and
               once it does, the timer quietly disappears from your awareness.
@@ -216,8 +194,6 @@ export default function MeditationPage() {
         </div>
       </section>
 
-      {/* ═══════════════ FOOTER ═══════════════ */}
-      <Footer />
     </>
   );
 }

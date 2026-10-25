@@ -6,10 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
-      NOTE ON SEO
-      -----------
-      Prerender engine uses this file to build clean static HTML per route.
-      Per-route titles and descriptions are injected dynamically via src/components/Seo.jsx.
+      SEO NOTE
+      --------
+      This file is the template. src/scripts/prerender.mjs renders every route
+      into full static HTML at build time; per-page title, description,
+      canonical and JSON-LD come from src/components/Seo.jsx and
+      src/data/siteRoutes.js.
+      The AdSense script is NOT here: it is added only on the 10 ad-enabled
+      pages (see src/config/ads.js). The meta tag below only proves site ownership.
     -->
     <title>TimeCounterPro - Free Online Countdown Timer, Pomodoro & Stopwatch</title>
     <meta
@@ -35,13 +39,6 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Google AdSense -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8793114997971427"
-      crossorigin="anonymous"
-    ></script>
   </head>
   <body>
     <div id="root"></div>

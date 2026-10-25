@@ -1,21 +1,10 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
 
-const SITE_URL = "https://timecounterpro.com";
 const CONTACT_EMAIL = "timecounterpro@gmail.com";
 
 function PrivacyPolicy() {
   return (
     <>
-      <Helmet>
-        <title>Privacy Policy | TimeCounterPro</title>
-        <meta
-          name="description"
-          content="Read the TimeCounterPro Privacy Policy to understand browser storage, analytics, advertising, contact information and third-party services used by the website."
-        />
-        <link rel="canonical" href={`${SITE_URL}/privacy`} />
-        <meta name="robots" content="index,follow" />
-      </Helmet>
 
       <main className="min-h-screen bg-slate-50 px-3 py-8 sm:px-5 sm:py-10 lg:px-8">
         <article className="mx-auto w-full max-w-4xl">

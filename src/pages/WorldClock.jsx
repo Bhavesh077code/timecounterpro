@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Helmet } from "react-helmet-async";
 
 const CITIES = [
   { city: "Kathmandu", country: "Nepal", timeZone: "Asia/Kathmandu" },
@@ -218,47 +217,6 @@ export default function WorldClock() {
 
   return (
     <>
-      <Helmet>
-        <title>World Clock - Current Time Around the World | TimeCounterPro</title>
-
-        <meta
-          name="description"
-          content="Check the current local time in cities around the world. Compare time zones, see time differences, working hours and UTC offsets with TimeCounterPro World Clock."
-        />
-
-        <link
-          rel="canonical"
-          href="https://timecounterpro.com/world-clock"
-        />
-
-        <meta
-          property="og:title"
-          content="World Clock - Current Time Around the World"
-        />
-
-        <meta
-          property="og:description"
-          content="Compare current times and time zones around the world with TimeCounterPro World Clock."
-        />
-
-        <meta
-          property="og:url"
-          content="https://timecounterpro.com/world-clock"
-        />
-
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "TimeCounterPro World Clock",
-            url: "https://timecounterpro.com/world-clock",
-            applicationCategory: "UtilitiesApplication",
-            operatingSystem: "Web",
-            description:
-              "A world clock for checking current time, UTC offsets and time differences between cities.",
-          })}
-        </script>
-      </Helmet>
 
       <main className="min-h-screen bg-white px-4 py-8">
         <div className="mx-auto max-w-6xl">

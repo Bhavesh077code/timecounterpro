@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Layout/Footer";
 
@@ -12,6 +13,7 @@ const Animation = () => {
   const [musicOn, setMusicOn] = useState(false);
   const [withering, setWithering] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   const audioRef = useRef(null);
   const timerRef = useRef(null);
@@ -21,9 +23,24 @@ const Animation = () => {
   const progress = Math.min(1, Math.max(0, elapsed / SESSION_SECONDS));
 
   /* =========================================================
-     🖥️ FULLSCREEN
+     🌿 PREFERS-REDUCED-MOTION (client only)
+     ========================================================= */
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduceMotion(mq.matches);
+    const handler = (e) => setReduceMotion(e.matches);
+    if (mq.addEventListener) mq.addEventListener("change", handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", handler);
+    };
+  }, []);
+
+  /* =========================================================
+     🖥️ FULLSCREEN (SSR-safe)
      ========================================================= */
   const toggleFullscreen = () => {
+    if (typeof document === "undefined") return;
     const el = heroRef.current || document.documentElement;
     if (!document.fullscreenElement) {
       (
@@ -41,6 +58,7 @@ const Animation = () => {
   };
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     const handler = () =>
       setIsFullscreen(
         !!(document.fullscreenElement || document.webkitFullscreenElement)
@@ -52,6 +70,33 @@ const Animation = () => {
       document.removeEventListener("webkitfullscreenchange", handler);
     };
   }, []);
+
+  /* =========================================================
+     ⌨️ KEYBOARD SHORTCUTS (F fullscreen, M music, Space pause)
+     ========================================================= */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onKey = (e) => {
+      const tag = e.target && e.target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || e.target?.isContentEditable) return;
+      if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+      if (e.key === "m" || e.key === "M") {
+        e.preventDefault();
+        setMusicOn((m) => !m);
+      }
+      if (e.code === "Space") {
+        if (stage === "dead") return;
+        e.preventDefault();
+        setIsRunning((r) => !r);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
 
   /* -----------------------------------------
      Timer
@@ -82,13 +127,15 @@ const Animation = () => {
     if (!audioRef.current) return;
     if (musicOn) {
       audioRef.current.volume = 0.3;
-      audioRef.current.play().catch(() => {});
+      const p = audioRef.current.play();
+      if (p && p.catch) p.catch(() => {});
     } else {
       audioRef.current.pause();
     }
   }, [musicOn]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const handler = (e) => {
       if (isRunning) {
         e.preventDefault();
@@ -102,7 +149,7 @@ const Animation = () => {
 
   /* -----------------------------------------
      Handlers
-  ----------------------------------------- */
+     ----------------------------------------- */
   const handleStart = () => {
     if (stage === "dead") {
       setStage("seed");
@@ -145,7 +192,7 @@ const Animation = () => {
       {/* =========================================================
           🧭 NAVBAR
          ========================================================= */}
-      <Navbar />
+      {!isFullscreen && <Navbar />}
 
       {/* =========================================================
           🌲 HERO — MYSTICAL FOREST TIMER
@@ -153,8 +200,9 @@ const Animation = () => {
       <section
         ref={heroRef}
         className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden"
+        aria-label="Focus Forest 10-minute tree-growing timer"
       >
-        {/* ============ MYSTICAL FOREST BACKGROUND ============ */}
+        {/* ============ BACKGROUND LAYERS ============ */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
           style={{
@@ -168,6 +216,7 @@ const Animation = () => {
           viewBox="0 0 1200 800"
           preserveAspectRatio="xMidYMid slice"
           style={{ filter: "blur(3px)" }}
+          aria-hidden="true"
         >
           <g opacity="0.55" fill="#021a0d">
             {[...Array(20)].map((_, i) => {
@@ -229,45 +278,78 @@ const Animation = () => {
           }}
         />
 
-        {[...Array(22)].map((_, i) => (
-          <span
-            key={`bgff-${i}`}
-            className="pointer-events-none absolute rounded-full z-0"
-            style={{
-              width: 2 + (i % 3),
-              height: 2 + (i % 3),
-              background: "#a7f3d0",
-              boxShadow: "0 0 8px #34d399, 0 0 16px #34d399",
-              left: `${(i * 37) % 100}%`,
-              top: `${(i * 53) % 100}%`,
-              animation: `firefly ${4 + (i % 4)}s ease-in-out infinite`,
-              animationDelay: `${(i % 5) * 0.6}s`,
-              opacity: 0.35 + (i % 3) * 0.2,
-            }}
-          />
-        ))}
+        {!reduceMotion &&
+          [...Array(22)].map((_, i) => (
+            <span
+              key={`bgff-${i}`}
+              aria-hidden="true"
+              className="pointer-events-none absolute rounded-full z-0"
+              style={{
+                width: 2 + (i % 3),
+                height: 2 + (i % 3),
+                background: "#a7f3d0",
+                boxShadow: "0 0 8px #34d399, 0 0 16px #34d399",
+                left: `${(i * 37) % 100}%`,
+                top: `${(i * 53) % 100}%`,
+                animation: `firefly ${4 + (i % 4)}s ease-in-out infinite`,
+                animationDelay: `${(i % 5) * 0.6}s`,
+                opacity: 0.35 + (i % 3) * 0.2,
+              }}
+            />
+          ))}
 
         {/* ============ TOP BAR ============ */}
         <div className="absolute top-5 left-0 right-0 flex items-center justify-between px-6 z-20">
           <div className="flex items-center gap-2 text-emerald-300/90 text-xs tracking-[0.3em] uppercase">
-            <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] animate-pulse" />
+            <span
+              className={`inline-block h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] ${
+                reduceMotion ? "" : "animate-pulse"
+              }`}
+            />
             Focus Forest
           </div>
           <button
             onClick={() => setMusicOn((m) => !m)}
+            aria-pressed={musicOn}
+            aria-label={musicOn ? "Turn lo-fi music off" : "Turn lo-fi music on"}
             className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-900/30 px-4 py-2 text-[10px] uppercase tracking-[0.25em] text-emerald-200 backdrop-blur hover:bg-emerald-800/40 transition"
           >
             {musicOn ? "🔊 Lo-Fi On" : "🔈 Lo-Fi Off"}
           </button>
         </div>
 
-        <div className="relative z-10 flex flex-col items-center gap-8">
+        <div className="relative z-10 flex flex-col items-center gap-6">
+          {/* ===== H1 + lead (SSR-safe, fixes prerender h1=false) ===== */}
+          <nav
+            aria-label="Breadcrumb"
+            className="w-full max-w-3xl text-[11px] text-emerald-300/70 tracking-[0.2em] uppercase flex items-center justify-center gap-2"
+          >
+            <Link to="/" className="hover:text-emerald-200">Home</Link>
+            <span aria-hidden="true">/</span>
+            <Link to="/create" className="hover:text-emerald-200">Timers</Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-emerald-200">10-Minute Timer</span>
+          </nav>
+
+          <header className="text-center max-w-3xl px-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-emerald-50 leading-tight">
+              10-Minute Focus Timer That Grows a Tree — Free Online Countdown
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-emerald-200/80 leading-relaxed">
+              A free, distraction-free 10-minute timer for studying, deep work, workouts
+              and quick focus sprints. Plant a seed, watch it grow into a glowing tree as
+              the clock counts down, and keep your streak alive. If you leave early, the
+              tree withers — simple, human accountability in your browser.
+            </p>
+          </header>
+
           <div className="relative h-[360px] w-[360px] sm:h-[420px] sm:w-[420px] flex items-center justify-center">
-            {/* HUGE GLOWING NEON RING */}
+            {/* RING */}
             <svg
               viewBox="0 0 400 400"
               className="absolute inset-0 h-full w-full"
               style={{ overflow: "visible" }}
+              aria-hidden="true"
             >
               <defs>
                 <linearGradient id="ringCore" x1="0" y1="0" x2="1" y2="1">
@@ -282,13 +364,7 @@ const Animation = () => {
                   <stop offset="88%" stopColor="rgba(134,239,172,.65)" />
                   <stop offset="100%" stopColor="rgba(74,222,128,0)" />
                 </radialGradient>
-                <filter
-                  id="ringGlow"
-                  x="-50%"
-                  y="-50%"
-                  width="200%"
-                  height="200%"
-                >
+                <filter id="ringGlow" x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur stdDeviation="8" result="blur1" />
                   <feGaussianBlur stdDeviation="20" result="blur2" />
                   <feGaussianBlur stdDeviation="40" result="blur3" />
@@ -301,14 +377,7 @@ const Animation = () => {
                 </filter>
               </defs>
 
-              <circle
-                cx="200"
-                cy="200"
-                r="180"
-                fill="url(#ringHalo)"
-                opacity="0.9"
-              />
-
+              <circle cx="200" cy="200" r="180" fill="url(#ringHalo)" opacity="0.9" />
               <g filter="url(#ringGlow)">
                 <circle
                   cx="200"
@@ -321,7 +390,6 @@ const Animation = () => {
                   opacity="0.95"
                 />
               </g>
-
               <circle
                 cx="200"
                 cy="200"
@@ -339,22 +407,32 @@ const Animation = () => {
                 stage={stage}
                 withering={withering}
                 progress={progress}
+                reduceMotion={reduceMotion}
               />
-              <div className="mt-1 text-4xl sm:text-5xl font-light tabular-nums text-emerald-50 tracking-[0.15em] drop-shadow-[0_0_20px_rgba(52,211,153,.7)]">
+              <div
+                role="timer"
+                aria-live="polite"
+                aria-atomic="true"
+                aria-label={`Time remaining: ${formatTime(timeLeft)}`}
+                className="mt-1 text-4xl sm:text-5xl font-light tabular-nums text-emerald-50 tracking-[0.15em] drop-shadow-[0_0_20px_rgba(52,211,153,.7)]"
+              >
                 {formatTime(timeLeft)}
               </div>
               <div className="mt-1 text-[10px] uppercase tracking-[0.4em] text-emerald-400/80">
-                {isRunning
-                  ? "growing"
-                  : stage === "dead"
-                    ? "withered"
-                    : "paused"}
+                {isRunning ? "growing" : stage === "dead" ? "withered" : "paused"}
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-3 text-emerald-300/70 text-xs tracking-[0.2em]">
-            <span className="h-1.5 w-40 rounded-full bg-emerald-900/60 overflow-hidden">
+            <span
+              className="h-1.5 w-40 rounded-full bg-emerald-900/60 overflow-hidden"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress * 100)}
+              aria-label="Focus session progress"
+            >
               <span
                 className="block h-full rounded-full bg-gradient-to-r from-emerald-400 via-lime-300 to-teal-300 transition-all duration-700 shadow-[0_0_10px_rgba(163,230,53,.7)]"
                 style={{ width: `${progress * 100}%` }}
@@ -398,42 +476,55 @@ const Animation = () => {
             )}
           </div>
 
-          {/* 🖥️ FULLSCREEN BUTTON — BELOW CONTROLS */}
           <div className="flex items-center justify-center">
             <button
               onClick={toggleFullscreen}
+              aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               className="group flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/40 px-5 py-2.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.3em] text-emerald-200 backdrop-blur hover:bg-emerald-900/60 hover:border-emerald-300 transition"
             >
               {isFullscreen ? (
                 <>
-                  <span className="text-emerald-300">⤡</span>
+                  <span className="text-emerald-300" aria-hidden="true">⤡</span>
                   EXIT FULLSCREEN
                 </>
               ) : (
                 <>
-                  <span className="text-emerald-300">⤢</span>
+                  <span className="text-emerald-300" aria-hidden="true">⤢</span>
                   ENTER FULLSCREEN
                 </>
               )}
             </button>
           </div>
+
+          <p className="text-[10px] text-emerald-400/60 tracking-[0.2em] uppercase">
+            Shortcuts:{" "}
+            <kbd className="px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-200">F</kbd>{" "}
+            fullscreen ·{" "}
+            <kbd className="px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-200">M</kbd>{" "}
+            music ·{" "}
+            <kbd className="px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-200">Space</kbd>{" "}
+            pause
+          </p>
         </div>
 
         {showGiveUpModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-[fadeIn_.3s_ease]">
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-[fadeIn_.3s_ease]"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="giveup-title"
+          >
             <div className="w-[90%] max-w-md rounded-3xl border border-rose-400/20 bg-gradient-to-b from-[#1a1214] to-[#0f0a0b] p-8 text-center shadow-2xl">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-rose-500/10 text-4xl">
                 🥀
               </div>
-              <h3 className="mb-2 text-xl font-semibold text-rose-100">
+              <h3 id="giveup-title" className="mb-2 text-xl font-semibold text-rose-100">
                 Don't leave now…
               </h3>
               <p className="mb-6 text-sm leading-relaxed text-rose-200/70">
                 If you leave now, your tree will{" "}
-                <span className="font-semibold text-rose-300">
-                  wither and die
-                </span>
-                . All that growth will be lost.
+                <span className="font-semibold text-rose-300">wither and die</span>. All
+                that growth will be lost.
               </p>
               <div className="flex gap-3">
                 <button
@@ -453,13 +544,13 @@ const Animation = () => {
           </div>
         )}
 
-        <audio ref={audioRef} loop preload="none">
+        <audio ref={audioRef} loop preload="none" aria-label="Lo-fi background music">
           <source src="/sounds/animation.mp3" type="audio/mpeg" />
         </audio>
       </section>
 
       {/* =========================================================
-          📖 ABOUT SECTION
+          📖 ABOUT SECTION (existing, kept as h2)
          ========================================================= */}
       <section className="bg-white text-neutral-800 px-6 sm:px-10 py-24">
         <div className="max-w-3xl mx-auto text-center">
@@ -523,9 +614,336 @@ const Animation = () => {
       </section>
 
       {/* =========================================================
+          🕙 NEW: WHY A 10-MINUTE TIMER?
+         ========================================================= */}
+      <section className="bg-emerald-50 text-neutral-800 px-6 sm:px-10 py-20">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-emerald-700 font-semibold mb-3">
+            The Science of Ten Minutes
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight mb-6">
+            Why 10 Minutes Is the Perfect Focus Block (and When to Use It)
+          </h2>
+          <div className="space-y-4 text-[15px] leading-relaxed text-neutral-700">
+            <p>
+              Ten minutes sounds almost embarrassingly short. Twenty-five minutes
+              (the classic Pomodoro) is the famous number. So why build a whole
+              timer around just 10 minutes? Because the ten-minute block is
+              scientifically the most underrated length for <strong>starting</strong>{" "}
+              hard things, and starting is where most people fail. The hardest
+              part of studying isn't minute 22 — it's minute 0. If you can get
+              ten minutes in, momentum takes over.
+            </p>
+            <p>
+              Behavioral economists call this the <em>Zeigarnik effect</em>: once
+              you start a task, your brain has a nagging urge to finish or at
+              least continue it. A ten-minute commitment is small enough that
+              your resistance melts, but long enough that your brain has switched
+              into "task mode" by the time the timer ends. Most people who plant
+              the seed for ten minutes actually keep going for 25 or 40 — the
+              timer just gets them over the initial cliff.
+            </p>
+            <p>
+              Ten minutes also matches the length of several real-world
+              micro-tasks. It's roughly the time it takes to: read a chapter of
+              a technical textbook, review one set of flashcards, complete a
+              Duolingo streak day, respond to a batch of emails, do a mobility
+              routine, or prep a single interview answer. If you're using a
+              timer for language learning, the "10 minutes of daily Spanish"
+              routine is one of the highest-return habits you can build — and
+              this timer will help you protect those minutes from your phone.
+            </p>
+            <p>
+              Finally, ten minutes is the sweet spot for the "two-minute rule"
+              extended outward. Productivity author James Clear recommends
+              shrinking habits to a two-minute starter version. Ten minutes is
+              the natural second step — a starter session that still feels like
+              real work. Use this timer for your first work block of the morning,
+              your post-lunch restart, or your pre-sleep wind-down routine.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          📚 NEW: HOW TO USE (STEPS)
+         ========================================================= */}
+      <section className="bg-white text-neutral-800 px-6 sm:px-10 py-20">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight mb-6">
+            How to Use the 10-Minute Focus Tree Timer
+          </h2>
+          <ol className="space-y-4 text-[15px] leading-relaxed text-neutral-700 list-decimal pl-5">
+            <li>
+              <strong>Plant the seed.</strong> Click "Plant a Seed". The timer
+              immediately starts counting down from 10:00 and the tree starts
+              growing from the pot.
+            </li>
+            <li>
+              <strong>Put the tab in fullscreen.</strong> Press{" "}
+              <kbd className="px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-800 text-xs">
+                F
+              </kbd>{" "}
+              to enter fullscreen mode — the browser chrome disappears, and you
+              have nothing to look at except your tree and your timer.
+            </li>
+            <li>
+              <strong>Work until the tree completes.</strong> Every 30 seconds
+              a new leaf pops into place. At around the halfway mark, fruit
+              begins to appear at branch tips. At the end, particles lift off
+              the tree to celebrate the completed session.
+            </li>
+            <li>
+              <strong>Don't switch tabs.</strong> If you try to leave, the
+              browser will warn you: "If you leave now, your tree will wither
+              and die." That warning is real accountability — it activates a
+              small but genuine loss-aversion reflex that keeps you seated.
+            </li>
+            <li>
+              <strong>Tap "Give Up" if you truly need to stop.</strong> The tree
+              shrinks back to a dead stick. It's a small consequence, but it's
+              the whole point — you feel it.
+            </li>
+            <li>
+              <strong>Repeat three to six times per day.</strong> The 10-minute
+              timer is designed to be short enough that you'll do it again. Most
+              people stack four sessions into a focused 40-minute hour with
+              short breaks between them.
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      {/* =========================================================
+          🎯 NEW: BEST USE CASES
+         ========================================================= */}
+      <section className="bg-neutral-50 text-neutral-800 px-6 sm:px-10 py-20">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight mb-6">
+            Great Use Cases for a 10-Minute Timer
+          </h2>
+          <p className="text-[15px] leading-relaxed text-neutral-700 mb-6">
+            The 10-minute format fits dozens of real-world tasks. Here are the
+            most popular ways people use this timer:
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14.5px] leading-relaxed text-neutral-700">
+            {[
+              {
+                t: "📖 Studying and revision",
+                d: "Ten minutes is enough to review one chapter, one set of flashcards, or one prior-year question paper's worth of formulas. Stack four sessions for a focused 40 minutes.",
+              },
+              {
+                t: "💻 Deep work warm-up",
+                d: "Use the 10-minute timer to bootstrap your hardest task of the day. By the end you'll almost always keep going — the timer just beats the initial resistance.",
+              },
+              {
+                t: "🏃 Workout intervals",
+                d: "Ten minutes is a complete mobility session, a warm-up, or a beginner-level bodyweight circuit. Combine with the HIIT timer for structured workouts.",
+              },
+              {
+                t: "🧘 Mindful breaks",
+                d: "Ten minutes is a scientifically ideal meditation length. Use it as a deliberate break between hard work blocks.",
+              },
+              {
+                t: "🧹 Home resets",
+                d: "The '10-minute tidy' is a viral housekeeping trend for a reason. Set the timer and clean one zone completely — kitchen counter, bathroom, desk.",
+              },
+              {
+                t: "✍️ Writing and journaling",
+                d: "Ten minutes of free-writing breaks creative blocks. One page a day compounds into 365 pages a year.",
+              },
+              {
+                t: "🎧 Language practice",
+                d: "Ten minutes of Duolingo, Anki, or iTalki is the highest-return daily language habit you can build.",
+              },
+              {
+                t: "🍳 Cooking and prep",
+                d: "Ten minutes is roughly a pasta cook time, a stovetop stir-fry, or a full mise-en-place. Use the timer to coordinate multiple dishes.",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="rounded-lg border border-neutral-200 bg-white p-4"
+              >
+                <p className="font-semibold text-neutral-900 mb-1">{item.t}</p>
+                <p className="text-neutral-600">{item.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          🧠 NEW: PSYCHOLOGY OF ACCOUNTABILITY
+         ========================================================= */}
+      <section className="bg-white text-neutral-800 px-6 sm:px-10 py-20">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight mb-6">
+            The Psychology of a Timer That Dies With You
+          </h2>
+          <div className="space-y-4 text-[15px] leading-relaxed text-neutral-700">
+            <p>
+              Most timer apps are passive — they count down and quietly notify
+              you at zero. Nothing is at stake. If you leave early, nothing
+              happens. And yet leaving early is exactly what most people do. The
+              insight behind Focus Forest is that <strong>loss aversion beats
+              reward</strong> in habit-building. Behavioral research from
+              Kahneman and Tversky showed that people feel losses roughly twice
+              as intensely as gains. If a timer only gives you a small reward
+              for finishing, most people will shrug and leave. But if leaving
+              early kills something you've grown for nine minutes, that loss is
+              felt instantly.
+            </p>
+            <p>
+              The withering tree works on the same principle as a streak app, but
+              in a tighter loop. Instead of losing a 30-day streak (a distant,
+              abstract loss), you lose a visibly living tree in real time. That's
+              why it works even on day one, when there's no streak to protect.
+              The tree you're growing is right in front of you — its leaves
+              unfurl while you watch — and the fear of seeing it die is enough
+              to keep you from clicking over to YouTube.
+            </p>
+            <p>
+              This is also why the "Give Up" flow requires a confirmation modal.
+              Friction on quitting is a well-known commitment device. It's the
+              same reason gyms require you to physically walk out and cancel a
+              membership, not just click a button — the friction gives your
+              rational brain one more chance to override the impulse. The modal
+              in this timer is small, but it's enough to catch the "I'm bored"
+              impulse and convert it into "okay, let me try five more minutes."
+            </p>
+            <p>
+              Finally, the growth metaphor is important. Cognitive psychology
+              shows that people engage longer with tasks that involve visible
+              progress. Watching leaves appear every thirty seconds is a form of
+              small, constant reward — it's what game designers call a
+              "compulsion loop." Done gently (no sound effects, no pop-ups, no
+              flashing), it turns a boring countdown into something you actually
+              want to look at. That visual engagement is a big part of why this
+              timer works where plain countdowns fail.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          🔗 NEW: RELATED TOOLS
+         ========================================================= */}
+      <section className="bg-emerald-50 text-neutral-800 px-6 sm:px-10 py-20">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight mb-6">
+            Related Timers &amp; Tools
+          </h2>
+          <p className="text-[15px] leading-relaxed text-neutral-700 mb-6">
+            Build a complete focus toolkit by pairing this timer with our other
+            free tools:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {[
+              { to: "/pomodoro", label: "Pomodoro Timer", desc: "Classic 25/5 focus cycles for longer work blocks." },
+              { to: "/stopwatch", label: "Online Stopwatch", desc: "Count-up timer for open-ended drills." },
+              { to: "/mock-test-timer", label: "Mock Test Timer", desc: "Sectional exam timer for CAT, GRE, GMAT, JEE, UPSC." },
+              { to: "/hiit-timer", label: "HIIT Timer", desc: "Interval timer for workouts and focus sprints." },
+              { to: "/meditation-timer-with-sound", label: "Meditation Timer", desc: "Guided timing for calm, mindful breaks." },
+              { to: "/fasting-tracker-timer", label: "Fasting Tracker", desc: "Long-range interval timer with adjustable phases." },
+              { to: "/presentation-timer", label: "Presentation Timer", desc: "Rehearse viva, pitches and interviews." },
+              { to: "/world-clock", label: "World Clock", desc: "Coordinate with international study groups." },
+              { to: "/time-card-calculator-online", label: "Time Card Calculator", desc: "Compute total study or work hours." },
+            ].map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="block rounded-md border border-emerald-200 bg-white p-3 hover:border-emerald-400 hover:bg-emerald-100 transition-colors"
+              >
+                <p className="text-sm font-bold text-emerald-900">{link.label}</p>
+                <p className="text-xs text-emerald-700 mt-1">{link.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          ❓ NEW: FAQ
+         ========================================================= */}
+      <section className="bg-white text-neutral-800 px-6 sm:px-10 py-20">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight mb-6">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6">
+            {[
+              {
+                q: "Is this 10-minute timer free to use?",
+                a: "Yes. It's completely free, requires no sign-up, no email, and runs entirely in your browser. No tracking pixels, no ads on the timer itself.",
+              },
+              {
+                q: "What happens to my tree if I close the tab?",
+                a: "You'll see a browser confirmation warning that your tree will die if you leave. If you confirm, the tree is lost, and you'll start fresh next time. This is the entire accountability mechanism — the fear of losing the tree is what keeps you focused.",
+              },
+              {
+                q: "Can I pause the timer?",
+                a: "Yes. Click Pause or press Space. The tree stays exactly where it is; you don't lose progress. Resume when you're ready.",
+              },
+              {
+                q: "Does it work on mobile?",
+                a: "Yes, the layout is fully responsive. For best results, use fullscreen mode (Safari and Chrome both support it on iOS and Android) so notifications don't interrupt you.",
+              },
+              {
+                q: "Why 10 minutes and not 25?",
+                a: "Because starting is the hardest part. Ten minutes is short enough to overcome inertia, long enough to build momentum. Most users naturally extend a 10-minute session to 20 or 40 minutes once they start.",
+              },
+              {
+                q: "Is there really a tree?",
+                a: "It's a hand-crafted SVG animation — a pot, a growing stem, branches, and leaves that unfurl with each passing 30 seconds. By the time the timer ends, you have a full tree with fruit. It's decorative but psychologically real.",
+              },
+              {
+                q: "Can I use this for a workout?",
+                a: "Yes. Ten-minute mobility routines, warm-ups, beginner circuits and stretching sessions all fit. If you need structured intervals, use our dedicated HIIT timer instead.",
+              },
+              {
+                q: "Does the lo-fi music work offline?",
+                a: "The music file is served with the app. Once the page loads, it plays from your browser cache, so it works offline. If the audio file fails to load, the toggle stays silent without breaking the timer.",
+              },
+            ].map((item, i) => (
+              <div key={i} className="border-b border-neutral-200 pb-5 last:border-b-0 last:pb-0">
+                <h3 className="font-semibold text-neutral-900 mb-2 text-base">{item.q}</h3>
+                <p className="text-[14.5px] text-neutral-700 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================
+          💡 NEW: CLOSING CTA
+         ========================================================= */}
+      <section className="bg-emerald-900 text-emerald-50 px-6 sm:px-10 py-16">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl font-semibold mb-3">
+            Ten Minutes Is Enough to Start
+          </h2>
+          <p className="text-[15px] leading-relaxed text-emerald-100/90 mb-6">
+            Scroll back up, plant a seed, and let ten minutes pass without
+            leaving the tab. That's the whole commitment. No email, no sign-up,
+            no productivity system to master. Just you, a timer, and a tree that
+            will either thrive or wither based on what you do next. Bookmark
+            this page and return whenever you need to beat the starting problem
+            again.
+          </p>
+          <Link
+            to="/"
+            className="inline-block rounded-full bg-emerald-400 px-7 py-3 text-sm font-semibold text-emerald-950 hover:bg-emerald-300 transition"
+          >
+            ← Back to All Timers
+          </Link>
+        </div>
+      </section>
+
+      {/* =========================================================
           🦶 FOOTER
          ========================================================= */}
-      <Footer />
+     
 
       <style>{`
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
@@ -563,13 +981,20 @@ const Animation = () => {
           50% { transform: translate(-6px, -20px); opacity: 0.6 }
           75% { transform: translate(12px, -8px); opacity: 0.8 }
         }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
       `}</style>
     </div>
   );
 };
 
 /* ============================================================
-   TREE DATA
+   TREE DATA (unchanged)
    ============================================================ */
 function seededRand(seed) {
   const x = Math.sin(seed * 12.9898) * 43758.5453;
@@ -700,9 +1125,9 @@ const Fruit = ({ type }) => {
 };
 
 /* ============================================================
-   PLANT VISUAL
+   PLANT VISUAL (added reduceMotion prop, aria-hidden on decorative bits)
    ============================================================ */
-const PlantVisual = ({ stage, withering, progress }) => {
+const PlantVisual = ({ stage, withering, progress, reduceMotion }) => {
   const stemHeight = progress * 80;
   const stemTopY = 148 - stemHeight;
 
@@ -712,16 +1137,18 @@ const PlantVisual = ({ stage, withering, progress }) => {
       style={{
         width: 200,
         height: 200,
-        animation: withering ? "witherShake .35s infinite" : "none",
+        animation:
+          withering && !reduceMotion ? "witherShake .35s infinite" : "none",
         transition: "all .6s ease",
         filter: "drop-shadow(0 4px 20px rgba(0,0,0,.5))",
       }}
     >
-      {stage === "tree" && progress > 0.55 && (
+      {!reduceMotion && stage === "tree" && progress > 0.55 && (
         <>
           {[...Array(8)].map((_, i) => (
             <span
               key={`lfall-${i}`}
+              aria-hidden="true"
               className="pointer-events-none absolute"
               style={{
                 left: `${10 + ((i * 11) % 80)}%`,
@@ -740,7 +1167,19 @@ const PlantVisual = ({ stage, withering, progress }) => {
         </>
       )}
 
-      <svg viewBox="0 0 200 200" className="h-full w-full overflow-visible">
+      <svg
+        viewBox="0 0 200 200"
+        className="h-full w-full overflow-visible"
+        role="img"
+        aria-label={`Growing tree: ${Math.round(progress * 100)} percent complete`}
+      >
+        <title>
+          {stage === "dead"
+            ? "Withered tree"
+            : stage === "seed"
+              ? "A seed in a pot, waiting to be planted"
+              : `A tree that has grown to ${Math.round(progress * 100)} percent`}
+        </title>
         <defs>
           <linearGradient id="potBody" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#6b3410" />
@@ -806,12 +1245,14 @@ const PlantVisual = ({ stage, withering, progress }) => {
             <ellipse cx="100" cy="150" rx="5" ry="3.5" fill="#a16207" />
             <ellipse cx="100" cy="150" rx="5" ry="3.5" fill="#facc15" opacity="0.35" />
             <circle cx="100" cy="150" r="12" fill="url(#treeGlow)" opacity="0.7">
-              <animate
-                attributeName="opacity"
-                values="0.2;0.9;0.2"
-                dur="2s"
-                repeatCount="indefinite"
-              />
+              {!reduceMotion && (
+                <animate
+                  attributeName="opacity"
+                  values="0.2;0.9;0.2"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+              )}
             </circle>
           </g>
         )}
@@ -820,7 +1261,9 @@ const PlantVisual = ({ stage, withering, progress }) => {
           <g
             style={{
               animation:
-                stage === "tree" ? "swayTree 6s ease-in-out infinite" : "none",
+                stage === "tree" && !reduceMotion
+                  ? "swayTree 6s ease-in-out infinite"
+                  : "none",
               transformOrigin: "100px 148px",
             }}
           >
@@ -875,7 +1318,8 @@ const PlantVisual = ({ stage, withering, progress }) => {
                     style={{
                       opacity: visible ? 1 : 0,
                       transformOrigin: `${leaf.cx}px ${leaf.cy}px`,
-                      animation: visible ? "leafPop .5s ease" : "none",
+                      animation:
+                        visible && !reduceMotion ? "leafPop .5s ease" : "none",
                       transition: "opacity .3s ease",
                     }}
                   />
@@ -892,9 +1336,10 @@ const PlantVisual = ({ stage, withering, progress }) => {
                     style={{
                       opacity: visible ? 1 : 0,
                       transformOrigin: `${f.cx}px ${f.cy}px`,
-                      animation: visible
-                        ? "fruitPop .7s cubic-bezier(.34,1.6,.4,1)"
-                        : "none",
+                      animation:
+                        visible && !reduceMotion
+                          ? "fruitPop .7s cubic-bezier(.34,1.6,.4,1)"
+                          : "none",
                       transition: "opacity .4s ease",
                       filter: "drop-shadow(0 0 3px rgba(251,146,60,.9))",
                     }}
@@ -904,7 +1349,7 @@ const PlantVisual = ({ stage, withering, progress }) => {
                 );
               })}
 
-            {progress > 0.65 && (
+            {!reduceMotion && progress > 0.65 && (
               <>
                 {[...Array(12)].map((_, i) => (
                   <circle

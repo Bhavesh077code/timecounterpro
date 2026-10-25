@@ -1,20 +1,14 @@
-// scripts/generate-sitemap.mjs
-//
-// Replaces src/utils/generateSitemap.js.
-//
-// The old version kept its own hard-coded list of curated slugs, separate from
-// the list used by the app, so the two could drift apart. Everything now comes
-// from src/data/siteRoutes.js.
-
+// src/scripts/generate-sitemap.mjs
+// Builds sitemap.xml from src/data/siteRoutes.js (indexable pages only).
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { allRoutes, SITE_URL } from "../data/siteRoutes.js";
+import { sitemapRoutes, SITE_URL } from "../data/siteRoutes.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const today = new Date().toISOString().split("T")[0];
 
-const body = allRoutes
+const body = sitemapRoutes
   .map(
     (route) =>
       `  <url>\n` +
@@ -28,9 +22,7 @@ const body = allRoutes
 
 const sitemap =
   `<?xml version="1.0" encoding="UTF-8"?>\n` +
-  `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  `${body}\n` +
-  `</urlset>\n`;
+  `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
 
 for (const target of [
   path.join(__dirname, "../../dist/sitemap.xml"),
@@ -44,5 +36,4 @@ for (const target of [
     console.warn(`sitemap skipped ${target}: ${err.message}`);
   }
 }
-
-console.log(`Sitemap contains ${allRoutes.length} URLs.`);
+console.log(`Sitemap contains ${sitemapRoutes.length} URLs.`);

@@ -1,248 +1,247 @@
+
 // src/data/siteRoutes.js
+//
+// SINGLE SOURCE OF TRUTH for every public page on TimeCounterPro.
+//
+// It feeds:
+//   - <Seo> (title, description, canonical, robots, JSON-LD)       -> src/components/Seo.jsx
+//   - the build-time prerender (static HTML per route)             -> src/scripts/prerender.mjs
+//   - sitemap.xml                                                  -> src/scripts/generate-sitemap.mjs
+//   - ad eligibility (which pages may load AdSense)                -> src/config/ads.js
+//
+// Site focus: 10 traffic pages + 4 trust pages (About, Contact, Privacy, Terms).
+// Everything else was removed because it had no realistic search demand
+// and made the site look thin to AdSense reviewers.
 
 export const SITE_URL = "https://timecounterpro.com";
 
 export const staticRoutes = [
-  // ============================================
-  // CORE PAGES
-  // ============================================
+  // ============================================================
+  // 10 TRAFFIC PAGES  (indexed, ads allowed)
+  // ============================================================
   {
     path: "/",
-    title: "100% Free Online Timer - Countdown Clock & Stopwatch",
+    name: "Online Countdown Timer",
+    title: "Online Countdown Timer - Free Timer, Stopwatch & Pomodoro",
     description:
-      "Looking for a reliable timer? Use TimeCounterPro for a free online countdown, Pomodoro tracker, and stopwatch. Clean, fast, and no registration required!",
+      "Set a free online countdown timer in seconds. Fullscreen display, alarm sounds, shareable links and history. No sign-up, no download, works on any device.",
+    appCategory: "UtilitiesApplication",
     priority: "1.0",
     changefreq: "weekly",
+    ads: true,
+    related: ["/pomodoro", "/stopwatch", "/presentation-timer", "/world-clock"],
   },
-  {
-    path: "/create",
-    title: "Create Custom Timer Online (Free) - Design Your Own Countdown",
-    description:
-      "Make a custom countdown timer in seconds! ⚡ Fully personalize names, 🎨 custom colors, 🔊 premium alarms & loops. Free, fullscreen, and perfect for any event.",
-    priority: "0.9",
-    changefreq: "weekly",
-  },
-
-  // ============================================
-  // STUDY & PRODUCTIVITY TIMERS
-  // ============================================
   {
     path: "/pomodoro",
-    title: "Pomodoro Timer Online - Beat Procrastination & Stay Focused",
+    name: "Pomodoro Timer",
+    title: "Pomodoro Timer Online - Free 25/5 Focus Timer with Sounds",
     description:
-      "Boost your focus instantly with our free Pomodoro timer. Fully customizable 25/5 minute intervals with desktop alert sounds to maximize your productivity.",
-    priority: "0.9",
+      "Free online Pomodoro timer with 25-minute focus sessions and 5-minute breaks. Sound alerts, session count and daily focus stats. No sign-up needed.",
+    appCategory: "ProductivityApplication",
+    priority: "0.95",
     changefreq: "weekly",
-  },
-  {
-    path: "/meditation-timer-with-sound",
-    title: "5-Min Meditation Timer with Sound (Free) - Deep Calm & Focus",
-    description:
-      "Relax instantly with our free online mindfulness clock. 🧘 Enjoy soothing ambient music, 🌧️ soft rain sounds, and an animated breathing guide for deep focus.",
-    priority: "0.9",
-    changefreq: "weekly",
+    ads: true,
+    related: ["/", "/stopwatch", "/meditation-timer-with-sound", "/mock-test-timer"],
   },
   {
     path: "/stopwatch",
-    title: "Online Stopwatch - Precise Chronometer with Lap Times",
+    name: "Online Stopwatch",
+    title: "Online Stopwatch - Free Stopwatch with Lap Timer",
     description:
-      "Track time down to the millisecond! An accurate online stopwatch with unlimited lap splits. Perfect for runners, athletes, and workplace efficiency.",
-    priority: "0.9",
+      "Free online stopwatch with hundredth-of-a-second precision and unlimited laps. Start, pause, split and reset in one click. No download or sign-up.",
+    appCategory: "UtilitiesApplication",
+    priority: "0.95",
     changefreq: "weekly",
-  },
-  {
-    path: "/mock-test-timer",
-    title: "Exam Sectional Mock Test Timer - Practice CAT, JEE, UPSC Online",
-    description:
-      "Simulate real exam portals! Free sectional mock test timer with auto-locking screens and warning buzzers for competitive exams like CAT, JEE, GRE, and UPSC.",
-    priority: "0.85",
-    changefreq: "weekly",
-  },
-  {
-    path: "/group-study-timer",
-    title: "Group Study Multi-Timer Grid - 4 Clocks on One Screen",
-    description:
-      "Manage multiple tasks at once! A unique 2x2 multi-timer grid for virtual classrooms and group studies. Run 4 independent countdowns simultaneously.",
-    priority: "0.8",
-    changefreq: "weekly",
-  },
-
-  // ============================================
-  // FITNESS & HEALTH TIMERS
-  // ============================================
-  {
-    path: "/hiit-timer",
-    title: "HIIT & Tabata Interval Timer - Custom Work Rest Countdown",
-    description:
-      "Crush your fitness goals! Free online interval timer for HIIT, Tabata, and home gym workouts. Easily adjust rounds, work cycles, and recovery periods.",
-    priority: "0.9",
-    changefreq: "weekly",
-  },
-  {
-    path: "/fasting-tracker-timer",
-    title: "Intermittent Fasting Tracker Clock - Free 16:8 & 18:6 Fast Timer",
-    description:
-      "Track your fasting window effortlessly. Features preset clocks for 16:8, 18:6, and 20:4 fasting protocols, water tracking, and a live progress calendar.",
-    priority: "0.9",
-    changefreq: "weekly",
-  },
-
-  // ============================================
-  // STREAMING & ESPORTS TIMERS
-  // ============================================
-  {
-    path: "/stream-timer",
-    title: "Twitch & OBS Stream Countdown Overlay - Chroma Green Screen",
-    description:
-      "Upgrade your stream quality! Free countdown overlay for OBS Studio and Twitch. Features hotkey support, black/green background controls, and quick embed codes.",
-    priority: "0.8",
-    changefreq: "weekly",
-  },
-  {
-    path: "/jungle-timer",
-    title: "MOBA Esports Jungle Buff Timer - Live Respawn Tracker",
-    description:
-      "Never lose an objective! Multi-target jungle clock for League of Legends, Dota 2, and Wild Rift. Tracks Baron, Dragon, and Buff camps simultaneously.",
-    priority: "0.8",
-    changefreq: "weekly",
-  },
-
-  // ============================================
-  // GAMING TIMERS
-  // ============================================
-  {
-    path: "/gameplay-timer",
-    title: "Arcade Game Timer - Test Your Reaction Time Online",
-    description:
-      "Beat the ticking clock! Play 2 interactive mini-games (Tap Target and Simon Says) inside a countdown window to train your focus and hand-eye coordination.",
-    priority: "0.8",
-    changefreq: "weekly",
-  },
-  {
-    path: "/online-rubiks-cube-stopwatch-with-milliseconds",
-    title: "Free Online Rubik's Cube Stopwatch with Milliseconds & Scrambles",
-    description:
-      "A minimalist speedcubing stackmat timer for 3x3 solves. Features standard random scramble generators, spacebar triggers, and fluid millisecond split tracking.",
-    priority: "0.8",
-    changefreq: "weekly",
-  },
-
-  // ============================================
-  // PROFESSIONAL & PRESENTATION TIMERS
-  // ============================================
-  {
-    path: "/presentation-timer",
-    title: "Presentation & Speech Timer - Full Screen Color Alert Clock",
-    description:
-      "Never run out of time on stage! A massive full-screen speech timer that automatically transitions colors (Green → Amber → Red) as your time runs out.",
-    priority: "0.8",
-    changefreq: "weekly",
+    ads: true,
+    related: ["/", "/hiit-timer", "/pomodoro", "/presentation-timer"],
   },
   {
     path: "/world-clock",
-    title: "World Clock Dashboard - Live Global Meeting Time Planner",
+    name: "World Clock",
+    title: "World Clock & Time Zone Converter - Live Meeting Planner",
     description:
-      "Coordinate international meetings instantly! Track current times in major tech hubs (San Francisco, London, Mumbai, Tokyo) with a built-in time slider.",
-    priority: "0.85",
+      "Live world clock with a time zone converter and meeting planner. Compare cities, find overlapping working hours and plan calls across time zones.",
+    appCategory: "UtilitiesApplication",
+    priority: "0.9",
     changefreq: "daily",
-  },
-  {
-    path: "/world-clock-board-timer",
-    title: "Multi-City Time Zone Board - Remote Team Planning Tool",
-    description:
-      "Say goodbye to time zone confusion. Compare multiple global locations side-by-side on an interactive dashboard designed for remote operations.",
-    priority: "0.8",
-    changefreq: "daily",
+    ads: true,
+    related: ["/", "/time-card-calculator-online", "/presentation-timer", "/stopwatch"],
   },
   {
     path: "/time-card-calculator-online",
-    title: "Free Online Time Card Calculator - Employee Hours & Timesheet Clock",
+    name: "Time Card Calculator",
+    title: "Time Card Calculator - Free Timesheet & Overtime Calculator",
     description:
-      "Free online time card calculator to track daily employee hours. Accurate timesheet calculator with breaks, clock in clock out logs, and automatic overtime calculation for payroll management.",
+      "Free time card calculator. Enter clock in, clock out and breaks to get daily and weekly hours, overtime and total pay. Copy your timesheet in seconds.",
+    appCategory: "BusinessApplication",
+    priority: "0.95",
+    changefreq: "weekly",
+    ads: true,
+    related: ["/world-clock", "/stopwatch", "/", "/presentation-timer"],
+  },
+  {
+    path: "/hiit-timer",
+    name: "HIIT & Tabata Timer",
+    title: "HIIT & Tabata Timer - Free Interval Timer Online",
+    description:
+      "Free HIIT and Tabata interval timer. Set work, rest and rounds, hear audio cues and follow your workout on any screen. No app or sign-up needed.",
+    appCategory: "HealthApplication",
     priority: "0.9",
     changefreq: "weekly",
+    ads: true,
+    related: ["/stopwatch", "/fasting-tracker-timer", "/meditation-timer-with-sound", "/"],
   },
-
-  // ============================================
-  // ANIMATION / IMMERSIVE TIMERS
-  // ============================================
   {
-    path: "/focus-timer-plant-growing-animation-10-minutes",
-    title: "10 Minute Study Timer with Virtual Plant Growing Animation",
+    path: "/fasting-tracker-timer",
+    name: "Intermittent Fasting Timer",
+    title: "Intermittent Fasting Timer - Free 16:8 Fasting Tracker",
     description:
-      "Boost deep focus with a free 10-minute countdown clock. Watch a virtual aesthetic seed fluidly bloom into a living tree as you study. No sign-up required.",
-    priority: "0.75",
+      "Free intermittent fasting timer for 16:8, 18:6 and 20:4. See fasting stages, track water and keep a fasting history, saved privately in your browser.",
+    appCategory: "HealthApplication",
+    priority: "0.9",
     changefreq: "weekly",
+    ads: true,
+    related: ["/hiit-timer", "/meditation-timer-with-sound", "/", "/stopwatch"],
   },
   {
-    path: "/orbital-launch-focus-timer",
-    title: "Cyberpunk Orbital Launch Focus Timer - Immersive Space Clock",
+    path: "/mock-test-timer",
+    name: "Mock Test Timer",
+    title: "Mock Test Timer - Sectional Exam Timer for CAT, JEE, UPSC",
     description:
-      "Experience extreme deep work with a gamified sci-fi rocket blast-off clock. Tracks study sessions with real-time plasma thruster animations and spatial audio.",
-    priority: "0.75",
+      "Free sectional mock test timer with locked sections, warning alerts and fullscreen mode. Practise CAT, JEE, GRE, UPSC and other timed exams at home.",
+    appCategory: "EducationalApplication",
+    priority: "0.9",
     changefreq: "weekly",
+    ads: true,
+    related: ["/pomodoro", "/stopwatch", "/meditation-timer-with-sound", "/"],
   },
-
-  // ============================================
-  // LIVE / TRENDING PAGES
-  // ============================================
   {
-    path: "/virat-kohli-century-tracker-live-countdown",
-    title: "Virat Kohli Total Centuries Tracker & Next Match Live Countdown",
+    path: "/presentation-timer",
+    name: "Presentation Timer",
+    title: "Presentation Timer - Full Screen Speech & Talk Countdown",
     description:
-      "Track Virat Kohli's 81 international centuries, real-time ODI stats, and live match countdown overlays. Fast arcade sports timing engine by TimeCounterPro.",
-    priority: "0.8",
-    changefreq: "daily",
+      "Free full-screen presentation timer for talks, speeches and meetings. Pick 5 to 60 minutes; colours shift from green to amber to red as time runs low.",
+    appCategory: "BusinessApplication",
+    priority: "0.9",
+    changefreq: "weekly",
+    ads: true,
+    related: ["/", "/stopwatch", "/world-clock", "/pomodoro"],
+  },
+  {
+    path: "/create",
+    name: "Create Timers",
+    title: "Create Timers - Free Online Stopwatch, Timer and Clock",
+    description:
+      "Free online stopwatch, timer and clock. Set time, split, reset and pause in seconds. No sign-up or download.",
+    appCategory: "UtilitiesApplication",
+    priority: "0.9",
+    changefreq: "weekly",
+    ads: true,
+    related: ["/", "/stopwatch", "/hiit-timer", "/meditation-timer-with-sound"],
+  },
+  {
+    path: "/10-minute-timer",
+    name: "10 Minute Timer",
+    title: "10 Minute Timer - Free Online Stopwatch, Timer and Clock",
+    description:
+      "Free online stopwatch, timer and clock. Set time, split, reset and pause in seconds. No sign-up or download.",
+    appCategory: "UtilitiesApplication",
+    priority: "0.9",
+    changefreq: "weekly",
+    ads: true,
+    related: ["/", "/stopwatch", "/hiit-timer", "/meditation-timer-with-sound"],
+  },
+  {
+    path: "/meditation-timer-with-sound",
+    name: "Meditation Timer",
+    title: "Meditation Timer with Sound - Free Online Breathing Timer",
+    description:
+      "Free meditation timer with a breathing circle, bell and singing-bowl sounds and ambient rain. Quiet 5-minute sessions in your browser, no sign-up.",
+    appCategory: "HealthApplication",
+    priority: "0.9",
+    changefreq: "weekly",
+    ads: true,
+    related: ["/pomodoro", "/hiit-timer", "/fasting-tracker-timer", "/"],
   },
 
-  // ============================================
-  // INFORMATION PAGES
-  // ============================================
+  // ============================================================
+  // TRUST PAGES (indexed, NO ads)
+  // ============================================================
   {
     path: "/about",
-    title: "About Us | TimeCounterPro Productivity Suite",
+    name: "About",
+    title: "About TimeCounterPro - Free Online Timers and Clocks",
     description:
-      "Discover the story behind TimeCounterPro and find out how our high-performance timing tools assist developers, students, and athletes every day.",
+      "Who builds TimeCounterPro, why it exists and how the timers work. A free, privacy-friendly set of online timers, stopwatch and clocks.",
     priority: "0.5",
     changefreq: "monthly",
+    ads: false,
+    info: true,
   },
   {
     path: "/contact",
-    title: "Contact TimeCounterPro - Report Bugs & Suggest Features",
+    name: "Contact",
+    title: "Contact TimeCounterPro - Report a Bug or Suggest a Feature",
     description:
-      "Have an idea for a new timing tool or spotted a bug? Drop us a line. The TimeCounterPro team responds within 48 hours.",
-    priority: "0.5",
+      "Found a bug or want a new timer feature? Contact the TimeCounterPro team. We read every message.",
+    priority: "0.4",
     changefreq: "monthly",
+    ads: false,
+    info: true,
   },
   {
     path: "/privacy",
-    title: "Privacy Policy | How We Protect Your Timer Data",
+    name: "Privacy Policy",
+    title: "Privacy Policy - TimeCounterPro",
     description:
-      "Your privacy is our priority. Read how TimeCounterPro safely manages cookies, browser storage, and locally saved countdown configurations.",
+      "How TimeCounterPro handles cookies, browser storage and advertising. Your timers stay in your own browser.",
     priority: "0.3",
-    changefreq: "yearly",
+    changefreq: "monthly",
+    ads: false,
+    info: true,
   },
   {
     path: "/terms",
-    title: "Terms of Service & Usage Agreements | TimeCounterPro",
+    name: "Terms of Service",
+    title: "Terms of Service - TimeCounterPro",
     description:
-      "Review the standard terms, legal conditions, and acceptable use frameworks governing the open-source timers on TimeCounterPro.",
+      "The terms that apply when you use TimeCounterPro's free online timers, clocks and calculators.",
     priority: "0.3",
-    changefreq: "yearly",
+    changefreq: "monthly",
+    ads: false,
+    info: true,
   },
 ];
 
+// Pages that exist and are prerendered but must never be indexed or monetised.
+export const utilityRoutes = [
+  {
+    path: "/history",
+    name: "Timer History",
+    title: "Timer History - TimeCounterPro",
+    description: "Your completed timers, stored privately in this browser.",
+    noindex: true,
+    ads: false,
+    sitemap: false,
+  },
+];
+
+// Pages that were deleted. Each is 301-redirected to the closest live page
+// (written to dist/_redirects by src/scripts/prerender.mjs) so old links and
+// any link equity are not lost.
+
 export const routeCategories = {
-  core: ["/", "/create", "/pomodoro", "/meditation-timer-with-sound", "/stopwatch", "/world-clock"],
-  study: ["/mock-test-timer", "/group-study-timer"],
-  fitness: ["/hiit-timer", "/fasting-tracker-timer"],
-  gaming: ["/jungle-timer", "/online-rubiks-cube-stopwatch-with-milliseconds", "/gameplay-timer"],
-  streaming: ["/stream-timer"],
-  professional: ["/presentation-timer", "/world-clock-board-timer", "/time-card-calculator-online"],
+  core: ["/", "/create", "/pomodoro", "/stopwatch", "/world-clock"],
+  study: ["/mock-test-timer","10-minutes-timer", "/meditation-timer-with-sound", "/presentation-timer"],
+  health: ["/hiit-timer", "/fasting-tracker-timer"],
+  work: ["/time-card-calculator-online"],
   info: ["/about", "/contact", "/privacy", "/terms"],
-  animation: ["/focus-timer-plant-growing-animation-10-minutes", "/orbital-launch-focus-timer"],
-  cricket: ["/virat-kohli-century-tracker-live-countdown"],
 };
 
-export const allRoutes = staticRoutes;
+export const allRoutes = [...staticRoutes, ...utilityRoutes];
+export const sitemapRoutes = staticRoutes.filter((r) => r.sitemap !== false && !r.noindex);
+export const trafficRoutes = staticRoutes.filter((r) => !r.info);
+export const adRoutePaths = staticRoutes.filter((r) => r.ads).map((r) => r.path);
+
+export const getRoute = (path) => allRoutes.find((r) => r.path === path);
 export default allRoutes;

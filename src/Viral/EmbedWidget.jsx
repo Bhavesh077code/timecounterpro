@@ -10,7 +10,8 @@ function EmbedWidget() {
   const [showBorder, setShowBorder] = useState(true);
   const [copied, setCopied] = useState(false);
 
-  const embedURL = `${window.location.origin}?view=embed`;
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://timecounterpro.com";
+  const embedURL = `${origin}?view=embed`;
 
   const generateIframeCode = () => {
     const borderStyle = showBorder ? 'border:1px solid #e2e8f0;' : 'border:none;';

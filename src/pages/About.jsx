@@ -1,10 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 
-const SITE_URL = "https://timecounterpro.com";
 
 function About() {
+  const toolPaths = {
+    "Countdown Timer": "/",
+    "Pomodoro Timer": "/pomodoro",
+    "Online Stopwatch": "/stopwatch",
+    "World Clock": "/world-clock",
+    "HIIT Timer": "/hiit-timer",
+    "Fasting Timer": "/fasting-tracker-timer",
+    "Mock Test Timer": "/mock-test-timer",
+    "Presentation Timer": "/presentation-timer",
+    "Meditation Timer": "/meditation-timer-with-sound",
+    "Time Card Calculator": "/time-card-calculator-online",
+  };
+
   const tools = [
     {
       name: "Countdown Timer",
@@ -59,18 +70,6 @@ function About() {
       ],
     },
     {
-      name: "World Clock Board",
-      description:
-        "The World Clock Board provides a convenient way to keep multiple locations visible together. Instead of checking different websites repeatedly, users can compare selected locations from one place.",
-      useCases: [
-        "Remote teams",
-        "International businesses",
-        "Travel planning",
-        "Friends and family in different countries",
-        "Online communities",
-      ],
-    },
-    {
       name: "HIIT Timer",
       description:
         "The HIIT Timer is intended for structured work and rest intervals. Users can use timed intervals during exercise sessions where alternating periods need to be clearly separated.",
@@ -80,17 +79,6 @@ function About() {
         "Exercise practice",
         "Circuit training",
         "Fitness routines",
-      ],
-    },
-    {
-      name: "Tabata Timer",
-      description:
-        "The Tabata Timer provides a simple timing structure for activities that use repeated work and rest intervals. It can be used during personal workouts and practice sessions.",
-      useCases: [
-        "Tabata-style workouts",
-        "Interval exercise",
-        "Fitness practice",
-        "Home training",
       ],
     },
     {
@@ -116,17 +104,6 @@ function About() {
       ],
     },
     {
-      name: "Group Study Timer",
-      description:
-        "The Group Study Timer can be used when several people want to follow the same planned study or activity period. It provides a shared timing structure that can make group sessions easier to organize.",
-      useCases: [
-        "Group study",
-        "Classroom activities",
-        "Study groups",
-        "Team practice",
-      ],
-    },
-    {
       name: "Presentation Timer",
       description:
         "The Presentation Timer helps speakers monitor the length of a presentation, speech, lesson or rehearsal. Practicing with a timer can help users understand how much content fits into a planned time period.",
@@ -139,39 +116,6 @@ function About() {
       ],
     },
     {
-      name: "Stream Timer",
-      description:
-        "The Stream Timer provides a timing tool for livestream preparation, broadcasts, content creation and other activities where a visible countdown or duration indicator can be useful.",
-      useCases: [
-        "Livestreams",
-        "Content creation",
-        "Broadcast preparation",
-        "Streaming sessions",
-      ],
-    },
-    {
-      name: "Speedrun Timer",
-      description:
-        "The Speedrun Timer is designed for users who want to measure and compare timed attempts during speedrun practice or other activities where elapsed time and splits are important.",
-      useCases: [
-        "Speedrun practice",
-        "Gaming challenges",
-        "Timed attempts",
-        "Performance comparison",
-      ],
-    },
-    {
-      name: "Gameplay Timer",
-      description:
-        "The Gameplay Timer provides a simple timing utility for gaming sessions, challenges and practice activities. It can help players track a particular duration without needing a separate timer application.",
-      useCases: [
-        "Gaming sessions",
-        "Challenges",
-        "Practice",
-        "Timed gameplay",
-      ],
-    },
-    {
       name: "Meditation Timer",
       description:
         "The Meditation Timer provides a quiet timing experience for users who want to keep track of a meditation or focused breathing session. It is a timing utility and does not provide medical treatment or therapeutic advice.",
@@ -180,6 +124,17 @@ function About() {
         "Breathing practice",
         "Quiet focus",
         "Mindfulness sessions",
+      ],
+    },
+    {
+      name: "Time Card Calculator",
+      description:
+        "The Time Card Calculator turns clock-in, clock-out and lunch times into daily and weekly hours. It applies overtime and double-time multipliers that you can change, and can show an estimated pay total. It is an estimating tool and does not replace your employer's payroll records.",
+      useCases: [
+        "Weekly timesheets",
+        "Checking hours against a payslip",
+        "Freelance and hourly billing",
+        "Overtime estimates",
       ],
     },
   ];
@@ -249,29 +204,6 @@ function About() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          About TimeCounterPro | Free Online Timers, Stopwatch & World Clock
-        </title>
-
-        <meta
-          name="description"
-          content="Learn about TimeCounterPro, why it was created, how its online timers work, available tools, use cases, privacy approach, limitations and frequently asked questions."
-        />
-
-        <link rel="canonical" href={`${SITE_URL}/about`} />
-
-        <meta name="robots" content="index,follow" />
-
-        <meta property="og:title" content="About TimeCounterPro" />
-
-        <meta
-          property="og:description"
-          content="Learn about TimeCounterPro and its collection of practical browser-based timing tools."
-        />
-
-        <meta property="og:url" content={`${SITE_URL}/about`} />
-      </Helmet>
 
       <main className="min-h-screen bg-white text-slate-900">
         <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
@@ -489,7 +421,9 @@ function About() {
                     <div className="min-w-0">
 
                       <h3 className="text-base font-bold">
-                        {tool.name}
+                        <Link to={toolPaths[tool.name] || "/"} className="hover:text-indigo-700 hover:underline">
+                          {tool.name}
+                        </Link>
                       </h3>
 
                       <p className="mt-2 text-sm leading-6 text-slate-600">

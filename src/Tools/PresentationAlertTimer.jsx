@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Layout/Footer';
 
 // ============================================
 // PRESET DURATIONS (minutes)
@@ -287,6 +286,7 @@ const PresentationAlertTimer = () => {
       `}</style>
 
       {!isFullscreen && <Navbar />}
+      <h1 className="sr-only">Presentation Timer: Full Screen Countdown for Talks and Speeches</h1>
 
       <div 
         ref={pageRef}
@@ -768,8 +768,6 @@ const PresentationAlertTimer = () => {
         </div>
       )}
     </div>
-
-       <Footer />
     </div>
   );
 };

@@ -1,637 +1,151 @@
-// scripts/prerender.mjs
+// src/scripts/prerender.mjs
 //
-// WHY THIS EXISTS
-// ---------------
-// TimeCounterPro is a client-side React app. Before this script, every URL
-// on the site served the same empty index.html.
+// WHAT THIS DOES
+// --------------
+// TimeCounterPro is a React single-page app. Without this step every URL would
+// serve an empty <div id="root"></div>, so Googlebot and the AdSense crawler
+// would see "Please enable JavaScript" instead of the page.
 //
-// This script runs after `vite build` and creates a real static HTML file
-// for every route listed in src/data/siteRoutes.js.
+// After `vite build` (client) and `vite build --ssr` (server bundle), this
+// script renders EVERY route with the real React app (tool UI, written guide,
+// FAQ, links) and writes full static HTML:
 //
-// Example:
+//   dist/index.html                 -> /
+//   dist/pomodoro.html              -> /pomodoro   (served at the extensionless URL)
+//   dist/404.html                   -> any unknown URL, with a real 404 status
+//   dist/_redirects                 -> 301s for the removed pages
 //
-//   dist/index.html
-//   dist/create.html
-//   dist/pomodoro.html
-//   dist/meditation-timer-with-sound.html
-//   dist/stopwatch.html
-//
-// This keeps the public URLs extensionless:
-//
-//   https://timecounterpro.com/create
-//   https://timecounterpro.com/pomodoro
-//   https://timecounterpro.com/meditation-timer-with-sound
-//
-// The homepage remains:
-//
-//   https://timecounterpro.com/
-//
-// If Puppeteer is installed, the script performs a full prerender.
-// Otherwise, it creates meta-only HTML shells.
-//
+// No headless Chrome / Puppeteer is needed, so it works on Cloudflare's build
+// machines. The browser then replaces this HTML with the live interactive app.
 
 import fs from "node:fs";
 import path from "node:path";
-import http from "node:http";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { allRoutes, SITE_URL } from "../data/siteRoutes.js";
+import {
+  allRoutes,
+  adRoutePaths,
+  trafficRoutes,
+} from "../data/siteRoutes.js";
+import { ADSENSE_CLIENT } from "../config/ads.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.join(__dirname, "..", "..");
+const distDir = path.join(root, "dist");
+const ssrDir = path.join(root, "dist-ssr");
 
-const distDir = path.join(__dirname, "..", "..", "dist");
+/* ---- Browser globals that some components touch while rendering ---- */
+function makeStorage() {
+  const m = new Map();
+  return {
+    getItem: (k) => (m.has(k) ? m.get(k) : null),
+    setItem: (k, v) => void m.set(k, String(v)),
+    removeItem: (k) => void m.delete(k),
+    clear: () => m.clear(),
+    key: (i) => [...m.keys()][i] ?? null,
+    get length() {
+      return m.size;
+    },
+  };
+}
+globalThis.localStorage = makeStorage();
+globalThis.sessionStorage = makeStorage();
 
-const MIME = {
-  ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript",
-  ".css": "text/css",
-  ".json": "application/json",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".webp": "image/webp",
-  ".mp3": "audio/mpeg",
-  ".txt": "text/plain",
-  ".xml": "application/xml",
-  ".ico": "image/x-icon",
-  ".webmanifest": "application/manifest+json",
-};
+/* ---- Helpers ---- */
+const outputPathFor = (route) =>
+  route === "/" ? path.join(distDir, "index.html") : path.join(distDir, `${route.replace(/^\/+/, "")}.html`);
 
-/* ------------------------------------------------------------------ */
-/* Output path                                                       */
-/* ------------------------------------------------------------------ */
-
-/*
- * IMPORTANT:
- *
- * We intentionally use:
- *
- *   /route -> dist/route.html
- *
- * instead of:
- *
- *   /route -> dist/route/index.html
- *
- * because Cloudflare Pages can turn:
- *
- *   route/index.html
- *
- * into:
- *
- *   /route/
- *
- * which creates the redirect problem you were seeing in Google Search
- * Console.
- *
- * The homepage is the only exception:
- *
- *   / -> dist/index.html
- */
-function outputPathFor(route) {
-  if (route === "/") {
-    return path.join(distDir, "index.html");
-  }
-
-  const cleanRoute = route.replace(/^\/+/, "");
-
-  return path.join(distDir, `${cleanRoute}.html`);
+function stripHeadTags(html) {
+  return html
+    .replace(/<title>[\s\S]*?<\/title>/gi, "")
+    .replace(/<meta\s+name=["']description["'][^>]*>/gi, "")
+    .replace(/<meta\s+name=["']robots["'][^>]*>/gi, "")
+    .replace(/<meta\s+(?:property|name)=["'](?:og|twitter):[^"']+["'][^>]*>/gi, "")
+    .replace(/<link\s+rel=["']canonical["'][^>]*>/gi, "")
+    .replace(/<script[^>]*googlesyndication[^>]*><\/script>/gi, "");
 }
 
-/* ------------------------------------------------------------------ */
-/* Write generated HTML                                               */
-/* ------------------------------------------------------------------ */
+const adScript =
+  `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>`;
 
-function writeHtml(route, html) {
-  const outPath = outputPathFor(route);
-
-  fs.mkdirSync(path.dirname(outPath), {
-    recursive: true,
-  });
-
-  fs.writeFileSync(outPath, html, "utf8");
-}
-
-/* ------------------------------------------------------------------ */
-/* Meta tag injection                                                 */
-/* ------------------------------------------------------------------ */
-
-function escapeHtmlAttribute(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-function injectMeta(html, { path: routePath, title, description }) {
-  /*
-   * Keep homepage canonical with trailing slash.
-   *
-   * Other routes intentionally have NO trailing slash.
-   *
-   * Examples:
-   *
-   * /
-   * /create
-   * /pomodoro
-   * /meditation-timer-with-sound
-   */
-  const canonical =
-    routePath === "/"
-      ? `${SITE_URL}/`
-      : `${SITE_URL}${routePath}`;
-
-  const safeTitle = escapeHtmlAttribute(title);
-  const safeDescription = escapeHtmlAttribute(description);
-  const safeCanonical = escapeHtmlAttribute(canonical);
-
-  let out = html;
-
-  /* -------------------------------------------------------------- */
-  /* Title                                                           */
-  /* -------------------------------------------------------------- */
-
-  const titleTag = `<title>${safeTitle}</title>`;
-
-  if (/<title>[\s\S]*?<\/title>/i.test(out)) {
-    out = out.replace(
-      /<title>[\s\S]*?<\/title>/i,
-      titleTag,
-    );
-  } else {
-    out = out.replace(
-      "</head>",
-      `  ${titleTag}\n  </head>`,
-    );
-  }
-
-  /* -------------------------------------------------------------- */
-  /* Description                                                     */
-  /* -------------------------------------------------------------- */
-
-  const descTag = `<meta name="description" content="${safeDescription}" />`;
-
-  if (
-    /<meta\s+name=["']description["'][\s\S]*?>/i.test(out)
-  ) {
-    out = out.replace(
-      /<meta\s+name=["']description["'][\s\S]*?>/i,
-      descTag,
-    );
-  } else {
-    out = out.replace(
-      "</head>",
-      `  ${descTag}\n  </head>`,
-    );
-  }
-
-  /* -------------------------------------------------------------- */
-  /* Remove existing SEO tags                                       */
-  /* -------------------------------------------------------------- */
-
-  // Remove all existing canonical tags.
-  out = out.replace(
-    /<link\s+rel=["']canonical["'][\s\S]*?>/gi,
-    "",
-  );
-
-  // Remove all existing robots tags.
-  out = out.replace(
-    /<meta\s+name=["']robots["'][\s\S]*?>/gi,
-    "",
-  );
-
-  // Remove existing Open Graph URL/title/description tags.
-  out = out.replace(
-    /<meta\s+property=["']og:(url|title|description)["'][\s\S]*?>/gi,
-    "",
-  );
-
-  /* -------------------------------------------------------------- */
-  /* Add exactly one canonical + robots + Open Graph tags           */
-  /* -------------------------------------------------------------- */
-
-  const seoTags = `
-    <link rel="canonical" href="${safeCanonical}" />
-    <meta name="robots" content="index,follow,max-image-preview:large" />
-    <meta property="og:url" content="${safeCanonical}" />
-    <meta property="og:title" content="${safeTitle}" />
-    <meta property="og:description" content="${safeDescription}" />
-  `;
-
+function buildPage(template, { html, head }, withAds) {
+  let out = stripHeadTags(template);
+  out = out.replace(/<noscript>[\s\S]*?<\/noscript>/i, "");
   out = out.replace(
     "</head>",
-    `${seoTags}\n  </head>`,
+    `    ${head}\n${withAds ? `    ${adScript}\n` : ""}  </head>`,
   );
-
+  out = out.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
   return out;
 }
 
-/* ------------------------------------------------------------------ */
-/* Static server for Puppeteer                                        */
-/* ------------------------------------------------------------------ */
+const textWords = (html) =>
+  html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&[a-z#0-9]+;/gi, " ")
+    .split(/\s+/)
+    .filter(Boolean).length;
 
-/*
- * This local server must understand our new structure:
- *
- *   /pomodoro
- *        ↓
- *   dist/pomodoro.html
- *
- *   /meditation-timer-with-sound
- *        ↓
- *   dist/meditation-timer-with-sound.html
- *
- * Without this logic, Puppeteer would fall back to dist/index.html.
- */
-function startStaticServer(port) {
-  return new Promise((resolve) => {
-    const server = http.createServer((req, res) => {
-      try {
-        const requestUrl = req.url || "/";
-
-        const urlPath = decodeURIComponent(
-          requestUrl.split("?")[0],
-        );
-
-        /* -------------------------------------------------------- */
-        /* Security: prevent paths from escaping dist directory     */
-        /* -------------------------------------------------------- */
-
-        const normalizedPath = path
-          .normalize(urlPath)
-          .replace(/^(\.\.(\/|\\|$))+/, "");
-
-        /* -------------------------------------------------------- */
-        /* Homepage                                                  */
-        /* -------------------------------------------------------- */
-
-        if (normalizedPath === "/" || normalizedPath === "") {
-          const homePath = path.join(
-            distDir,
-            "index.html",
-          );
-
-          if (fs.existsSync(homePath)) {
-            return sendFile(res, homePath);
-          }
-        }
-
-        /* -------------------------------------------------------- */
-        /* Exact requested file                                      */
-        /* -------------------------------------------------------- */
-
-        let filePath = path.join(
-          distDir,
-          normalizedPath,
-        );
-
-        if (
-          fs.existsSync(filePath) &&
-          fs.statSync(filePath).isFile()
-        ) {
-          return sendFile(res, filePath);
-        }
-
-        /* -------------------------------------------------------- */
-        /* Extensionless route -> route.html                         */
-        /* -------------------------------------------------------- */
-
-        const cleanRoute = normalizedPath.replace(
-          /^\/+/,
-          "",
-        );
-
-        if (cleanRoute) {
-          const htmlCandidate = path.join(
-            distDir,
-            `${cleanRoute}.html`,
-          );
-
-          if (fs.existsSync(htmlCandidate)) {
-            return sendFile(res, htmlCandidate);
-          }
-        }
-
-        /* -------------------------------------------------------- */
-        /* Directory route -> index.html                             */
-        /* -------------------------------------------------------- */
-
-        if (
-          fs.existsSync(filePath) &&
-          fs.statSync(filePath).isDirectory()
-        ) {
-          const indexCandidate = path.join(
-            filePath,
-            "index.html",
-          );
-
-          if (fs.existsSync(indexCandidate)) {
-            return sendFile(res, indexCandidate);
-          }
-        }
-
-        /* -------------------------------------------------------- */
-        /* SPA fallback                                              */
-        /* -------------------------------------------------------- */
-
-        const fallback = path.join(
-          distDir,
-          "index.html",
-        );
-
-        if (fs.existsSync(fallback)) {
-          return sendFile(res, fallback);
-        }
-
-        res.writeHead(404, {
-          "Content-Type": "text/plain; charset=utf-8",
-        });
-
-        res.end("Not Found");
-      } catch (error) {
-        console.error(
-          "Static server error:",
-          error,
-        );
-
-        res.writeHead(500, {
-          "Content-Type": "text/plain; charset=utf-8",
-        });
-
-        res.end("Internal Server Error");
-      }
-    });
-
-    server.listen(port, () => {
-      resolve(server);
-    });
-  });
-}
-
-/* ------------------------------------------------------------------ */
-/* Send static file                                                   */
-/* ------------------------------------------------------------------ */
-
-function sendFile(res, filePath) {
-  const extension = path.extname(filePath).toLowerCase();
-
-  res.writeHead(200, {
-    "Content-Type":
-      MIME[extension] ||
-      "application/octet-stream",
-  });
-
-  fs.createReadStream(filePath).pipe(res);
-}
-
-/* ------------------------------------------------------------------ */
-/* Full prerender with Puppeteer                                      */
-/* ------------------------------------------------------------------ */
-
-async function prerenderWithPuppeteer(puppeteer) {
-  const port = 4183;
-
-  const server = await startStaticServer(port);
-
-  const launchOptions = {
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-    ],
-  };
-
-  /*
-   * Optional Chrome path.
-   *
-   * Example:
-   *
-   * PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium npm run build
-   */
-  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-    launchOptions.executablePath =
-      process.env.PUPPETEER_EXECUTABLE_PATH;
-  }
-
-  let browser;
-
-  try {
-    browser = await puppeteer.launch(
-      launchOptions,
-    );
-  } catch (err) {
-    server.close();
-    throw err;
-  }
-
-  let ok = 0;
-
-  try {
-    for (const route of allRoutes) {
-      const page = await browser.newPage();
-
-      /*
-       * Block advertising/analytics requests during prerender.
-       * We don't want ad markup baked into the static HTML.
-       */
-      await page.setRequestInterception(true);
-
-      page.on("request", (request) => {
-        const url = request.url();
-
-        if (
-          /googlesyndication|doubleclick|google-analytics/i.test(
-            url,
-          )
-        ) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      });
-
-      const routePath = route.path;
-
-      /*
-       * Puppeteer visits the extensionless public URL.
-       *
-       * Example:
-       *
-       * http://localhost:4183/meditation-timer-with-sound
-       *
-       * The local server then loads:
-       *
-       * dist/meditation-timer-with-sound.html
-       */
-      await page.goto(
-        `http://localhost:${port}${routePath}`,
-        {
-          waitUntil: "networkidle0",
-          timeout: 45000,
-        },
-      );
-
-      await page.waitForSelector(
-        "#root > *",
-        {
-          timeout: 15000,
-        },
-      );
-
-      let html = await page.content();
-
-      html = injectMeta(
-        html,
-        route,
-      );
-
-      writeHtml(
-        routePath,
-        html,
-      );
-
-      await page.close();
-
-      ok += 1;
-
-      console.log(
-        `  prerendered ${routePath}`,
-      );
-    }
-  } finally {
-    await browser.close();
-    server.close();
-  }
-
-  return ok;
-}
-
-/* ------------------------------------------------------------------ */
-/* Meta-only fallback                                                 */
-/* ------------------------------------------------------------------ */
-
-function prerenderShellsOnly() {
-  const template = fs.readFileSync(
-    path.join(
-      distDir,
-      "index.html",
-    ),
-    "utf8",
-  );
-
-  for (const route of allRoutes) {
-    const html = injectMeta(
-      template,
-      route,
-    );
-
-    writeHtml(
-      route.path,
-      html,
-    );
-  }
-
-  return allRoutes.length;
-}
-
-/* ------------------------------------------------------------------ */
-/* Main                                                               */
-/* ------------------------------------------------------------------ */
-
+/* ---- Main ---- */
 async function main() {
-  /* -------------------------------------------------------------- */
-  /* Make sure Vite build already happened                          */
-  /* -------------------------------------------------------------- */
+  const templatePath = path.join(distDir, "index.html");
+  if (!fs.existsSync(templatePath)) {
+    throw new Error("dist/index.html not found. Run `vite build` first.");
+  }
+  const ssrEntry = path.join(ssrDir, "entry-server.js");
+  if (!fs.existsSync(ssrEntry)) {
+    throw new Error("dist-ssr/entry-server.js not found. Run `vite build --ssr src/entry-server.jsx --outDir dist-ssr` first.");
+  }
 
-  const indexPath = path.join(
-    distDir,
-    "index.html",
-  );
+  const template = fs.readFileSync(templatePath, "utf8");
+  const { render } = await import(pathToFileURL(ssrEntry).href);
+  const adPaths = new Set(adRoutePaths);
+  const trafficPaths = new Set(trafficRoutes.map((r) => r.path));
+  const report = [];
+  let problems = 0;
 
-  if (!fs.existsSync(indexPath)) {
-    console.error(
-      "prerender: dist/index.html not found. Run `vite build` first.",
+  // Render the home page LAST so the template read above is never overwritten early.
+  const ordered = [...allRoutes].sort((a, b) => (a.path === "/" ? 1 : b.path === "/" ? -1 : 0));
+
+  for (const route of ordered) {
+    const result = await render(route.path);
+    const page = buildPage(template, result, adPaths.has(route.path));
+    fs.mkdirSync(path.dirname(outputPathFor(route.path)), { recursive: true });
+    fs.writeFileSync(outputPathFor(route.path), page, "utf8");
+
+    const words = textWords(result.html);
+    const hasH1 = /<h1[\s>]/i.test(result.html);
+    const hasTitle = /<title[^>]*>[^<]+<\/title>/i.test(page);
+    const hasCanonical = /rel="canonical"/i.test(page);
+    const ok = (hasH1 || route.noindex) && hasTitle && (route.noindex || hasCanonical) && (!trafficPaths.has(route.path) || words >= 600);
+    if (!ok) problems += 1;
+    report.push({ path: route.path, words, h1: hasH1, canonical: hasCanonical, ads: adPaths.has(route.path), ok });
+  }
+
+  // Real 404 page (served with HTTP 404 by the host).
+  const notFound = await render("/this-page-does-not-exist");
+  fs.writeFileSync(path.join(distDir, "404.html"), buildPage(template, notFound, false), "utf8");
+
+  
+
+  fs.rmSync(ssrDir, { recursive: true, force: true });
+
+  console.log("\nPrerender report (words are visible text in the static HTML):");
+  for (const r of report) {
+    console.log(
+      `  ${r.ok ? "OK  " : "FAIL"} ${r.path.padEnd(34)} words=${String(r.words).padStart(5)} h1=${r.h1} canonical=${r.canonical} ads=${r.ads}`,
     );
-
-    process.exit(1);
   }
+  console.log("  404.html written.");
 
-  /* -------------------------------------------------------------- */
-  /* Try loading Puppeteer                                          */
-  /* -------------------------------------------------------------- */
-
-  let puppeteer = null;
-
-  try {
-    puppeteer = (
-      await import("puppeteer")
-    ).default;
-  } catch {
-    puppeteer = null;
+  if (problems) {
+    throw new Error(`${problems} page(s) failed the prerender checks above.`);
   }
-
-  /* -------------------------------------------------------------- */
-  /* Full prerender                                                  */
-  /* -------------------------------------------------------------- */
-
-  if (puppeteer) {
-    try {
-      console.log(
-        "Prerendering with puppeteer (full HTML)...",
-      );
-
-      const count =
-        await prerenderWithPuppeteer(
-          puppeteer,
-        );
-
-      console.log(
-        `Prerender complete: ${count} routes with full content.`,
-      );
-
-      return;
-    } catch (err) {
-      /*
-       * If Chrome/Puppeteer fails, don't break deployment.
-       * Fall back to meta-only HTML.
-       */
-      console.warn(
-        `\nHeadless browser unavailable: ${err.message}`,
-      );
-
-      console.warn(
-        "\nFalling back to meta-only prerender. " +
-          "Fix this before applying to AdSense:\n" +
-          "  npx puppeteer browsers install chrome\n" +
-          "  (or set PUPPETEER_EXECUTABLE_PATH to an existing Chrome/Chromium)\n",
-      );
-    }
-  }
-
-  /* -------------------------------------------------------------- */
-  /* Meta-only fallback                                             */
-  /* -------------------------------------------------------------- */
-
-  const count =
-    prerenderShellsOnly();
-
-  console.log(
-    `Prerender fallback: ${count} routes written with correct meta tags only.\n` +
-      "  For full content prerendering (recommended before applying to AdSense):\n" +
-      "    npm install --save-dev puppeteer && npx puppeteer browsers install chrome",
-  );
 }
-
-/* ------------------------------------------------------------------ */
-/* Start                                                               */
-/* ------------------------------------------------------------------ */
 
 main().catch((err) => {
-  console.error(
-    "prerender failed:",
-    err,
-  );
-
+  console.error("prerender failed:", err);
   process.exit(1);
 });

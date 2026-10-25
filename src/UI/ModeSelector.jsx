@@ -1,8 +1,6 @@
 import React from "react";
 const MODES = [
   { id: "countdown", label: "Countdown" },
-  { id: "pomodoro", label: "Pomodoro" },
-  { id: "stopwatch", label: "Stopwatch" },
 ];
 function ModeSelector({ mode, setMode }) {
   return (

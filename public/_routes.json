@@ -1,5 +1,0 @@
-{
-  "version": 1,
-  //"include": ["/*"],
-  "exclude": ["/ads.txt", "/sitemap.xml", "/robots.txt", "/_headers"]
-}

@@ -7,9 +7,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Stopwatch from "../components/Timer/Stopwatch";
-import Seo from "../components/Seo";
 
-const SITE_URL = "https://timecounterpro.com";
 
 const faqs = [
   {
@@ -31,36 +29,9 @@ const faqs = [
 ];
 
 function StopwatchPage() {
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        name: "Online Stopwatch",
-        url: `${SITE_URL}/stopwatch`,
-        applicationCategory: "UtilityApplication",
-        operatingSystem: "All",
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.q,
-          acceptedAnswer: { "@type": "Answer", text: faq.a },
-        })),
-      },
-    ],
-  };
 
   return (
     <>
-      <Seo
-        title="Online Stopwatch - Free Stopwatch with Lap Times"
-        description="A free online stopwatch for workouts, practice, cooking and any task where you need to measure how long something actually takes."
-        path="/stopwatch"
-        schema={schema}
-      />
 
       <div className="max-w-3xl mx-auto">
         <header className="mb-8">

@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import Footer from '../components/Layout/Footer';
 import Navbar from '../components/Navbar';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -777,8 +776,6 @@ const TimeCardCalculator = () => {
             </p>
           </div>
         </div>
-
-        <Footer />
       </div>
     </div>
   );

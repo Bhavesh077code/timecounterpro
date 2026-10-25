@@ -17,7 +17,7 @@ export const URLGenerator = ({ url }) => {
       setCopied(true);
       toast.success('Link copied to clipboard');
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
+    } catch (error) { 
       // Fallback for older browsers
       try {
         const textarea = document.createElement('textarea');

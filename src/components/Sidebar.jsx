@@ -8,41 +8,24 @@ import { NavLink } from "react-router-dom";
 const SECTIONS = [
   {
     key: "timers",
-    title: "Cricket",
-    hint: "W01–W05",
-    items: [
-    { to: "/virat-kohli-century-tracker-live-countdown", code: "W01", label: "Cricket Timer" },
-    ],
-  },
-  {
-    key: "timers",
     title: "Timers",
     hint: "T01–T05",
     items: [
       { to: "/time-card-calculator-online", code: "T01", label: "Card Calculator" },
       { to: "/hiit-timer", code: "T01", label: "HIIT / Tabata" },
-      { to: "/stream-timer",     code: "T02", label: "stream-overlay" },
-      { to: "/jungle-timer",  code: "T03", label: "Esports Jungle" },
-      { to: "/gameplay-timer", code: "T04", label: "GamePlay Timer" },
+ 
+      
       { to: "/online-rubiks-cube-stopwatch-with-milliseconds", code: "T05", label: "Speedrun Split" },
     ],
   },
-  {
-    key: "study",
-    title: "Animation timers",
-    hint: "T05–T06",
-    items: [
-      { to: "/focus-timer-plant-growing-animation-10-minutes", code: "T06", label: "Plant Growing" },
-      { to: "/orbital-launch-focus-timer", code: "T07", label: "Orbital Launch " },
-    ],
-  },
+
   {
     key: "workspace",
     title: "Workspace",
     hint: "T06–T08",
     items: [
+      { to: "/10-minute-timer", code: "T06", label: "10 Minute Timer" },
       { to: "/mock-test-timer", code: "T08", label: "Mock Test Exam" },
-      { to: "/fasting-tracker-timer",    code: "T09", label: "Fasting Tracker" },
       { to: "/presentation-timer", code: "T10", label: "Presentation Alert" },
     ],
   },
@@ -51,8 +34,6 @@ const SECTIONS = [
     title: "Global",
     hint: "T09–T10",
     items: [
-      { to: "/world-clock-board-timer", code: "T11", label: "World Clock Board" },
-      { to: "/group-study-timer",  code: "T12", label: "Group Study Grid" },
       { to: "/meditation-timer-with-sound", code: "T13", label: "Medatioton Timer" },
     ],
   },

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
 
-const SITE_URL = "https://timecounterpro.com";
 const CONTACT_EMAIL = "timecounterpro@gmail.com";
 
 function Contact() {
@@ -40,21 +38,6 @@ function Contact() {
 
   return (
     <>
-      <Helmet>
-        <title>Contact TimeCounterPro | Support & Feedback</title>
-
-        <meta
-          name="description"
-          content="Contact TimeCounterPro for questions, feedback, bug reports, feature suggestions or website-related concerns."
-        />
-
-        <link
-          rel="canonical"
-          href={`${SITE_URL}/contact`}
-        />
-
-        <meta name="robots" content="index,follow" />
-      </Helmet>
 
       <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">

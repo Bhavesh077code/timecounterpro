@@ -22,9 +22,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PomodoroTimer from "../components/Timer/PomodoroTimer";
-import Seo from "../components/Seo";
 
-const SITE_URL = "https://timecounterpro.com";
 
 const faqs = [
   {
@@ -102,7 +100,7 @@ const cycleSteps = [
 const relatedTools = [
   { path: "/stopwatch", label: "Stopwatch", desc: "Millisecond lap timing" },
   { path: "/mock-test-timer", label: "Mock Test Timer", desc: "Sectional exam mode" },
-  { path: "/group-study-timer", label: "Group Study Grid", desc: "4 parallel timers" },
+  { path: "/meditation-timer-with-sound", label: "Meditation Timer", desc: "Breathing guide and bells" },
   { path: "/world-clock", label: "World Clock", desc: "Time zones for teams" },
 ];
 
@@ -117,27 +115,6 @@ const tocItems = [
 ];
 
 function PomodoroPage() {
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        name: "Pomodoro Timer",
-        url: `${SITE_URL}/pomodoro`,
-        applicationCategory: "UtilityApplication",
-        operatingSystem: "All",
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.q,
-          acceptedAnswer: { "@type": "Answer", text: faq.a },
-        })),
-      },
-    ],
-  };
 
   return (
     <>

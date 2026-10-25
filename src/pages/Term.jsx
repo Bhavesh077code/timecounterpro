@@ -1,21 +1,10 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
 
-const SITE_URL = "https://timecounterpro.com";
 const CONTACT_EMAIL = "timecounterpro@gmail.com";
 
 function Term() {
   return (
     <>
-      <Helmet>
-        <title>Terms of Service | TimeCounterPro</title>
-        <meta
-          name="description"
-          content="Read the TimeCounterPro Terms of Service covering acceptable use, website availability, intellectual property, advertising and limitations."
-        />
-        <link rel="canonical" href={`${SITE_URL}/terms`} />
-        <meta name="robots" content="index,follow" />
-      </Helmet>
 
       <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
         <article className="mx-auto max-w-4xl">
