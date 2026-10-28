@@ -15,6 +15,7 @@ Free online timers built with React 19, Vite and Tailwind CSS. 10 traffic pages 
 | `/mock-test-timer` | Sectional mock test timer |
 | `/presentation-timer` | Presentation timer |
 | `/meditation-timer-with-sound` | Meditation timer |
+| `/create` | Create timer |
 | `/about` `/contact` `/privacy` `/terms` | Trust pages (indexed, no ads) |
 
 ## Commands
