@@ -1,6 +1,0 @@
-# public/_redirects file ke andar ye exact lines daalein:
-
-/sitemap.xml /sitemap.xml 200
-/robots.txt /robots.txt 200
-/ads.txt /ads.txt 200
-/* /index.html 200
