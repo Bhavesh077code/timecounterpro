@@ -34,7 +34,7 @@ export const staticRoutes = [
   {
     path: "/pomodoro",
     name: "Pomodoro Timer",
-    title: "Pomodoro Timer Online - Free 25/5 Focus Timer with Sounds",
+    title: "Free Online Pomodoro Timer - Focus Clock with Ambient Sounds & Lofi Music",
     description:
       "Free online Pomodoro timer with 25-minute focus sessions and 5-minute breaks. Sound alerts, session count and daily focus stats. No sign-up needed.",
     appCategory: "ProductivityApplication",
@@ -70,7 +70,7 @@ export const staticRoutes = [
   {
     path: "/time-card-calculator-online",
     name: "Time Card Calculator",
-    title: "Time Card Calculator - Free Timesheet & Overtime Calculator",
+    title: "Free Time Card Calculator Online - Calculate Hours, Breaks & Gross Pay (CSV Export)",
     description:
       "Free time card calculator. Enter clock in, clock out and breaks to get daily and weekly hours, overtime and total pay. Copy your timesheet in seconds.",
     appCategory: "BusinessApplication",
@@ -82,7 +82,7 @@ export const staticRoutes = [
   {
     path: "/hiit-timer",
     name: "HIIT & Tabata Timer",
-    title: "HIIT & Tabata Timer - Free Interval Timer Online",
+    title: "Interval Training Timer Online - Full Screen Workout & Circuit Clock with Audio Beeps",
     description:
       "Free HIIT and Tabata interval timer. Set work, rest and rounds, hear audio cues and follow your workout on any screen. No app or sign-up needed.",
     appCategory: "HealthApplication",
@@ -106,7 +106,7 @@ export const staticRoutes = [
   {
     path: "/mock-test-timer",
     name: "Mock Test Timer",
-    title: "Mock Test Timer - Sectional Exam Timer for CAT, JEE, UPSC",
+    title: "Sectional Mock Test Timer with Alarm Alerts - Practice Clocks for JEE, UPSC, CAT and GRE",
     description:
       "Free sectional mock test timer with locked sections, warning alerts and fullscreen mode. Practise CAT, JEE, GRE, UPSC and other timed exams at home.",
     appCategory: "EducationalApplication",
