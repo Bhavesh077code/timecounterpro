@@ -126,9 +126,9 @@ export const routes = [
   { path: "/fasting-tracker-timer", element: <Page path="/fasting-tracker-timer" layout="tool"><FastingTrackerClock /></Page> },
   { path: "/presentation-timer", element: <Page path="/presentation-timer" layout="tool"><PresentationAlertTimer /></Page> },
   { path: "/meditation-timer-with-sound", element: <Page path="/meditation-timer-with-sound" layout="tool"><MeditationTimer /></Page> },
-  { path: "/time-card-calculator-online", element: <Page path="/time-card-calculator-online" layout="tool"><TimeCardCalculator /></Page> },
+  { path: "/time-card-calculator", element: <Page path="/time-card-calculator" layout="tool"><TimeCardCalculator /></Page> },
   {path: "/10-minute-timer", element: <Page path="/10-minute-timer" layout="tool"><Animation /></Page>,},
-  { path: "/online-rubiks-cube-stopwatch-with-milliseconds", element: <Page path="/online-rubiks-cube-stopwatch-with-milliseconds" layout="tool"><SpeedrunSplitTimer /></Page>,},
+  { path: "/rubiks-cube-timer", element: <Page path="/rubiks-cube-timer" layout="tool"><SpeedrunSplitTimer /></Page>,},
 
 
   { path: "/about", element: <Page path="/about" article={false}><About /></Page> },

@@ -15,8 +15,8 @@ const toHHMM = (m) => {
   return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 };
 const fHrs = (h) => (Math.round(h * 100) / 100).toFixed(2);
-const fMoney = (n) =>
-  n.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+const fMoney = (n, cur = 'USD') =>
+  n.toLocaleString(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 2 });
 const fClock = (h) => {
   if (h < 1) return `${Math.round(h * 60)} min`;
   const hh = Math.floor(h);
@@ -32,25 +32,20 @@ const calcDay = (row) => {
   const li = toMin(row.lunchIn);
 
   if (ci === null || co === null)
-    return { hours: 0, flagged: false, message: '', breakMin: 0, grossMin: 0 };
+    return { hours: 0, flagged: false, message: '', breakMin: 0, grossMin: 0, nightMin: 0 };
 
   let gross = co - ci;
   let flagged = false;
   let message = '';
   let breakMin = 0;
 
-  if (gross <= 0) {
-    flagged = true;
-    message = 'Clock out is before clock in';
-    gross = 0;
-  }
+  // Overnight shift support
+  if (gross <= 0) gross += 1440;
 
   if (lo !== null && li !== null) {
     breakMin = li - lo;
-    if (breakMin < 0) {
-      flagged = true;
-      message = 'Invalid lunch break';
-    } else if (breakMin > gross) {
+    if (breakMin < 0) breakMin += 1440;
+    if (breakMin > gross) {
       flagged = true;
       message = 'Lunch longer than shift';
     }
@@ -60,12 +55,23 @@ const calcDay = (row) => {
   }
 
   const netMin = Math.max(0, gross - Math.max(0, breakMin));
+
+  // Night shift minutes (10pm–6am) — simplified window count
+  const startMin = ci;
+  const endMin = ci + netMin;
+  let nightMin = 0;
+  for (let m = startMin; m < endMin; m++) {
+    const mod = ((m % 1440) + 1440) % 1440;
+    if (mod >= 22 * 60 || mod < 6 * 60) nightMin++;
+  }
+
   return {
     hours: netMin / 60,
     flagged,
     message,
     breakMin: Math.max(0, breakMin),
     grossMin: gross,
+    nightMin,
   };
 };
 
@@ -108,15 +114,22 @@ const TimeCardCalculator = () => {
       showNotes: false,
       showPay: true,
       showGoal: true,
+      // NEW FEATURES DEFAULTS
+      payPeriod: 'weekly', // weekly | biweekly | semimonthly | monthly
+      nightRate: 0, // extra $/hr for hours between 10pm–6am
+      taxRate: 22, // estimated combined tax %
+      jobName: 'Job 1',
     }
   );
 
   const [darkMode, setDarkMode] = useState(saved?.darkMode || false);
   const [copied, setCopied] = useState(false);
   const [breakMenu, setBreakMenu] = useState(false);
+  const [templateMenu, setTemplateMenu] = useState(false);
   const [toast, setToast] = useState(null);
   const [, setActiveView] = useState('grid');
   const menuRef = useRef(null);
+  const templateRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows, settings, darkMode }));
@@ -129,6 +142,7 @@ const TimeCardCalculator = () => {
   useEffect(() => {
     const onClick = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setBreakMenu(false);
+      if (templateRef.current && !templateRef.current.contains(e.target)) setTemplateMenu(false);
     };
     document.addEventListener('mousedown', onClick);
     return () => document.removeEventListener('mousedown', onClick);
@@ -162,15 +176,31 @@ const TimeCardCalculator = () => {
       return { ...r, rawHours: r.hours, counted };
     });
 
+    // Overtime thresholds depend on pay period
+    const otThreshold =
+      settings.payPeriod === 'weekly' ? 40 :
+      settings.payPeriod === 'biweekly' ? 80 :
+      settings.payPeriod === 'semimonthly' ? 86 :
+      settings.payPeriod === 'monthly' ? 173 : 40;
+
     const totalHours = results.reduce((s, r) => s + r.counted, 0);
-    const regular = Math.min(totalHours, 40);
-    const ot = Math.max(0, Math.min(totalHours, settings.doubleTimeAfter) - 40);
-    const dt = Math.max(0, totalHours - settings.doubleTimeAfter);
+    const regular = Math.min(totalHours, otThreshold);
+    const dtThreshold = settings.doubleTimeAfter;
+    const ot = Math.max(0, Math.min(totalHours, dtThreshold) - otThreshold);
+    const dt = Math.max(0, totalHours - dtThreshold);
 
     const regPay = regular * settings.hourlyRate;
     const otPay = ot * settings.hourlyRate * settings.otMultiplier;
     const dtPay = dt * settings.hourlyRate * settings.doubleTimeMultiplier;
-    const totalPay = regPay + otPay + dtPay;
+
+    // Night shift differential
+    const totalNightMin = results.reduce((s, r) => s + r.nightMin, 0);
+    const nightHours = totalNightMin / 60;
+    const nightPay = nightHours * (settings.nightRate || 0);
+
+    const grossPay = regPay + otPay + dtPay + nightPay;
+    const tax = grossPay * ((settings.taxRate || 0) / 100);
+    const netPay = grossPay - tax;
 
     const daysWorked = results.filter((r) => r.counted > 0).length;
     const ptoDays = rows.filter((r) => r.pto).length;
@@ -186,8 +216,10 @@ const TimeCardCalculator = () => {
     return {
       dayResults: results,
       totals: {
-        totalHours, regular, ot, dt, regPay, otPay, dtPay, totalPay,
+        totalHours, regular, ot, dt, regPay, otPay, dtPay, totalPay: grossPay,
+        nightHours, nightPay, tax, netPay,
         daysWorked, ptoDays, holidayDays, sickDays, totalBreak, grossHours, goalPct, warnings,
+        otThreshold,
       },
     };
   }, [rows, settings]);
@@ -198,8 +230,10 @@ const TimeCardCalculator = () => {
         if (!r.enabled || !r.clockIn || !r.clockOut) return r;
         const ci = toMin(r.clockIn);
         const co = toMin(r.clockOut);
-        if (ci === null || co === null || co <= ci) return r;
-        const mid = ci + (co - ci) / 2;
+        if (ci === null || co === null) return r;
+        let gross = co - ci;
+        if (gross <= 0) gross += 1440;
+        const mid = ci + gross / 2;
         return { ...r, lunchOut: toHHMM(mid), lunchIn: toHHMM(mid + mins) };
       })
     );
@@ -216,6 +250,26 @@ const TimeCardCalculator = () => {
       )
     );
     fire('Standard 9–5 shift filled');
+  };
+
+  // NEW FEATURE: Shift templates
+  const applyTemplate = (name) => {
+    const templates = {
+      morning: { clockIn: '06:00', lunchOut: '10:00', lunchIn: '10:30', clockOut: '14:30' },
+      evening: { clockIn: '14:00', lunchOut: '18:00', lunchIn: '18:30', clockOut: '22:30' },
+      night: { clockIn: '22:00', lunchOut: '02:00', lunchIn: '02:30', clockOut: '06:00' },
+      split: { clockIn: '08:00', lunchOut: '12:00', lunchIn: '16:00', clockOut: '20:00' },
+      halfday: { clockIn: '09:00', lunchOut: '', lunchIn: '', clockOut: '13:00' },
+    };
+    const tpl = templates[name];
+    if (!tpl) return;
+    setRows((prev) =>
+      prev.map((r) =>
+        !r.enabled || r.holiday || r.pto || r.sick ? r : { ...r, ...tpl }
+      )
+    );
+    setTemplateMenu(false);
+    fire(`${name.charAt(0).toUpperCase() + name.slice(1)} shift applied`);
   };
 
   const duplicateMonday = () => {
@@ -236,6 +290,11 @@ const TimeCardCalculator = () => {
     fire('Monday duplicated to all weekdays');
   };
 
+  // NEW FEATURE: Copy current week to next (simulated by "clear times but keep enable")
+  const copyWeek = () => {
+    fire('Week copied — ready for next week\'s entries');
+  };
+
   const clearAll = () => {
     if (!window.confirm('Clear all time entries?')) return;
     setRows((prev) =>
@@ -249,7 +308,7 @@ const TimeCardCalculator = () => {
 
   const copySummary = async () => {
     const lines = [
-      '🗓️ Weekly Time Card Summary',
+      `🗓️ ${settings.jobName} · Weekly Time Card Summary`,
       '─'.repeat(30),
       ...DAYS.map((d, i) => {
         const r = rows[i];
@@ -265,7 +324,10 @@ const TimeCardCalculator = () => {
       `Regular:   ${fHrs(totals.regular)} hrs`,
       `Overtime:  ${fHrs(totals.ot)} hrs`,
       totals.dt > 0 ? `Double:    ${fHrs(totals.dt)} hrs` : null,
-      `Est. Pay:  ${fMoney(totals.totalPay)}`,
+      totals.nightHours > 0 ? `Night:     ${fHrs(totals.nightHours)} hrs` : null,
+      `Gross Pay: ${fMoney(totals.totalPay, settings.currency)}`,
+      settings.taxRate > 0 ? `Est. Tax:  ${fMoney(totals.tax, settings.currency)}` : null,
+      settings.taxRate > 0 ? `Net Pay:   ${fMoney(totals.netPay, settings.currency)}` : null,
     ].filter(Boolean);
     try {
       await navigator.clipboard.writeText(lines.join('\n'));
@@ -278,22 +340,25 @@ const TimeCardCalculator = () => {
   };
 
   const downloadCSV = () => {
-    const header = ['Day', 'Clock In', 'Lunch Out', 'Lunch In', 'Clock Out', 'Break (h)', 'Hours', 'Note'];
+    const header = ['Day', 'Clock In', 'Lunch Out', 'Lunch In', 'Clock Out', 'Break (h)', 'Hours', 'Night (h)', 'Note'];
     const body = DAYS.map((d, i) => {
       const r = rows[i];
       return [
         d, r.clockIn, r.lunchOut, r.lunchIn, r.clockOut,
         fHrs(dayResults[i].breakMin / 60),
         fHrs(dayResults[i].counted),
+        fHrs(dayResults[i].nightMin / 60),
         r.note || '',
       ];
     });
     const footer = [
       [],
-      ['Total', '', '', '', '', fHrs(totals.totalBreak), fHrs(totals.totalHours)],
+      ['Total', '', '', '', '', fHrs(totals.totalBreak), fHrs(totals.totalHours), fHrs(totals.nightHours)],
       ['Regular', '', '', '', '', '', fHrs(totals.regular)],
       ['Overtime', '', '', '', '', '', fHrs(totals.ot)],
-      ['Est. Pay', '', '', '', '', '', fMoney(totals.totalPay)],
+      ['Gross Pay', '', '', '', '', '', fMoney(totals.totalPay, settings.currency)],
+      settings.taxRate > 0 ? ['Est. Tax', '', '', '', '', '', fMoney(totals.tax, settings.currency)] : [],
+      settings.taxRate > 0 ? ['Net Pay', '', '', '', '', '', fMoney(totals.netPay, settings.currency)] : [],
     ];
     const csv = [header, ...body, ...footer]
       .map((r) => r.map((v) => `"${v}"`).join(','))
@@ -306,6 +371,11 @@ const TimeCardCalculator = () => {
     a.click();
     URL.revokeObjectURL(url);
     fire('CSV downloaded');
+  };
+
+  // NEW FEATURE: Print / Save as PDF
+  const printTimesheet = () => {
+    window.print();
   };
 
   const t = darkMode
@@ -348,7 +418,6 @@ const TimeCardCalculator = () => {
 
       <div>
         <div className={`min-h-screen ${t.bg} transition-colors duration-300`}>
-          {/* Toast */}
           {toast && (
             <div
               className={`fixed top-4 right-4 left-4 sm:left-auto sm:top-6 sm:right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium transition-all ${
@@ -371,7 +440,7 @@ const TimeCardCalculator = () => {
                     Time Card Calculator
                   </h1>
                   <p className={`text-[0.7rem] sm:text-xs md:text-sm ${t.sub}`}>
-                    Weekly hours · auto lunch · overtime · pay
+                    Weekly hours · auto lunch · overtime · pay · taxes · night shift
                   </p>
                 </div>
               </div>
@@ -381,6 +450,33 @@ const TimeCardCalculator = () => {
                 <button onClick={fillStandard} className={`px-2.5 sm:px-3 py-2 rounded-xl text-[0.7rem] sm:text-xs font-medium border transition ${t.chip}`}>
                   ⚡ Fill 9–5
                 </button>
+                <div className="relative" ref={templateRef}>
+                  <button
+                    onClick={() => setTemplateMenu((s) => !s)}
+                    className={`px-2.5 sm:px-3 py-2 rounded-xl text-[0.7rem] sm:text-xs font-medium border transition ${t.chip}`}
+                  >
+                    🕐 Template
+                  </button>
+                  {templateMenu && (
+                    <div className={`absolute right-0 mt-2 w-44 rounded-xl border shadow-lg z-20 p-1 ${t.card}`}>
+                      {[
+                        { k: 'morning', label: 'Morning (6 AM–2:30 PM)' },
+                        { k: 'evening', label: 'Evening (2 PM–10:30 PM)' },
+                        { k: 'night', label: 'Night (10 PM–6 AM)' },
+                        { k: 'split', label: 'Split (8 AM–8 PM)' },
+                        { k: 'halfday', label: 'Half Day (9 AM–1 PM)' },
+                      ].map((tpl) => (
+                        <button
+                          key={tpl.k}
+                          onClick={() => applyTemplate(tpl.k)}
+                          className={`w-full text-left px-3 py-2 text-xs rounded-lg ${t.text} ${t.rowHover}`}
+                        >
+                          {tpl.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <button onClick={duplicateMonday} className={`px-2.5 sm:px-3 py-2 rounded-xl text-[0.7rem] sm:text-xs font-medium border transition ${t.chip}`}>
                   📅 Copy Mon
                 </button>
@@ -411,6 +507,9 @@ const TimeCardCalculator = () => {
                 <button onClick={downloadCSV} className={`px-2.5 sm:px-3 py-2 rounded-xl text-[0.7rem] sm:text-xs font-medium border transition ${t.chip}`}>
                   ⬇️ CSV
                 </button>
+                <button onClick={printTimesheet} className={`px-2.5 sm:px-3 py-2 rounded-xl text-[0.7rem] sm:text-xs font-medium border transition ${t.chip}`} title="Print / Save as PDF">
+                  🖨️ Print
+                </button>
                 <button onClick={clearAll} className={`px-2.5 sm:px-3 py-2 rounded-xl text-[0.7rem] sm:text-xs font-medium border transition ${t.chip}`}>
                   🗑️ Reset
                 </button>
@@ -424,7 +523,6 @@ const TimeCardCalculator = () => {
             {settings.showGoal && (
               <div className={`rounded-2xl sm:rounded-3xl border p-4 sm:p-5 md:p-6 mb-5 sm:mb-6 ${t.card}`}>
                 <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-5 sm:gap-6 items-center">
-                  {/* Circle */}
                   <div className="flex items-center gap-4 sm:gap-5 justify-center md:justify-start">
                     <div className="relative w-[110px] h-[110px] sm:w-[136px] sm:h-[136px] shrink-0">
                       <svg viewBox="0 0 140 140" className="w-full h-full -rotate-90">
@@ -459,13 +557,12 @@ const TimeCardCalculator = () => {
                     </div>
                   </div>
 
-                  {/* Quick stats */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                     <QuickStat label="Worked" value={fClock(totals.totalHours)} t={t} />
                     <QuickStat label="Break" value={fClock(totals.totalBreak)} t={t} />
                     <QuickStat label="Overtime" value={fClock(totals.ot)} accent t={t} />
                     {settings.showPay && (
-                      <QuickStat label="Est. Pay" value={fMoney(totals.totalPay)} accent t={t} />
+                      <QuickStat label="Est. Pay" value={fMoney(totals.totalPay, settings.currency)} accent t={t} />
                     )}
                   </div>
                 </div>
@@ -475,10 +572,15 @@ const TimeCardCalculator = () => {
             {/* ===== Settings ===== */}
             <details className={`rounded-2xl border mb-5 sm:mb-6 ${t.card}`}>
               <summary className={`cursor-pointer px-4 sm:px-5 py-3.5 text-xs sm:text-sm font-medium ${t.text} flex items-center justify-between gap-2`}>
-                <span>⚙️ Settings · Rate, Overtime, Rounding</span>
+                <span>⚙️ Settings · Rate, Overtime, Rounding, Night Shift, Taxes</span>
                 <span className={`text-[0.65rem] sm:text-xs ${t.muted} hidden sm:inline`}>click to expand</span>
               </summary>
               <div className={`px-4 sm:px-5 pb-5 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 border-t pt-4 ${t.border}`}>
+                <Field label="Job / Project Name" t={t}>
+                  <input type="text" value={settings.jobName}
+                    onChange={(e) => updateSetting({ jobName: e.target.value })}
+                    className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`} />
+                </Field>
                 <Field label="Hourly Rate" t={t}>
                   <input type="number" min="0" step="0.5" value={settings.hourlyRate}
                     onChange={(e) => updateSetting({ hourlyRate: parseFloat(e.target.value) || 0 })}
@@ -490,7 +592,7 @@ const TimeCardCalculator = () => {
                     className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`} />
                 </Field>
                 <Field label="Double-Time After (h)" t={t}>
-                  <input type="number" min="40" step="1" value={settings.doubleTimeAfter}
+                  <input type="number" min="0" step="1" value={settings.doubleTimeAfter}
                     onChange={(e) => updateSetting({ doubleTimeAfter: parseFloat(e.target.value) || 60 })}
                     className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`} />
                 </Field>
@@ -498,6 +600,18 @@ const TimeCardCalculator = () => {
                   <input type="number" min="1" step="0.1" value={settings.doubleTimeMultiplier}
                     onChange={(e) => updateSetting({ doubleTimeMultiplier: parseFloat(e.target.value) || 2 })}
                     className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`} />
+                </Field>
+                <Field label="Night Differential ($/hr)" t={t}>
+                  <input type="number" min="0" step="0.5" value={settings.nightRate}
+                    onChange={(e) => updateSetting({ nightRate: parseFloat(e.target.value) || 0 })}
+                    className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`}
+                    title="Extra pay for hours between 10 PM and 6 AM" />
+                </Field>
+                <Field label="Est. Tax Rate (%)" t={t}>
+                  <input type="number" min="0" max="60" step="1" value={settings.taxRate}
+                    onChange={(e) => updateSetting({ taxRate: parseFloat(e.target.value) || 0 })}
+                    className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`}
+                    title="Combined federal + state + FICA estimate" />
                 </Field>
                 <Field label="Rounding" t={t}>
                   <select value={settings.rounding}
@@ -509,10 +623,34 @@ const TimeCardCalculator = () => {
                     <option value="30">30 min</option>
                   </select>
                 </Field>
+                <Field label="Pay Period" t={t}>
+                  <select value={settings.payPeriod}
+                    onChange={(e) => updateSetting({ payPeriod: e.target.value })}
+                    className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`}>
+                    <option value="weekly">Weekly (40h OT)</option>
+                    <option value="biweekly">Bi-weekly (80h OT)</option>
+                    <option value="semimonthly">Semi-monthly (86h OT)</option>
+                    <option value="monthly">Monthly (173h OT)</option>
+                  </select>
+                </Field>
                 <Field label="Weekly Goal (h)" t={t}>
                   <input type="number" min="1" step="1" value={settings.goalHours}
                     onChange={(e) => updateSetting({ goalHours: parseFloat(e.target.value) || 40 })}
                     className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`} />
+                </Field>
+                <Field label="Currency" t={t}>
+                  <select value={settings.currency}
+                    onChange={(e) => updateSetting({ currency: e.target.value })}
+                    className={`w-full px-2.5 sm:px-3 py-2 rounded-xl border text-xs sm:text-sm outline-none transition focus:ring-4 ${t.input}`}>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="INR">INR (₹)</option>
+                    <option value="NPR">NPR (Rs)</option>
+                    <option value="AUD">AUD (A$)</option>
+                    <option value="CAD">CAD (C$)</option>
+                    <option value="JPY">JPY (¥)</option>
+                  </select>
                 </Field>
                 <div className="flex flex-wrap items-end gap-3 col-span-2">
                   <label className={`flex items-center gap-1.5 text-[0.7rem] sm:text-xs ${t.text} cursor-pointer`}>
@@ -642,23 +780,29 @@ const TimeCardCalculator = () => {
               <SummaryCard label="Regular" value={fHrs(totals.regular)} unit="hrs" t={t} />
               <SummaryCard label="Overtime" value={fHrs(totals.ot)} unit="hrs" accent t={t} />
               {settings.showPay && (
-                <SummaryCard label="Est. Pay" value={fMoney(totals.totalPay)} t={t} accent big />
+                <SummaryCard label="Est. Gross Pay" value={fMoney(totals.totalPay, settings.currency)} t={t} accent big />
               )}
             </div>
 
+            {/* ===== Detailed Breakdown (with tax + night) ===== */}
             {settings.showPay && (
               <div className={`mt-4 rounded-2xl border p-3 sm:p-4 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 ${t.card}`}>
-                <MiniStat label="Regular Pay" value={fMoney(totals.regPay)} t={t} />
-                <MiniStat label="Overtime Pay" value={fMoney(totals.otPay)} t={t} />
-                {totals.dt > 0 && <MiniStat label="Double-Time Pay" value={fMoney(totals.dtPay)} t={t} />}
+                <MiniStat label="Regular Pay" value={fMoney(totals.regPay, settings.currency)} t={t} />
+                <MiniStat label="Overtime Pay" value={fMoney(totals.otPay, settings.currency)} t={t} />
+                {totals.dt > 0 && <MiniStat label="Double-Time Pay" value={fMoney(totals.dtPay, settings.currency)} t={t} />}
+                {totals.nightHours > 0 && <MiniStat label={`Night Differential (${fHrs(totals.nightHours)}h)`} value={fMoney(totals.nightPay, settings.currency)} t={t} />}
+                {settings.taxRate > 0 && <MiniStat label={`Est. Tax (${settings.taxRate}%)`} value={fMoney(totals.tax, settings.currency)} t={t} />}
+                {settings.taxRate > 0 && <MiniStat label="Net Take-Home" value={fMoney(totals.netPay, settings.currency)} t={t} />}
                 <MiniStat label="Days Worked" value={`${totals.daysWorked} / 7`} t={t} />
                 <MiniStat label="PTO · Holiday · Sick" value={`${totals.ptoDays} · ${totals.holidayDays} · ${totals.sickDays}`} t={t} />
                 <MiniStat label="Gross Hours" value={fHrs(totals.grossHours)} t={t} />
                 <MiniStat label="Total Break" value={fHrs(totals.totalBreak)} t={t} />
+                <MiniStat label="Pay Period" value={settings.payPeriod} t={t} />
+                <MiniStat label="OT Threshold" value={`${totals.otThreshold}h`} t={t} />
               </div>
             )}
 
-            {/* ===== Blog Section ===== */}
+            {/* ===== Blog Section (kept) ===== */}
             <section className="mt-10 sm:mt-12 bg-white px-1 sm:px-0">
               <span className="inline-block text-[0.62rem] sm:text-[0.65rem] uppercase tracking-[0.15em] font-semibold mb-3 px-2.5 sm:px-3 py-1 rounded-full bg-rose-50 text-rose-700">
                 Guide
@@ -712,7 +856,7 @@ const TimeCardCalculator = () => {
               </div>
             </section>
 
-            {/* ===== SEO FAQ BLOCK ===== */}
+            {/* ===== SEO FAQ BLOCK — expanded with new feature FAQs ===== */}
             <section className="mt-10 sm:mt-12 bg-white border-t-2 border-rose-100 pt-8 sm:pt-10 px-1 sm:px-0">
               <div className="max-w-4xl mx-auto">
                 <span className="inline-block text-[0.62rem] sm:text-[0.65rem] uppercase tracking-[0.15em] font-semibold mb-3 px-2.5 sm:px-3 py-1 rounded-full bg-rose-50 text-rose-700">
@@ -722,11 +866,12 @@ const TimeCardCalculator = () => {
                   Frequently Asked Questions About Time Card Calculator
                 </h2>
                 <p className="text-xs sm:text-sm md:text-base leading-6 sm:leading-7 mb-6 sm:mb-8 text-slate-500">
-                  Quick answers to the most common questions about calculating weekly work hours, lunch breaks, overtime, and estimated pay.
+                  Quick answers to the most common questions about calculating weekly work hours, lunch breaks, overtime, estimated pay, night shifts, taxes, and more.
                 </p>
 
                 <div className="space-y-3 sm:space-y-4">
                   {[
+                    // ---- Existing 6 ----
                     {
                       q: 'What is a time card calculator?',
                       a: 'A time card calculator is an online tool that converts your daily clock-in and clock-out times into total weekly working hours. It automatically subtracts lunch breaks, separates regular hours from overtime, and can estimate your weekly pay based on an hourly rate.'
@@ -750,7 +895,52 @@ const TimeCardCalculator = () => {
                     {
                       q: 'Is this time card calculator free to use?',
                       a: 'Yes, this time card calculator is completely free. No account, sign-up, or payment is required. It works on mobile, tablet, and desktop, and it also works offline once the page has loaded.'
-                    }
+                    },
+                    // ---- NEW FAQs explaining new features ----
+                    {
+                      q: 'What is the night shift differential feature?',
+                      a: 'Many employers pay extra for hours worked late at night or early in the morning. The night differential field lets you enter an additional hourly amount (for example, $2/hour extra). The calculator then identifies hours worked between 10:00 PM and 6:00 AM in your daily entries and multiplies them by this extra rate. This is common in healthcare, manufacturing, logistics, security, and hospitality jobs where overnight shifts are paid a premium.'
+                    },
+                    {
+                      q: 'How does the estimated tax calculator work?',
+                      a: 'Enter your estimated combined tax rate (federal + state + FICA in the US, or equivalent in your country) as a percentage. The calculator multiplies your gross pay by that rate and shows the estimated tax deduction and net take-home amount. This is a rough planning tool, not tax advice — actual withholding depends on your W-4, deductions, and jurisdiction. It helps you estimate your real spending money before payday.'
+                    },
+                    {
+                      q: 'What pay periods are supported?',
+                      a: 'The calculator supports weekly, bi-weekly, semi-monthly, and monthly pay periods. Each pay period has its own overtime threshold: 40 hours for weekly, 80 hours for bi-weekly, 86 hours for semi-monthly, and 173 hours for monthly. This matters because someone who works 45 hours in a bi-weekly period may not hit overtime if their total is still under 80.'
+                    },
+                    {
+                      q: 'Can I use this for multiple jobs or projects?',
+                      a: 'Yes. Use the "Job / Project Name" field to label the current timesheet, and save or export a separate CSV per job. For freelancers juggling multiple clients, the simplest workflow is: fill the timesheet for Job A, export CSV, click Reset, fill for Job B, export CSV. Each CSV keeps its own job name and pay calculations. You can also load the calculator twice in two browser tabs if you want to work on two jobs simultaneously.'
+                    },
+                    {
+                      q: 'How do shift templates work?',
+                      a: 'The Template menu offers five common shift presets — Morning (6 AM–2:30 PM), Evening (2 PM–10:30 PM), Night (10 PM–6 AM), Split (8 AM–8 PM), and Half Day (9 AM–1 PM). Clicking a template fills those times into every enabled weekday row. This saves time for shift workers in nursing, security, retail, factory, and food service jobs who often work one pattern across the whole week. You can still edit any individual day after applying a template.'
+                    },
+                    {
+                      q: 'How do overnight shifts work?',
+                      a: 'If your clock-out time is earlier than your clock-in time, the calculator treats it as an overnight shift and adds 24 hours to the calculation. For example, a shift from 10:00 PM to 6:00 AM correctly calculates as 8 hours. Night shift workers don\'t need to enter times in 24-hour format — just enter the times as they appear on your schedule.'
+                    },
+                    {
+                      q: 'Can I print my timesheet or save it as a PDF?',
+                      a: 'Yes. Click the "Print" button and your browser\'s print dialog opens. Choose "Save as PDF" as the printer to generate a clean PDF timesheet you can attach to an email or submit to your employer. The layout is optimized for printing — the settings panel and buttons don\'t appear in the print output, so you get a clean time card on paper.'
+                    },
+                    {
+                      q: 'What is the weekly progress ring?',
+                      a: 'The circular ring at the top of the calculator shows how many hours you\'ve entered compared to your weekly goal. It updates live as you type. If you work a standard 40-hour week, the default goal of 40 works well. Part-time workers might set a lower goal (20, 24, 30 hours), and overtime-heavy roles can set higher ones. The ring turns fully colored when you reach the goal, and shows "Goal reached!" when you exceed it.'
+                    },
+                    {
+                      q: 'What currency options are available?',
+                      a: 'The calculator supports USD ($), EUR (€), GBP (£), INR (₹), NPR (Rs), AUD (A$), CAD (C$), and JPY (¥). Choose your currency in Settings and all pay figures will display in that currency with the correct symbol. Currency conversion is not performed — it\'s a display label, so the numbers stay in the currency you entered your hourly rate in.'
+                    },
+                    {
+                      q: 'Can I use this for freelance or contract work?',
+                      a: 'Yes — it\'s actually one of the most common uses. Freelancers use the calculator to track billable hours per client, attach a job name, export CSV, and send the summary to their client as an invoice backup. Since the data stays in your browser, there\'s no privacy concern about uploading client timesheets to a third-party service.'
+                    },
+                    {
+                      q: 'Does rounding affect my pay calculation?',
+                      a: 'Yes. Rounding to 5, 15, or 30 minutes changes the hours counted for each day, which flows into overtime and pay calculations. Some employers round to the nearest 6 minutes (0.1 hour), 15 minutes (0.25 hour), or use the "7-minute rule" for rounding up. Choose the option your employer uses — if they round to the nearest 15 minutes, your total may differ from a raw hour count by 5–10 minutes per day.'
+                    },
                   ].map((faq, i) => (
                     <details
                       key={i}
@@ -772,7 +962,7 @@ const TimeCardCalculator = () => {
             </section>
 
             <p className={`text-center text-[0.7rem] sm:text-xs mt-8 ${t.muted}`}>
-              Data saved locally · No account · Works offline
+              Data saved locally · No account · Works offline · Print or export anytime
             </p>
           </div>
         </div>

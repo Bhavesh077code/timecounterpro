@@ -11,11 +11,12 @@ const SECTIONS = [
     title: "Timers",
     hint: "T01–T05",
     items: [
-      { to: "/time-card-calculator-online", code: "T01", label: "Card Calculator" },
+      { to: "/time-card-calculator", code: "T01", label: "Card Calculator" },
       { to: "/hiit-timer", code: "T01", label: "HIIT / Tabata" },
  
       
-      { to: "/online-rubiks-cube-stopwatch-with-milliseconds", code: "T05", label: "Speedrun Split" },
+      { to: "/rubiks-cube-timer", code: "T05", label: "Speedrun Split" },
+      { to: "/fasting-tracker-timer", code: "T13", label: "Fastinger Timer"}
     ],
   },
 

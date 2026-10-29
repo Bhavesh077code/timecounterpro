@@ -96,7 +96,7 @@ function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/time-card-calculator-online" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
+                <Link to="/time-card-calculator" className="text-sm text-slate-500 hover:text-indigo-600 transition-colors duration-200">
                    Weekly Time Card Calculator with Overtime
                 </Link>
               </li>

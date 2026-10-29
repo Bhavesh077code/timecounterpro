@@ -272,7 +272,7 @@ export const seoContent = {
     ]
   },
 
-  "/time-card-calculator-online": {
+  "/time-card-calculator": {
     heading: "Free Time Card Calculator Online - Calculate Hours, Breaks, Overtime & Gross Pay",
     sections: [
       {
@@ -750,7 +750,7 @@ export const seoContent = {
   },
 
 
-    "/online-rubiks-cube-stopwatch-with-milliseconds": {
+    "/rubiks-cube-timer": {
     heading: "Free Online Rubik's Cube Stopwatch - High-Precision WCA Style Speedcubing Timer",
     sections: [
       {

@@ -55,6 +55,20 @@ export const staticRoutes = [
     ads: true,
     related: ["/", "/hiit-timer", "/pomodoro", "/presentation-timer"],
   },
+
+  {
+    path: "/rubiks-cube-timer",
+    name: "Online Rubik's Cube Stopwatch",
+    title: "Online Rubik's Cube Stopwatch - Free Stopwatch with Lap Timer",
+    description:
+      "Free online stopwatch with hundredth-of-a-second precision and unlimited laps. Start, pause, split and reset in one click. No download or sign-up.",
+    appCategory: "UtilitiesApplication",
+    priority: "0.95",
+    changefreq: "weekly",
+    ads: true,
+    related: ["/", "/hiit-timer", "/pomodoro", "/presentation-timer"],
+  },
+
   {
     path: "/world-clock",
     name: "World Clock",
@@ -68,7 +82,7 @@ export const staticRoutes = [
     related: ["/", "/time-card-calculator-online", "/presentation-timer", "/stopwatch"],
   },
   {
-    path: "/time-card-calculator-online",
+    path: "/time-card-calculator",
     name: "Time Card Calculator",
     title: "Free Time Card Calculator Online - Calculate Hours, Breaks & Gross Pay (CSV Export)",
     description:
@@ -234,7 +248,7 @@ export const routeCategories = {
   core: ["/", "/create", "/pomodoro", "/stopwatch", "/world-clock"],
   study: ["/mock-test-timer","10-minutes-timer", "/meditation-timer-with-sound", "/presentation-timer"],
   health: ["/hiit-timer", "/fasting-tracker-timer"],
-  work: ["/time-card-calculator-online"],
+  work: ["/time-card-calculator", "/rubiks-cube-timer"],
   info: ["/about", "/contact", "/privacy", "/terms"],
 };
 
