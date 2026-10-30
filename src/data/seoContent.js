@@ -1,3 +1,4 @@
+/*
 // src/data/seoContent.js
 //
 // Written guide + FAQ for each of the 10 traffic pages.
@@ -797,3 +798,4 @@ export const seoContent = {
 };
 
 export default seoContent;
+*/

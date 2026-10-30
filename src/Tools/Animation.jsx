@@ -139,7 +139,7 @@ const Animation = () => {
     const handler = (e) => {
       if (isRunning) {
         e.preventDefault();
-        e.returnValue = "If you leave now, your tree will wither and die! 🌱💔";
+        e.returnValue = "Your focus session may be interrupted. Leave this page?";
         return e.returnValue;
       }
     };
@@ -463,7 +463,7 @@ const Animation = () => {
               onClick={handleGiveUpClick}
               className="rounded-full border border-rose-400/20 bg-rose-950/30 px-6 py-3.5 text-sm font-medium text-rose-200/80 backdrop-blur transition hover:bg-rose-900/40 active:scale-95"
             >
-              🥀 Give Up
+              End Session
             </button>
 
             {stage === "dead" && (
@@ -519,12 +519,11 @@ const Animation = () => {
                 🥀
               </div>
               <h3 id="giveup-title" className="mb-2 text-xl font-semibold text-rose-100">
-                Don't leave now…
+                End this session?
               </h3>
               <p className="mb-6 text-sm leading-relaxed text-rose-200/70">
-                If you leave now, your tree will{" "}
-                <span className="font-semibold text-rose-300">wither and die</span>. All
-                that growth will be lost.
+                Your current tree progress will reset if you end the session.
+                You can start a fresh ten-minute session whenever you are ready.
               </p>
               <div className="flex gap-3">
                 <button
@@ -537,7 +536,7 @@ const Animation = () => {
                   onClick={confirmGiveUp}
                   className="flex-1 rounded-full border border-rose-400/30 py-3 text-sm text-rose-200 transition hover:bg-rose-900/30"
                 >
-                  Give Up
+                  End Session
                 </button>
               </div>
             </div>
@@ -595,20 +594,17 @@ const Animation = () => {
             attention, but everything invites you to stay just one more minute.
           </p>
           <p className="text-base sm:text-lg leading-relaxed text-neutral-700 mb-5">
-            But here's the accountability part — the bit that makes it work. The
-            moment you try to close the tab, navigate away, or hit{" "}
-            <em>Give Up</em>, the app stops you with a quiet but firm warning:{" "}
-            <em>"If you leave now, your tree will wither and die."</em> If you
-            confirm, the tree shudders, its leaves curl inward, and what was
-            once growing becomes a dry, lifeless stick. It's a small sting, but
-            it's real. And strangely, it's exactly the sting that keeps you
-            seated.
+            If you try to close the tab or navigate away while the timer is
+            running, your browser may ask you to confirm. You can also pause or
+            end the session from the page. The tree animation is a visual
+            progress cue; it is not a score, and stopping early is completely
+            fine.
           </p>
           <p className="text-base sm:text-lg leading-relaxed text-neutral-700">
-            Optional lo-fi music hums softly in the background. The dark, earthy
-            palette keeps your eyes comfortable. Everything is designed to
-            disappear — except the one thing that matters: your tree. Stay, and
-            it thrives. Leave, and it dies. Simple. Human. Effective.
+            Optional lo-fi music can play in the background. Turn it on only if
+            it helps you concentrate, and switch it off whenever you prefer
+            silence. The timer is meant to be a simple visual companion to a
+            short task.
           </p>
         </div>
       </section>
@@ -622,44 +618,32 @@ const Animation = () => {
             The Science of Ten Minutes
           </p>
           <h2 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight mb-6">
-            Why 10 Minutes Is the Perfect Focus Block (and When to Use It)
+            Why a 10-Minute Focus Session Can Be Useful
           </h2>
           <div className="space-y-4 text-[15px] leading-relaxed text-neutral-700">
             <p>
-              Ten minutes sounds almost embarrassingly short. Twenty-five minutes
-              (the classic Pomodoro) is the famous number. So why build a whole
-              timer around just 10 minutes? Because the ten-minute block is
-              scientifically the most underrated length for <strong>starting</strong>{" "}
-              hard things, and starting is where most people fail. The hardest
-              part of studying isn't minute 22 — it's minute 0. If you can get
-              ten minutes in, momentum takes over.
+              Ten minutes is not a perfect focus length for everyone. It is simply
+              a short block that can make a task feel easier to begin. If a
+              twenty-five-minute session feels too long today, try ten minutes
+              and decide what to do next when the timer ends.
             </p>
             <p>
-              Behavioral economists call this the <em>Zeigarnik effect</em>: once
-              you start a task, your brain has a nagging urge to finish or at
-              least continue it. A ten-minute commitment is small enough that
-              your resistance melts, but long enough that your brain has switched
-              into "task mode" by the time the timer ends. Most people who plant
-              the seed for ten minutes actually keep going for 25 or 40 — the
-              timer just gets them over the initial cliff.
+              You do not have to keep working after the countdown. Some sessions
+              will lead into another block; others will be complete after ten
+              minutes. Both are useful if the time helped you make a start or
+              finish one small task.
             </p>
             <p>
-              Ten minutes also matches the length of several real-world
-              micro-tasks. It's roughly the time it takes to: read a chapter of
-              a technical textbook, review one set of flashcards, complete a
-              Duolingo streak day, respond to a batch of emails, do a mobility
-              routine, or prep a single interview answer. If you're using a
-              timer for language learning, the "10 minutes of daily Spanish"
-              routine is one of the highest-return habits you can build — and
-              this timer will help you protect those minutes from your phone.
+              A short session can suit a small revision topic, a few pages of
+              reading, tidying one surface, preparing notes, or drafting the
+              opening lines of a piece of writing. For larger tasks, choose one
+              clear step rather than trying to finish everything at once.
             </p>
             <p>
-              Finally, ten minutes is the sweet spot for the "two-minute rule"
-              extended outward. Productivity author James Clear recommends
-              shrinking habits to a two-minute starter version. Ten minutes is
-              the natural second step — a starter session that still feels like
-              real work. Use this timer for your first work block of the morning,
-              your post-lunch restart, or your pre-sleep wind-down routine.
+              Use the growing tree as a visual progress indicator. It is an
+              animation, not a measure of productivity or a test of willpower.
+              Pause or stop whenever you need to; you can return to the task
+              later.
             </p>
           </div>
         </div>
@@ -700,9 +684,8 @@ const Animation = () => {
               small but genuine loss-aversion reflex that keeps you seated.
             </li>
             <li>
-              <strong>Tap "Give Up" if you truly need to stop.</strong> The tree
-              shrinks back to a dead stick. It's a small consequence, but it's
-              the whole point — you feel it.
+              <strong>Choose "End Session" if you want to stop early.</strong> The current tree animation resets. Stopping early is fine; the timer is
+              here to support your routine, not pressure you to continue.
             </li>
             <li>
               <strong>Repeat three to six times per day.</strong> The 10-minute
@@ -723,26 +706,26 @@ const Animation = () => {
             Great Use Cases for a 10-Minute Timer
           </h2>
           <p className="text-[15px] leading-relaxed text-neutral-700 mb-6">
-            The 10-minute format fits dozens of real-world tasks. Here are the
-            most popular ways people use this timer:
+            A short countdown can help you give one small task a clear start and finish.
+            Here are a few examples:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14.5px] leading-relaxed text-neutral-700">
             {[
               {
                 t: "📖 Studying and revision",
-                d: "Ten minutes is enough to review one chapter, one set of flashcards, or one prior-year question paper's worth of formulas. Stack four sessions for a focused 40 minutes.",
+                d: "Use the time to review a few flashcards, one concept, or a short set of notes.",
               },
               {
                 t: "💻 Deep work warm-up",
-                d: "Use the 10-minute timer to bootstrap your hardest task of the day. By the end you'll almost always keep going — the timer just beats the initial resistance.",
+                d: "Use the first ten minutes to choose one small step. When the timer ends, decide whether to continue or take a break.",
               },
               {
                 t: "🏃 Workout intervals",
-                d: "Ten minutes is a complete mobility session, a warm-up, or a beginner-level bodyweight circuit. Combine with the HIIT timer for structured workouts.",
+                d: "Use the countdown for a warm-up or a planned movement break that is appropriate for you.",
               },
               {
                 t: "🧘 Mindful breaks",
-                d: "Ten minutes is a scientifically ideal meditation length. Use it as a deliberate break between hard work blocks.",
+                d: "Use a short quiet break if that suits you. You can choose a different length with another timer.",
               },
               {
                 t: "🧹 Home resets",
@@ -758,7 +741,7 @@ const Animation = () => {
               },
               {
                 t: "🍳 Cooking and prep",
-                d: "Ten minutes is roughly a pasta cook time, a stovetop stir-fry, or a full mise-en-place. Use the timer to coordinate multiple dishes.",
+                d: "Use it as a reminder for one preparation step. Follow the recipe and check food is cooked safely.",
               },
             ].map((item, i) => (
               <div
@@ -804,7 +787,7 @@ const Animation = () => {
               to keep you from clicking over to YouTube.
             </p>
             <p>
-              This is also why the "Give Up" flow requires a confirmation modal.
+              This is also why the "End Session" flow requires a confirmation modal.
               Friction on quitting is a well-known commitment device. It's the
               same reason gyms require you to physically walk out and cancel a
               membership, not just click a button — the friction gives your
@@ -879,11 +862,11 @@ const Animation = () => {
               },
               {
                 q: "What happens to my tree if I close the tab?",
-                a: "You'll see a browser confirmation warning that your tree will die if you leave. If you confirm, the tree is lost, and you'll start fresh next time. This is the entire accountability mechanism — the fear of losing the tree is what keeps you focused.",
+                a: "Your browser may ask you to confirm before leaving while the timer is running. If you leave, the current session may be interrupted. You can pause or end the session whenever you need to.",
               },
               {
                 q: "Can I pause the timer?",
-                a: "Yes. Click Pause or press Space. The tree stays exactly where it is; you don't lose progress. Resume when you're ready.",
+                a: "Yes. Click Pause or press Space. The timer stops and you can resume when you are ready.",
               },
               {
                 q: "Does it work on mobile?",

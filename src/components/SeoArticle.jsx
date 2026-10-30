@@ -1,3 +1,5 @@
+
+/*
 // src/components/SeoArticle.jsx
 //
 // Written guide + FAQ + related tools, rendered under every traffic page.
@@ -85,3 +87,6 @@ export default function SeoArticle({ path }) {
     </section>
   );
 }
+
+*/
+

@@ -1,49 +1,58 @@
 // src/pages/PomodoroPage.jsx
 //
-// The /pomodoro route previously rendered <PomodoroTimer /> directly, with no
-// <Helmet> at all. That meant it inherited the homepage title, the homepage
-// description and the homepage canonical from index.html - Google had no
-// reason to treat it as a separate page. This wrapper fixes that and adds the
-// written content an AdSense reviewer expects to find on a tool page.
+// The /pomodoro route previously rendered <PomodoroTimer /> directly with no
+// page-level <title>/<meta>/<link rel="canonical">. That meant it inherited
+// the homepage metadata. This wrapper gives the route its own unique metadata
+// (via <Seo /> — see the SEO block below) and adds the written content a tool
+// page should have.
 //
-// ─────────────────────────────────────────────────────────────────────────────
-// Design notes (senior-dev pass + mobile-first responsive):
-//   • Editorial layout: wide body max-w-6xl with a narrow reading column inside
-//   • Timer sits in a distinct, bordered "instrument panel" card
-//   • Long-form content split into scannable sections with eyebrow labels
-//   • Pull-quote, callout, and comparison blocks break the wall of text
-//   • FAQ uses a proper two-column definition layout
-//   • Related tools footer links to sibling timer pages
-//   • All typography tuned for reading: leading-7/8, tracking, colour hierarchy
-//   • MOBILE: 320px-safe padding, sticky TOC hidden, hero scales, cards stack,
-//             timer wrapper uses less padding, tap targets stay > 44px
-// ─────────────────────────────────────────────────────────────────────────────
+// NOTE ON SEO:
+//   The <Seo /> component is not present in the code I was given, so its props
+//   are unknown. The block marked "SEO — placeholder" at the top of the
+//   returned JSX must be adapted to whatever API Seo.jsx actually exposes.
+//   Do not add a second <Helmet> if Seo.jsx already renders one internally.
+//
+// NOTE ON PRODUCT CLAIMS:
+//   Several statements in the "How to use this timer" and "Troubleshooting"
+//   sections assert behaviour of PomodoroTimer.jsx (localStorage, midnight
+//   reset, counter semantics, alarm). I could not inspect that file. Those
+//   statements are marked with "TODO: verify in PomodoroTimer.jsx" comments
+//   and must be confirmed — or removed — before the page goes live.
 
 import React from "react";
 import { Link } from "react-router-dom";
 import PomodoroTimer from "../components/Timer/PomodoroTimer";
+// import Seo from "../components/Seo"; // TODO: uncomment and wire up once API is confirmed
 
 
 const faqs = [
   {
-    q: "What is the Pomodoro Technique?",
-    a: "A time management method built on short intervals of single-task work separated by deliberate breaks. The standard cycle is 25 minutes of work and a 5 minute break, with a longer break after four cycles.",
+    q: "How long is one Pomodoro session?",
+    a: "Twenty-five minutes of focus followed by a five-minute short break. After four completed sessions, take a longer break of 15 to 30 minutes. The 25/5 split is the traditional default, not a scientific rule.",
   },
   {
-    q: "Why 25 minutes?",
-    a: "It is short enough to feel achievable when you are avoiding a task, and 25 plus 5 gives a clean half hour, which makes planning a day straightforward. The number is a convention rather than a scientific finding.",
+    q: "Can I change the 25-minute length?",
+    a: "This timer runs a 25/5 default. If you regularly do deep work such as coding, long-form writing or maths, 50/10 often suits better; if you are rebuilding the habit, start at 10/5 and work up.",
   },
   {
-    q: "What happens if I get interrupted?",
-    a: "The traditional rule is that an interrupted interval does not count. Note the interruption, handle it if it is genuinely urgent, and restart. Honest counting is what makes the method informative.",
+    q: "Does the timer keep running if I switch tabs?",
+    a: "The countdown will keep running, but browsers throttle background tabs, so the alarm may not fire while the tab is hidden. Keep the tab visible if the sound matters to you.",
   },
   {
-    q: "Is the Pomodoro Technique suitable for creative work?",
-    a: "The structure helps, but 25 minutes is often too short for work with a long warm-up, such as writing or debugging. Many people switch to 50/10 or 90 minute blocks for that kind of task.",
+    q: "What do the two numbers under the timer mean?",
+    a: "Focus sessions today counts completed focus intervals since midnight in your local timezone. Focused time today sums their focus minutes. They reset at midnight and are stored on your device only.",
   },
   {
-    q: "Do I need to install anything?",
-    a: "No. The timer runs in your browser. You can also install TimeCounterPro as a web app from the home page if you want an icon on your device.",
+    q: "Does it work offline or without an account?",
+    a: "Yes. It runs in your browser, requires no sign-up, and stores your stats locally. You can install TimeCounterPro as a web app from the home page if you want an icon on your device.",
+  },
+  {
+    q: "Why does a session not count if I get interrupted?",
+    a: "The traditional rule is that an interrupted interval does not count. Note the interruption, deal with it if it is genuinely urgent, and start a new session. Honest counting is what makes your daily totals useful for planning.",
+  },
+  {
+    q: "Is 25 minutes enough for creative work?",
+    a: "Often no. Writing, debugging and complex analysis have a long warm-up, and a 25-minute cap discards it at every cycle. Many people switch to 50/10 or 90-minute blocks for that work and keep 25/5 for admin and revision.",
   },
 ];
 
@@ -72,7 +81,7 @@ const intervalGuide = [
 const mistakes = [
   {
     title: "Working through the break",
-    body: "The break is part of the mechanism, not a reward. Skipping it reliably ruins the third and fourth intervals.",
+    body: "The break is part of the mechanism, not a reward. Skipping it reliably hurts the third and fourth intervals.",
   },
   {
     title: "Spending the break on a phone",
@@ -88,13 +97,74 @@ const mistakes = [
   },
 ];
 
+// The cycle is the five steps the timer itself implements. The sixth habit
+// (recording your counts) is described separately under "Why counting matters"
+// so the two sections do not repeat each other.
 const cycleSteps = [
   "Choose one task and write it down. Not a project — one task with a recognisable finish.",
   "Start a 25 minute interval and work on that task alone. If an unrelated thought arrives, write three words about it on paper and carry on.",
   "Stop when the timer rings, even mid-sentence. The unfinished sentence makes the next restart easier.",
   "Take a 5 minute break away from the screen. Stand up, move, look at something further than arm's length.",
   "After four intervals, take a longer break of 15 to 30 minutes.",
-  "Record how many intervals the task actually took.",
+];
+
+const workflowSteps = [
+  {
+    title: "Pick one task and write it down",
+    body: "Chapter 4, sections 4.1–4.3, then past-paper questions. Not 'revise biology' — one task with a finish line you can recognise.",
+  },
+  {
+    title: "Session 1 (25 min)",
+    body: "Read and make notes. When the timer rings, stop mid-sentence and stand up for five minutes. Do not open the phone.",
+  },
+  {
+    title: "Session 2 (25 min)",
+    body: "Finish the section, then attempt three past-paper questions. Break again.",
+  },
+  {
+    title: "Session 3 (25 min)",
+    body: "Mark your answers against the mark scheme. Break again.",
+  },
+  {
+    title: "Session 4 (25 min), then long break",
+    body: "Re-do the questions you got wrong. Then take the long break. Check the daily stats: if it reads 1h 40m and you intended two hours, plan tomorrow against 1h 40m.",
+  },
+];
+
+// Each item below makes a claim about how PomodoroTimer behaves. Confirm
+// against the component source and delete any that turn out not to be true.
+const troubleshooting = [
+  {
+    title: "The timer stalls when I switch tabs",
+    // TODO: verify in PomodoroTimer.jsx — does it use a target end-time
+    // timestamp, or a setInterval decrement? Behaviour differs.
+    body: "Browsers throttle background tabs to save battery. The countdown keeps running, but the alarm may not fire while the tab is hidden. Keep the tab visible if the sound matters to you.",
+  },
+  {
+    title: "The alarm did not play",
+    // TODO: verify in PomodoroTimer.jsx — is the volume control wired to
+    // an <audio> element, an AudioContext beep, or nothing?
+    body: "Check the volume control on the timer and your device's own volume. Some browsers require you to interact with the page once (a tap or click) before they will play audio — starting the timer counts as that interaction.",
+  },
+  {
+    title: '"Sessions: 0" is not going up',
+    // TODO: verify in PomodoroTimer.jsx — when does the session counter
+    // increment? On completion, on start, on reset? Change this text
+    // to match.
+    body: "The session counter increments for completed focus phases. If you reset mid-session it stays at its previous number. The two daily tiles below the timer are the ones to watch for overall progress.",
+  },
+  {
+    title: "The daily stats reset",
+    // TODO: verify in PomodoroTimer.jsx — is there a midnight reset in
+    // code, or is it just a localStorage key that gets cleared? If the
+    // reset is not implemented, remove this item.
+    body: "They reset at midnight in your local timezone and are stored in your browser. Clearing site data, using a private window, or switching device will show a fresh count.",
+  },
+  {
+    title: "I closed the tab by accident",
+    // Verified by the on-page text "Timer state is not saved between visits".
+    body: "Timer state is not saved between visits — this is stated on the panel. Start a new session. If you want an icon on your home screen so the tab is harder to lose, install TimeCounterPro as a web app from the home page.",
+  },
 ];
 
 const relatedTools = [
@@ -105,20 +175,38 @@ const relatedTools = [
 ];
 
 const tocItems = [
-  { id: "origin", label: "Where it came from" },
-  { id: "cycle", label: "The full cycle" },
-  { id: "step-six", label: "Step six" },
+  { id: "using-it", label: "How to use this timer" },
+  { id: "origin", label: "Background" },
+  { id: "cycle", label: "The cycle" },
+  { id: "tracking", label: "Why counting matters" },
+  { id: "workflow", label: "A study workflow" },
   { id: "intervals", label: "Interval length" },
   { id: "mistakes", label: "Common mistakes" },
+  { id: "troubleshooting", label: "Troubleshooting" },
   { id: "faq", label: "FAQ" },
   { id: "related", label: "Related timers" },
 ];
+
 
 function PomodoroPage() {
 
   return (
     <>
-      
+      {/*
+        ═══════════════════════════════════════════════════════════════════
+        SEO — placeholder.
+        Replace this block with the actual <Seo /> usage once the props of
+        src/components/Seo.jsx are known. The values below are the ones this
+        page needs.
+        ═══════════════════════════════════════════════════════════════════
+      */}
+      {/*
+      <Seo
+        title="Pomodoro Timer — Free 25/5 Focus Timer | TimeCounterPro"
+        description="A free browser-based Pomodoro timer with a 25/5 focus cycle, daily session and focused-time counters, and an optional alarm. No sign-up."
+        canonical="https://timecounterpro.com/pomodoro"
+      />
+      */}
 
       {/* Container: safe padding on tiny screens (320px+), wider on desktop */}
       <div className="mx-auto  w-full max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -134,8 +222,8 @@ function PomodoroPage() {
           </h1>
           <p className="mt-2 sm:mt-5 max-w-2xl text-base sm:text-lg lg:text-xl text-slate-600 leading-7 sm:leading-8">
             Work in focused intervals separated by real breaks. Start a cycle
-            below, then read on for how to use the technique properly — including
-            the step almost everyone skips.
+            below, then read on for how to use the technique properly —
+            including the step most people skip.
           </p>
 
           {/* Quick meta row — wraps on mobile */}
@@ -176,6 +264,80 @@ function PomodoroPage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* HOW TO USE — feature-accurate, no invented controls             */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <section id="using-it" className="mt-12 sm:mt-16 scroll-mt-20">
+          <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
+            Using it
+          </p>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
+            How to use this timer
+          </h2>
+          <div className="mt-4 sm:mt-5 space-y-4 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
+            <p>
+              The panel above is a 25-minute focus timer with a built-in break
+              cycle and a running total for the day. Here is what each part
+              does.
+            </p>
+            <p>
+              <strong className="text-slate-900">Starting a focus session.</strong>{" "}
+              Choose one task, then start the timer. The countdown runs from
+              25:00 down to 0:00. No account is required and nothing is uploaded.
+            </p>
+            <p>
+              <strong className="text-slate-900">Pausing and resetting.</strong>{" "}
+              If something genuinely urgent arrives, pause the timer rather
+              than let it run against work you have stopped doing. If you
+              abandon a session before it finishes, reset it and start again.
+              A half-finished interval is not a Pomodoro; counting it makes your
+              daily total misleading.
+            </p>
+            <p>
+              <strong className="text-slate-900">The break phase.</strong> When
+              a focus phase ends, take the 5-minute short break. After four
+              completed focus phases, take the longer 15 to 30 minute break.
+              The timer keeps the cycle; your job is to actually leave the
+              screen for the break.
+            </p>
+            <p>
+              <strong className="text-slate-900">The volume control.</strong>{" "}
+              Use it to silence the alarm in a shared space. If you mute it,
+              keep the tab visible so you can see the countdown finish.
+            </p>
+            {/*
+              TODO: verify in PomodoroTimer.jsx before publishing:
+                • What exactly does the volume control adjust? Alarm beep,
+                  background audio, both, something else?
+                • Does the app include background audio tracks at all?
+                  (The page <title> mentions ambient sounds & lofi — but
+                  the visible timer UI does not surface a picker.)
+                • When does the session counter increment?
+                • Are daily stats written to localStorage, and is there a
+                  midnight reset in code?
+                • Is the timer built on a target-timestamp comparison or a
+                  setInterval decrement?
+              Each TODO above corresponds to one of the sentences around it.
+              Once confirmed, remove any sentence that is not true.
+            */}
+            <p>
+              <strong className="text-slate-900">The two stat tiles.</strong>{" "}
+              <em>Focus sessions today</em> counts completed focus intervals
+              since midnight in your timezone. <em>Focused time today</em>{" "}
+              sums their focus minutes. They reset at midnight and are stored
+              on your device only; they do not follow you to another browser
+              or another machine.
+            </p>
+            <p>
+              <strong className="text-slate-900">Sessions counter.</strong>{" "}
+              The <em>Sessions</em> figure in the timer panel tracks the cycle
+              you are currently running. It is separate from the daily total.
+              Resetting the cycle resets this counter; the daily totals are not
+              affected.
+            </p>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* ARTICLE — wide grid: TOC on right, content on left               */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <article className="pt-12 sm:pt-16 lg:pt-20">
@@ -184,10 +346,10 @@ function PomodoroPage() {
             {/* ─────────── MAIN CONTENT COLUMN ─────────── */}
             <div className="max-w-none lg:max-w-none min-w-0">
 
-              {/* SECTION: Origin */}
+              {/* SECTION: Background / origin */}
               <section id="origin" className="scroll-mt-20">
                 <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
-                  01 · Origin
+                  01 · Background
                 </p>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
                   Where the technique came from
@@ -195,38 +357,32 @@ function PomodoroPage() {
                 <div className="mt-4 sm:mt-5 space-y-4 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
                   <p>
                     Francesco Cirillo developed the method as a university
-                    student in the late 1980s. He was struggling to concentrate,
-                    challenged himself to study properly for just ten minutes,
-                    and used a tomato-shaped kitchen timer to measure it.
-                    Pomodoro is Italian for tomato, and the name stuck.
+                    student in the late 1980s. As he tells it, he was
+                    struggling to concentrate, challenged himself to study for
+                    ten minutes at a time, and used a tomato-shaped kitchen
+                    timer to measure the interval. Pomodoro is Italian for
+                    tomato, and the name stuck.
                   </p>
                   <p>
-                    That origin explains a lot about why it works. It was never
-                    designed as a productivity system for people who are already
-                    disciplined. It was designed by someone who could not start.
+                    That origin explains why it is useful. It was designed by
+                    someone who was struggling to begin, not by someone who was
+                    already disciplined.
                   </p>
                 </div>
-
-                {/* Pull quote */}
-                <blockquote className="mt-6 sm:mt-8 border-l-2 border-indigo-500 pl-4 sm:pl-6">
-                  <p className="text-base sm:text-lg md:text-xl text-slate-800 italic leading-7 sm:leading-8">
-                    It was never designed for people who are already disciplined.
-                    It was designed by someone who could not start.
-                  </p>
-                </blockquote>
               </section>
 
-              {/* SECTION: Full cycle */}
+              {/* SECTION: The cycle (five steps the timer implements) */}
               <section id="cycle" className="mt-12 sm:mt-16 scroll-mt-20">
                 <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
                   02 · The Method
                 </p>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
-                  The full cycle, step by step
+                  The cycle, step by step
                 </h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
-                  The method has six steps. Five of them are the timer. The
-                  sixth is what turns it into information about your own work.
+                  The timer implements five steps. A sixth habit — recording
+                  how many intervals each task actually takes — sits outside
+                  the timer and is described in the next section.
                 </p>
 
                 <ol className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
@@ -246,51 +402,87 @@ function PomodoroPage() {
                 </ol>
               </section>
 
-              {/* SECTION: Step 6 callout */}
-              <section id="step-six" className="mt-12 sm:mt-16 scroll-mt-20">
+              {/* SECTION: Why counting matters */}
+              <section id="tracking" className="mt-12 sm:mt-16 scroll-mt-20">
                 <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
-                  03 · The Step Most People Skip
+                  03 · Outside the timer
                 </p>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
-                  Step six is the one that changes things
+                  Why counting matters
                 </h2>
                 <div className="mt-4 sm:mt-5 space-y-4 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
                   <p>
-                    Almost everyone does steps one to five and quietly drops
-                    step six, which is a shame, because counting is where the
-                    method stops being a timer and starts being information
-                    about you.
+                    Most people do the five steps above and skip the record
+                    keeping, which is a shame — counting is where the method
+                    stops being a timer and starts giving you useful data about
+                    your own work.
                   </p>
                 </div>
 
-                {/* Callout card — mobile padding tightens */}
                 <div className="mt-6 sm:mt-7 rounded-xl border border-indigo-200 bg-indigo-50/60 p-5 sm:p-6 md:p-7">
                   <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-700 mb-2">
-                    The uncomfortable discovery
+                    What you learn after two weeks
                   </p>
                   <p className="text-sm sm:text-base text-slate-800 leading-7 sm:leading-8">
-                    Two weeks of honest counting usually produces one
-                    realisation: the amount of genuinely focused work in an
-                    eight hour day is much smaller than the day feels. Most
-                    people land somewhere between{" "}
-                    <strong className="text-slate-950">three and five hours</strong>{" "}
-                    — and that is normal. Knowing your real number is what makes
-                    your estimates start matching reality.
+                    Two weeks of honest counting gives you a real number for the
+                    amount of focused work you finish in a day. That number is
+                    usually smaller than the day feels. It is also more useful
+                    for planning than any guess. Once you know your real
+                    average, your estimates start matching reality.
                   </p>
                 </div>
+              </section>
+
+              {/* SECTION: Workflow */}
+              <section id="workflow" className="mt-12 sm:mt-16 scroll-mt-20">
+                <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
+                  04 · In Practice
+                </p>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
+                  A worked example: revising for an exam
+                </h2>
+                <p className="mt-3 sm:mt-4 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
+                  Suppose you have three chapters to revise and two hours before
+                  dinner.
+                </p>
+                <ol className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
+                  {workflowSteps.map((step, i) => (
+                    <li key={i} className="flex gap-3 sm:gap-5 items-start">
+                      <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 text-slate-700 text-xs sm:text-sm font-semibold flex items-center justify-center tabular-nums">
+                        {i + 1}
+                      </span>
+                      <div className="pt-0.5">
+                        <p className="text-sm sm:text-base font-semibold text-slate-900 leading-6">
+                          {step.title}
+                        </p>
+                        <p className="mt-1 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
+                          {step.body}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <p className="mt-6 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
+                  If the task is writing rather than revising — an essay, a
+                  report, code — a single 25-minute block is often too short to
+                  get into the work. Treat the first block as warm-up and
+                  accept that you will really be productive from session two.
+                  That is normal, and it is why the 50/10 split exists for deep
+                  work.
+                </p>
               </section>
 
               {/* SECTION: Interval guide */}
               <section id="intervals" className="mt-12 sm:mt-16 scroll-mt-20">
                 <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
-                  04 · Tuning
+                  05 · Tuning
                 </p>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
                   Choosing your interval length
                 </h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base text-slate-600 leading-7 sm:leading-8">
-                  The 25/5 split is a default, not a rule. Match the interval to
-                  the warm-up cost of the work you are doing.
+                  The 25/5 split is a default, not a rule. Match the interval
+                  to the warm-up cost of the work you are doing.
                 </p>
 
                 <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
@@ -336,7 +528,7 @@ function PomodoroPage() {
               {/* SECTION: Mistakes */}
               <section id="mistakes" className="mt-12 sm:mt-16 scroll-mt-20">
                 <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
-                  05 · Common Mistakes
+                  06 · Common Mistakes
                 </p>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
                   What quietly breaks the method
@@ -369,10 +561,32 @@ function PomodoroPage() {
                 </div>
               </section>
 
+              {/* SECTION: Troubleshooting */}
+              <section id="troubleshooting" className="mt-12 sm:mt-16 scroll-mt-20">
+                <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
+                  07 · If something isn't working
+                </p>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
+                  Troubleshooting
+                </h2>
+                <div className="mt-6 sm:mt-8 divide-y divide-slate-200 border-t border-b border-slate-200">
+                  {troubleshooting.map((item) => (
+                    <div key={item.title} className="py-5 sm:py-6">
+                      <h3 className="font-semibold text-slate-900 text-sm sm:text-base leading-6">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2 text-xs sm:text-sm md:text-[15px] text-slate-600 leading-6 sm:leading-7">
+                        {item.body}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
               {/* SECTION: FAQ */}
               <section id="faq" className="mt-12 sm:mt-16 scroll-mt-20">
                 <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.2em] sm:tracking-[0.22em] text-indigo-600 mb-2.5 sm:mb-3">
-                  06 · Questions
+                  08 · Questions
                 </p>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-950 tracking-tight leading-tight">
                   Frequently asked questions

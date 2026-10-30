@@ -11,7 +11,7 @@ const PROTOCOLS = [
     fastHours: 16,
     eatHours: 8,
     name: 'Leangains',
-    description: 'Most popular · beginner friendly',
+    description: '16-hour timer · 8-hour window',
   },
   {
     id: '18:6',
@@ -19,7 +19,7 @@ const PROTOCOLS = [
     fastHours: 18,
     eatHours: 6,
     name: 'Advanced',
-    description: 'Deeper ketosis · faster results',
+    description: '18-hour timer · 6-hour window',
   },
   {
     id: '20:4',
@@ -27,7 +27,7 @@ const PROTOCOLS = [
     fastHours: 20,
     eatHours: 4,
     name: 'Warrior',
-    description: 'Intense · for experienced fasters',
+    description: '20-hour timer · 4-hour window',
   },
 ];
 
@@ -35,12 +35,12 @@ const PROTOCOLS = [
 // METABOLIC PHASES
 // ============================================
 const METABOLIC_PHASES = [
-  { max: 4, name: 'Anabolic', desc: 'Digesting · blood sugar rising', color: '#a8a29e' },
-  { max: 8, name: 'Catabolic', desc: 'Glycogen depleting', color: '#c9a36a' },
-  { max: 12, name: 'Fat Burning Begins', desc: 'Lipolysis starts', color: '#d97757' },
-  { max: 16, name: 'Ketosis', desc: 'Fat → ketones for fuel', color: '#b8562f' },
-  { max: 20, name: 'Deep Ketosis', desc: 'Peak fat oxidation', color: '#8b3a1f' },
-  { max: 24, name: 'Autophagy', desc: 'Cellular cleanup', color: '#5c2410' },
+  { max: 4, name: '0–4 hours', desc: 'Elapsed time only; not a measure of metabolic changes.', color: '#a8a29e' },
+  { max: 8, name: '4–8 hours', desc: 'Individual responses vary; this timer cannot assess them.', color: '#c9a36a' },
+  { max: 12, name: '8–12 hours', desc: 'No specific health effect can be inferred from elapsed time.', color: '#d97757' },
+  { max: 16, name: '12–16 hours', desc: 'A timer cannot determine ketone levels or fat use.', color: '#b8562f' },
+  { max: 20, name: '16–20 hours', desc: 'Longer time does not automatically mean greater benefit.', color: '#8b3a1f' },
+  { max: 24, name: '20–24 hours', desc: 'This display is not a medical or biological measurement.', color: '#5c2410' },
 ];
 
 // ============================================
@@ -1030,7 +1030,7 @@ const FastingTrackerClock = () => {
                 )}
               </div>
 
-              {/* Metabolic Timeline */}
+              {/* Elapsed-Time Display */}
               <div
                 className="rounded-3xl p-6"
                 style={{
@@ -1043,7 +1043,7 @@ const FastingTrackerClock = () => {
                 }}
               >
                 <p className="text-[10px] tracking-[0.25em] uppercase font-bold mb-4" style={{ color: theme.textMuted }}>
-                  Metabolic Timeline
+                  Elapsed-Time Display
                 </p>
                 <div className="space-y-3">
                   {METABOLIC_PHASES.map((phase, i) => {
@@ -1179,18 +1179,14 @@ const FastingTrackerClock = () => {
             </div>
 
             <h2 className="text-xl md:text-3xl font-bold tracking-tight mb-6 max-w-3xl" style={{ color: theme.text }}>
-              Understanding Metabolic Phases During Your Intermittent Fasting Window
+              What the elapsed-time display means
             </h2>
 
             <div className="space-y-4 text-sm md:text-[15px] leading-relaxed max-w-4xl" style={{ color: darkMode ? '#c9b8a4' : '#5c4a3a' }}>
-              <p>Intermittent fasting is not just about skipping meals — it is about giving your body enough uninterrupted time to move through distinct metabolic phases. Understanding these phases helps you fast with intention rather than simply starving yourself.</p>
-              <p><span style={{ color: theme.text, fontWeight: 700 }}>0–4 hours: The Anabolic Phase.</span> Right after your last meal, your body is in a fed state. Blood sugar and insulin are elevated, and your body is busy storing energy. This is not a "fasting" window in the metabolic sense — it's still digestion. Aim to finish your last meal 2–3 hours before bed to give this phase time to complete overnight.</p>
-              <p><span style={{ color: theme.text, fontWeight: 700 }}>4–8 hours: The Catabolic Phase.</span> Blood sugar begins to drop and glycogen stores start depleting. Your body looks for alternative fuel. This is when many people feel their first hunger pangs — a signal that the shift is happening. Drinking water, black coffee, or plain tea can help bridge this phase without breaking the fast.</p>
-              <p><span style={{ color: theme.text, fontWeight: 700 }}>8–12 hours: Fat Burning Begins.</span> Once glycogen is largely depleted, your body starts breaking down stored fat into free fatty acids for fuel — a process called lipolysis. This is the phase where intermittent fasting starts delivering its famous fat-loss benefits. Most 16:8 fasters spend the majority of their fast here.</p>
-              <p><span style={{ color: theme.text, fontWeight: 700 }}>12–16 hours: Ketosis.</span> The liver begins converting fatty acids into ketone bodies, an efficient alternative fuel for the brain and muscles. Mental clarity, reduced hunger, and stable energy are common. For 16:8 fasters, this is the peak window — the final 4 hours deliver the deepest benefits of the protocol.</p>
-              <p><span style={{ color: theme.text, fontWeight: 700 }}>16–20 hours: Deep Ketosis.</span> If you extend to 18:6 or 20:4, you push further into ketosis. Fat oxidation accelerates, inflammation markers can drop, and some studies suggest enhanced cellular repair. Many experienced fasters report their clearest thinking in this window.</p>
-              <p><span style={{ color: theme.text, fontWeight: 700 }}>20–24 hours: Autophagy.</span> Extended fasts activate autophagy — the body's cellular cleanup process where damaged proteins and organelles are recycled. This is one of the most-studied benefits of longer fasts, but it requires careful planning and should not be attempted without experience.</p>
-              <p>The best protocol is the one you can sustain. Start with 16:8, listen to your body, and extend gradually. Track every fast to see your personal patterns — consistency always beats intensity.</p>
+              <p>This timeline shows only how much time has passed since the timer started. It does not measure blood sugar, ketones, fat use, autophagy, hydration or any other body process. Those responses differ between people and cannot be reliably predicted from a clock.</p>
+              <p>The timer is a record-keeping feature, not a recommendation to skip meals or follow a particular eating schedule. Completing a longer timer does not prove that a health benefit has occurred, and a streak or badge should never be a reason to ignore hunger or feeling unwell.</p>
+              <p><strong>Important:</strong> Fasting schedules are not appropriate for everyone. Children and teenagers should not use fasting plans unless a qualified healthcare professional specifically recommends and supervises them. People who are pregnant, have a medical condition, take medication, or have a history of disordered eating should speak with a qualified clinician before considering fasting.</p>
+              <p>If you use this page, treat the displayed time as a simple log only. It is not medical advice and should not replace regular meals, hydration, or guidance from a healthcare professional.</p>
             </div>
           </div>
         </div>

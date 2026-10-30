@@ -9,15 +9,14 @@
 //   - sitemap.xml                                                  -> src/scripts/generate-sitemap.mjs
 //   - ad eligibility (which pages may load AdSense)                -> src/config/ads.js
 //
-// Site focus: 10 traffic pages + 4 trust pages (About, Contact, Privacy, Terms).
-// Everything else was removed because it had no realistic search demand
-// and made the site look thin to AdSense reviewers.
+// Site focus: curated tool pages plus trust pages (About, Contact, Privacy, Terms).
+// Keep the public route list focused. Each page owns its visible guide and FAQs.
 
 export const SITE_URL = "https://timecounterpro.com";
 
 export const staticRoutes = [
   // ============================================================
-  // 10 TRAFFIC PAGES  (indexed, ads allowed)
+  // Main traffic pages (indexed; ads are enabled only where configured)
   // ============================================================
   {
     path: "/",
@@ -34,9 +33,9 @@ export const staticRoutes = [
   {
     path: "/pomodoro",
     name: "Pomodoro Timer",
-    title: "Free Online Pomodoro Timer - Focus Clock with Ambient Sounds & Lofi Music",
+    title: "Pomodoro Timer Online - Free 25-Minute Focus Timer",
     description:
-      "Free online Pomodoro timer with 25-minute focus sessions and 5-minute breaks. Sound alerts, session count and daily focus stats. No sign-up needed.",
+      "Use a simple Pomodoro timer for focused work and study. Set a focus session, take a break, and track completed sessions with optional ambient sound.",
     appCategory: "ProductivityApplication",
     priority: "0.95",
     changefreq: "weekly",
@@ -59,9 +58,9 @@ export const staticRoutes = [
   {
     path: "/rubiks-cube-timer",
     name: "Online Rubik's Cube Stopwatch",
-    title: "Online Rubik's Cube Stopwatch - Free Stopwatch with Lap Timer",
+    title: "Rubik's Cube Timer - Online Speedcubing Stopwatch",
     description:
-      "Free online stopwatch with hundredth-of-a-second precision and unlimited laps. Start, pause, split and reset in one click. No download or sign-up.",
+      "Time your Rubik's Cube solves with a scramble generator, inspection countdown, +2 and DNF penalties, and solve history. Practice in your browser without an account.",
     appCategory: "UtilitiesApplication",
     priority: "0.95",
     changefreq: "weekly",
@@ -79,14 +78,14 @@ export const staticRoutes = [
     priority: "0.9",
     changefreq: "daily",
     ads: true,
-    related: ["/", "/time-card-calculator-online", "/presentation-timer", "/stopwatch"],
+    related: ["/", "/time-card-calculator", "/presentation-timer", "/stopwatch"],
   },
   {
     path: "/time-card-calculator",
     name: "Time Card Calculator",
-    title: "Free Time Card Calculator Online - Calculate Hours, Breaks & Gross Pay (CSV Export)",
+    title: "Time Card Calculator - Weekly Hours, Overtime & Pay",
     description:
-      "Free time card calculator. Enter clock in, clock out and breaks to get daily and weekly hours, overtime and total pay. Copy your timesheet in seconds.",
+      "Calculate shift hours, unpaid breaks, weekly totals, overtime and estimated pay. Save entries in your browser, copy a summary or export a CSV timesheet.",
     appCategory: "BusinessApplication",
     priority: "0.95",
     changefreq: "weekly",
@@ -110,7 +109,7 @@ export const staticRoutes = [
     name: "Intermittent Fasting Timer",
     title: "Intermittent Fasting Timer - Free 16:8 Fasting Tracker",
     description:
-      "Free intermittent fasting timer for 16:8, 18:6 and 20:4. See fasting stages, track water and keep a fasting history, saved privately in your browser.",
+      "A browser-based fasting time log with elapsed-time display, water tracking and local history. It does not measure metabolic changes or provide medical advice.",
     appCategory: "HealthApplication",
     priority: "0.9",
     changefreq: "weekly",
@@ -144,9 +143,9 @@ export const staticRoutes = [
   {
     path: "/create",
     name: "Create Timers",
-    title: "Create Timers - Free Online Stopwatch, Timer and Clock",
+    title: "Custom Timer Maker - Create a Free Online Countdown",
     description:
-      "Free online stopwatch, timer and clock. Set time, split, reset and pause in seconds. No sign-up or download.",
+      "Build a countdown for the task you choose. Give it a name, set the duration and use your custom timer in the browser without creating an account.",
     appCategory: "UtilitiesApplication",
     priority: "0.9",
     changefreq: "weekly",
@@ -156,9 +155,9 @@ export const staticRoutes = [
   {
     path: "/10-minute-timer",
     name: "10 Minute Timer",
-    title: "10 Minute Timer - Free Online Stopwatch, Timer and Clock",
+    title: "10-Minute Focus Timer - Grow a Tree While You Work",
     description:
-      "Free online stopwatch, timer and clock. Set time, split, reset and pause in seconds. No sign-up or download.",
+      "Start a ten-minute focus session with a growing-tree visual. Use a short work block to begin a task, pause when needed and build a steady routine.",
     appCategory: "UtilitiesApplication",
     priority: "0.9",
     changefreq: "weekly",
@@ -240,13 +239,10 @@ export const utilityRoutes = [
   },
 ];
 
-// Pages that were deleted. Each is 301-redirected to the closest live page
-// (written to dist/_redirects by src/scripts/prerender.mjs) so old links and
-// any link equity are not lost.
-
+// Groupings used for internal navigation and reporting.
 export const routeCategories = {
   core: ["/", "/create", "/pomodoro", "/stopwatch", "/world-clock"],
-  study: ["/mock-test-timer","10-minutes-timer", "/meditation-timer-with-sound", "/presentation-timer"],
+  study: ["/mock-test-timer", "/10-minute-timer", "/meditation-timer-with-sound", "/presentation-timer"],
   health: ["/hiit-timer", "/fasting-tracker-timer"],
   work: ["/time-card-calculator", "/rubiks-cube-timer"],
   info: ["/about", "/contact", "/privacy", "/terms"],

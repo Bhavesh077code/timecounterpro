@@ -103,6 +103,43 @@ function StopwatchPage() {
 
           <section className="mt-10">
             <h2 className="text-2xl font-bold text-slate-900">
+              Read the display and choose a useful lap pattern
+            </h2>
+            <p className="mt-4 text-slate-600 leading-7">
+              The display shows minutes, seconds and hundredths of a second. Start
+              the clock when the activity begins. Use a lap when you reach a
+              checkpoint you want to compare, such as the end of a running
+              interval or one stage of a practice routine. The main stopwatch
+              keeps counting, so you can record several splits during one run.
+            </p>
+            <p className="mt-4 text-slate-600 leading-7">
+              Try to use the same checkpoints each time you repeat an activity.
+              For example, record one lap per round rather than pressing the lap
+              button at random moments. Consistent splits make it easier to see
+              whether your pace is changing. If you are timing a task at work,
+              record the same milestones on each attempt so the comparison is
+              useful rather than just a list of unrelated times.
+            </p>
+            <p className="mt-4 text-slate-600 leading-7">
+              You can pause the stopwatch when the measurement itself needs to
+              stop, then continue the same run. Reset only when you are ready to
+              begin a new measurement; resetting clears the current elapsed time
+              and lap list. The floating picture-in-picture view may also be
+              available in supported browsers, which can keep the clock visible
+              while you work in another window. Browser support varies by
+              device, so the standard page remains the dependable option.
+            </p>
+            <p className="mt-4 text-slate-600 leading-7">
+              This tool is intended for everyday timing and practice. It displays
+              hundredths of a second, but a browser stopwatch is not certified
+              sports or laboratory equipment. For official competition results
+              or measurements where tiny timing differences matter, use the
+              timing system required by that activity.
+            </p>
+          </section>
+
+          <section className="mt-10">
+            <h2 className="text-2xl font-bold text-slate-900">
               Frequently asked questions
             </h2>
             <div className="mt-5 space-y-5">
