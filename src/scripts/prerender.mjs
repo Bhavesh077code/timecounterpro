@@ -154,7 +154,6 @@ main().catch((err) => {
 
 */
 
-
 // src/scripts/prerender.mjs
 //
 // WHAT THIS DOES
@@ -178,10 +177,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import {
-  allRoutes,
-  adRoutePaths,
-} from "../data/siteRoutes.js";
+import { allRoutes, adRoutePaths } from "../data/siteRoutes.js";
 import { ADSENSE_CLIENT } from "../config/ads.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -208,20 +204,24 @@ globalThis.sessionStorage = makeStorage();
 
 /* ---- Helpers ---- */
 const outputPathFor = (route) =>
-  route === "/" ? path.join(distDir, "index.html") : path.join(distDir, `${route.replace(/^\/+/, "")}.html`);
+  route === "/"
+    ? path.join(distDir, "index.html")
+    : path.join(distDir, `${route.replace(/^\/+/, "")}.html`);
 
 function stripHeadTags(html) {
   return html
     .replace(/<title>[\s\S]*?<\/title>/gi, "")
     .replace(/<meta\s+name=["']description["'][^>]*>/gi, "")
     .replace(/<meta\s+name=["']robots["'][^>]*>/gi, "")
-    .replace(/<meta\s+(?:property|name)=["'](?:og|twitter):[^"']+["'][^>]*>/gi, "")
+    .replace(
+      /<meta\s+(?:property|name)=["'](?:og|twitter):[^"']+["'][^>]*>/gi,
+      "",
+    )
     .replace(/<link\s+rel=["']canonical["'][^>]*>/gi, "")
     .replace(/<script[^>]*googlesyndication[^>]*><\/script>/gi, "");
 }
 
-const adScript =
-  `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>`;
+const adScript = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>`;
 
 function buildPage(template, { html, head }, withAds) {
   let out = stripHeadTags(template);
@@ -251,7 +251,9 @@ async function main() {
   }
   const ssrEntry = path.join(ssrDir, "entry-server.js");
   if (!fs.existsSync(ssrEntry)) {
-    throw new Error("dist-ssr/entry-server.js not found. Run `vite build --ssr src/entry-server.jsx --outDir dist-ssr` first.");
+    throw new Error(
+      "dist-ssr/entry-server.js not found. Run `vite build --ssr src/entry-server.jsx --outDir dist-ssr` first.",
+    );
   }
 
   const template = fs.readFileSync(templatePath, "utf8");
@@ -261,7 +263,9 @@ async function main() {
   let problems = 0;
 
   // Render the home page LAST so the template read above is never overwritten early.
-  const ordered = [...allRoutes].sort((a, b) => (a.path === "/" ? 1 : b.path === "/" ? -1 : 0));
+  const ordered = [...allRoutes].sort((a, b) =>
+    a.path === "/" ? 1 : b.path === "/" ? -1 : 0,
+  );
 
   for (const route of ordered) {
     const result = await render(route.path);
@@ -272,7 +276,8 @@ async function main() {
     const words = textWords(result.html);
     const hasH1 = /<h1[\s>]/i.test(result.html);
     const hasTitle = /<title[^>]*>[^<]+<\/title>/i.test(page);
-    const hasDescription = /<meta\s+name=["']description["'][^>]*content=["'][^"']+["'][^>]*>/i.test(page);
+   const hasDescription =
+            /<meta\b(?=[^>]*\bname=["']description["'])(?=[^>]*\bcontent=["'][^"']+["'])[^>]*>/i.test(page);
     const hasCanonical = /rel="canonical"/i.test(page);
     const ok =
       (hasH1 || route.noindex) &&
@@ -280,21 +285,34 @@ async function main() {
       hasDescription &&
       (route.noindex || hasCanonical);
     if (!ok) problems += 1;
-    report.push({ path: route.path, words, h1: hasH1, canonical: hasCanonical, ads: adPaths.has(route.path), ok });
+    report.push({
+      path: route.path,
+      words,
+      h1: hasH1,
+      title: hasTitle,
+      description: hasDescription,
+      canonical: hasCanonical,
+      ads: adPaths.has(route.path),
+      ok,
+    });
   }
 
   // Real 404 page (served with HTTP 404 by the host).
   const notFound = await render("/this-page-does-not-exist");
-  fs.writeFileSync(path.join(distDir, "404.html"), buildPage(template, notFound, false), "utf8");
-
-  
+  fs.writeFileSync(
+    path.join(distDir, "404.html"),
+    buildPage(template, notFound, false),
+    "utf8",
+  );
 
   fs.rmSync(ssrDir, { recursive: true, force: true });
 
-  console.log("\nPrerender report (words are visible text in the static HTML):");
+  console.log(
+    "\nPrerender report (words are visible text in the static HTML):",
+  );
   for (const r of report) {
     console.log(
-      `  ${r.ok ? "OK  " : "FAIL"} ${r.path.padEnd(34)} words=${String(r.words).padStart(5)} h1=${r.h1} canonical=${r.canonical} ads=${r.ads}`,
+     `  ${r.ok ? "OK  " : "FAIL"} ${r.path.padEnd(34)} words=${String(r.words).padStart(5)} h1=${r.h1} title=${r.title} description=${r.description} canonical=${r.canonical} ads=${r.ads}`,
     );
   }
   console.log("  404.html written.");

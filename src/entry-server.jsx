@@ -47,7 +47,7 @@ export async function render(url) {
     });
   };
   let body = html;
-  take(/<title>[\s\S]*?<\/title>/g);
+  take(/<title\b[^>]*>[\s\S]*?<\/title>/gi);
   take(/<meta\b[^>]*>/g);
   take(/<link rel="canonical"[^>]*>/g);
   take(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g);
